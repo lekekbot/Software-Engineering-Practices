@@ -1,0 +1,36 @@
+.teamCard {
+    position: relative;
+    background-image: url(../../Images/team.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 5vh;
+    min-width: 20vw;
+}
+
+.container {
+    height: 100vh;
+    border: solid 1px black;
+}
+
+
+/* defines the animation */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        -webkit-transform: translate3d(0, 100%, 0);
+        transform: translate3d(0, 100%, 0);
+    }
+    to {
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+    }
+}
+
+.teamMemberLineText {
+    /* First we make all instances of this transparent. */
+    opacity: 0;
+    animation-delay: 1s;
+    animation: fadeInUp 1s ease-in-out 0s forwards;
+}

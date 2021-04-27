@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+skinparam packageStyle rect
+actor "team leader" as teamleader
+actor "team member" as teammember
+actor visitor
+actor administrator
+rectangle "Competition Management System" {
+  visitor -- (view competition description)
+   
+   (manage users) -- administrator
+  visitor -- (register)
+  (validate registration) -- administrator
+  (register) .> (approve/reject registration) : include
+  (validate registration) .> (approve/reject registration) : include
+  (\t manage team \t) <. (submit proposal)  :  extend
+  (\t manage team \t) <. (manage team members)  :  extend
+  (\t manage team \t) <. (manage proposal submissions) : extend
+  (\t manage team \t) <.(manage invite list) : extend
+   (\t manage team \t) -- teamleader
+    teammember -- (\t manage team \t)
+
+}
+
+
+@enduml

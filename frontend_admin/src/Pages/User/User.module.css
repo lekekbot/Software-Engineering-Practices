@@ -1,0 +1,19 @@
+div {
+    border: solid 0px black;
+    padding: 2px;
+}
+.pageHeader {
+    max-height: 150px;
+}
+.container {
+    height: 100vh;
+}
+
+.userFormContainer {
+    width: 100%;
+}
+
+.userFormLegend {
+    width: 14rem;
+    background: #dee2e6;
+}

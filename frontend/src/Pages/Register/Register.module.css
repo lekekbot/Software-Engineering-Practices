@@ -1,0 +1,21 @@
+div {
+    border: solid 1px black;
+    padding: 2px;
+}
+
+.container {
+    height: 100vh;
+}
+
+.registrationFormContainer {
+    width: 100%;
+}
+
+.registrationFormLegend {
+    width: 14rem;
+    background: #dee2e6;
+}
+
+.errorMessage {
+    color: #ff0000;
+}

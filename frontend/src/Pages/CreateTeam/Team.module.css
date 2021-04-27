@@ -1,0 +1,17 @@
+div {
+    border: solid 0px black;
+    padding: 2px;
+}
+
+.container {
+    height: 100vh;
+}
+
+.teamFormContainer {
+    width: 100%;
+}
+
+.teamFormLegend {
+    width: 14rem;
+    background: #dee2e6;
+}
