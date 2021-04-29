@@ -1,6 +1,6 @@
 // Import controlers
 const authController = require('./controllers/authController');
-const userController = require('./controllers/userController');
+const userController = require('./controllers/testUserController');
 const teamController = require('./controllers/teamController');
 const commonController = require('./controllers/commonController');
 const institutionController = require('./controllers/institutionController');

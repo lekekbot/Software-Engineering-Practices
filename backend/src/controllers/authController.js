@@ -138,6 +138,7 @@ exports.processRegister = (req, res, next) => {
             return res.status(500).json({ message: 'Unable to complete registration' });
         } else {
             try {
+                //Enter email here
                 results = await user.createUser(firstName, lastName, email, institutionId,hash);
                 console.log(results);
                 return res.status(200).json({ code:200,

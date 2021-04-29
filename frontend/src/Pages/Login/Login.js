@@ -88,7 +88,10 @@ function Login(props) {
         e.target.reset();
       });
   }
-
+  //Redirects the user, instead of using href we can use history
+  const redirect = () =>{
+    history.push('/register');
+  }
   return (
     <div className="App">
       <div className="outer">
@@ -155,7 +158,7 @@ function Login(props) {
 
             <div>
               <p className="forgot-password text-left">
-                <a href="#">Sign up?</a>
+                <a onClick={redirect()}  href="#a">Register</a>
               </p>
 
               <p className="forgot-password text-right">

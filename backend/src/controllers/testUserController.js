@@ -111,4 +111,60 @@ exports.processUpdateUsersOnRoleAndStatus = async(req, res, next) => {
 
 }; //End of processUpdateUsersOnRoleAndStatus
 
+exports.sendVerificationEmail = async(req, res, next) => {
+    function authenticate() {
+        const { email, password } = body();
+        const user = users.find(x => x.email === email && x.password === password && x.isVerified);
 
+        if (!user) return error('Email or password is incorrect');
+
+        // add refresh token to user
+        user.refreshTokens.push(generateRefreshToken());
+        localStorage.setItem(usersKey, JSON.stringify(users));
+
+        return ok({
+            id: user.id,
+            email: user.email,
+            title: user.title,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
+            jwtToken: generateJwtToken(user)
+        });
+    }
+    console.log('processUpdateUsersOnRoleAndStatus running');
+    // Collect data from the request body 
+    let data = req.body;
+    console.log(data);
+    try {
+        results = await userManager.updateUsersOnRoleAndStatus(data);
+        console.log(results);
+        //I copied the code from official MailGun API tutorial website
+        const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
+        for(index=0;index<data.length;index++){
+        if(data[index].status=='approved'){
+        let emailData = {
+            from: `competition system admin <admin@samples.mailgun.org>`,
+            to: 'billhstan4@gmail.com',
+            subject: 'Your user registration has been approved',
+            text: `Thank you ${data[index].firstName} ${data[index].lastName} for registering as participant for the competition. Please submit your business plans before the deadline.`
+        };
+        mg.messages().send(emailData, function (error, body) {
+            if(error){
+                console.log(`Sending email has failed`,error);
+            }else{   
+            console.log(`Sent email.`,body);
+
+            }
+        });
+        }
+    }// End of for loop to send emails
+        return res.status(200).send({ message: 'Completed update' });
+    } catch (error) {
+        console.log('processUpdateUsersOnRoleAndStatus method : catch block section code is running');
+        console.log(error, '=======================================================================');
+        return res.status(500).send({ message: 'Unable to complete update (users) operation' });
+    }
+
+
+}; //End of processUpdateUsersOnRoleAndStatus
