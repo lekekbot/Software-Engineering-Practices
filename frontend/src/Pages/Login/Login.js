@@ -1,13 +1,16 @@
 //Reference:https://github.com/mohanramphp/auth-using-react
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
+
+import styles from './Login.module.css';
+
 //Need the following 2 lines to communicate with the REST API
 import axios from 'axios';
 import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 
-import config from '../../config.js';
-import styles from './Login.module.css';
 import { useForm } from 'react-hook-form';
+import { Link } from "react-router-dom";
+import config from '../../config.js';
 import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 // Therefore, you need to use the {what function do you need} technique.
 
@@ -29,14 +32,13 @@ function Login(props) {
 
   // Handle the form submit of login form
   const onSubmit = (data, e) => {
-    console.dir(data);
+    // console.dir(data);
     setMessage({
       data: 'Login is in progress...',
       type: 'alert-warning',
     });
     setLoading(true);
-    axios.post(`${config.baseUrl}/u/users/signin`,
-      { email: data.email, password: data.password })
+    axios.post(`${config.baseUrl}/u/users/signin`, { email: data.email, password: data.password })
       .then(response => {
         setLoading(false);
         if (response.data.status != 'pending') {
