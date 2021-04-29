@@ -153,7 +153,7 @@ function Login(props) {
 
             <Button type="submit" className="btn btn-dark btn-lg btn-block" disabled={loading}>{loading ? 'Signing in now ...' : 'Login'}</Button>
 
-            <div>
+            <div className='forgot-password-row'>
               <p className="forgot-password text-left">
                 <a href="#">Sign up?</a>
               </p>
