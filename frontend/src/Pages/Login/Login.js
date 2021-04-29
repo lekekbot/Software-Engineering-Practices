@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react';
 import styles from './Login.module.css';
 import './Login.module2.css';
+
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 
@@ -89,7 +90,7 @@ function Login(props) {
       });
   }
   //Redirects the user, instead of using href we can use history
-  const redirect = () =>{
+  const redirect = () => {
     history.push('/register');
   }
   return (
@@ -158,11 +159,11 @@ function Login(props) {
 
             <div className='forgot-password-row'>
               <p className="forgot-password text-left">
-                <a onClick={redirect()}  href="#a">Register</a>
+                <Link to="/register">Register</Link>
               </p>
 
               <p className="forgot-password text-right">
-                <a href="#">Forgot password?</a>
+                <Link to="/password_reset">Forgot password</Link>
               </p>
             </div>
 

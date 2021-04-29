@@ -21,8 +21,9 @@ import ManageTeam from './Pages/ManageTeam/ManageTeam';
 import ManageTeamMembers from './Pages/ManageTeamMembers/ManageTeamMembers';
 import UploadFile from './Pages/UploadFile/UploadFile';
 
+import EmailVerification from './Pages/EmailVerification/EmailVerification'
 // FOR TESTING AND EXPERIMENTATION
-import Login2 from './Pages/TestingPZ/Login';
+// import Login2 from './Pages/TestingPZ/EmailVerification';
 
 const authGuard = (Component) => (props) => {
   console.log(props);
@@ -34,29 +35,25 @@ const authGuard = (Component) => (props) => {
 };
 
 const Routes = (props) => (
-  
+
   <Router {...props}>
     <Switch>
       <Route path="/login">
         <Login />
       </Route>
-
-      {/**TO BE DELETED UPON SUCCESSFUL TESTING */}
-      <Route path="/login2">
-        <Login2 />
-      </Route>
-      {/**TO BE DELETED UPON SUCCESSFUL TESTING */}
-
       <Route path="/register">
         <Register />
       </Route>
-      <Route path="/userstatus/:userEmail" render={(props)=><UserStatus {...props} />} />
-      <Route path="/rules" render={Rules}></Route>       
+      <Route path="/password_reset">
+        <EmailVerification />
+      </Route>
+      <Route path="/userstatus/:userEmail" render={(props) => <UserStatus {...props} />} />
+      <Route path="/rules" render={Rules}></Route>
       <Route path="/dashboard" render={authGuard(Dashboard)}></Route>
       <Route path="/createteam" render={authGuard(CreateTeam)}></Route>
       <Route path="/manageteam" render={authGuard(ManageTeam)}></Route>
-      <Route path="/updateteam/:teamId" render={authGuard(UpdateTeam)} />     
-      <Route path="/jointeam/:teamId/:teamName" render={authGuard(JoinTeam)} />  
+      <Route path="/updateteam/:teamId" render={authGuard(UpdateTeam)} />
+      <Route path="/jointeam/:teamId/:teamName" render={authGuard(JoinTeam)} />
       <Route path="/manageinvites/:teamId" render={authGuard(ManageInviteTeamMembers)} />
       <Route path="/manageteammembers/:teamId" render={authGuard(ManageTeamMembers)} />
       <Route path="/submitproposal/:teamId" render={authGuard(UploadFile)} />
