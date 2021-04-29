@@ -9,6 +9,7 @@ import {
 import Login from './Pages/Login/Login';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import User from './Pages/User/User';
+import AddAdmin from './Pages/AddAdmin/AddAdmin'
 console.log(User);
 const authGuard = (Component) => () => {
   return localStorage.getItem('token') ? (
@@ -29,6 +30,10 @@ const Routes = (props) => (
       <Route path="/user">
         <User />
       </Route>
+      <Route path='/AddAdmin'>
+        <AddAdmin/>
+      </Route>
+
       <Route path="/dashboard" render={authGuard(Dashboard)}></Route>
     
       <Route exact path="/">

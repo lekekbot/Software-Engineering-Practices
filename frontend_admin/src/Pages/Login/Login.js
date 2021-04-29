@@ -125,6 +125,7 @@ function Login() {
     pauseOnHover
   />
   {/* ToastContainer - put it outside the Container. */}
+
     <Container className="fluid mw-100" style={{border:'solid 1px black'}}
         className="justify-content-center">
       <Row>
@@ -132,6 +133,7 @@ function Login() {
         <h3>Login</h3>
         </Col>
       </Row>
+      
       <Row>
         <Col  md={{ size: 10, offset: 1 }} style={{border:'solid 1px black'}}>
         <Form noValidate autoComplete="off" 

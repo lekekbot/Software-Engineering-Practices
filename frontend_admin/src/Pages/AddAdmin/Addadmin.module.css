@@ -1,0 +1,26 @@
+.teamcard {
+    position: relative;
+    background-image: url(../../Images/team.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 5vh;
+    min-width: 20vw;
+}
+
+.submissioncard {
+    position: relative;
+    background-image: url(../../Images/businessplan.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 5vh;
+    min-width: 20vw;
+}
+
+.cardhorizontal {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.container {
+    height: 100vh;
+}

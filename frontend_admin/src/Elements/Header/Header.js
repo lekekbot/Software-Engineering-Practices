@@ -59,6 +59,11 @@ const history = useHistory();
                   Team
                 </a>
               </li>
+              <li className="nav-item active">
+                <a className="nav-link" href="/AddAdmin">
+                  Add New Admin
+                </a>
+              </li> 
               <li className="nav-item">
                 <span
                   className="nav-link cursor-pointer"
