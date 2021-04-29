@@ -166,11 +166,11 @@ function Login(props) {
   );
 }
 
-//The author at cluemediator used this technique so that he does not need to
-//prepare "two sets" of code just to manage or remember the user name and password.
+//The author at cluemediator used this technique so that he does not need to 
+//prepare "two sets" of code just to manage or remember the user name and password. 
 const useFormInput = initialValue => {
   //Note advisable to change the value name to something else
-  //because it is used as a value attribute in the JSX which defines the textboxes.
+  //because it is used as a value attribute in the JSX which defines the textboxes.  
   const [value, setValue] = useState(initialValue);
   const handleChange = e => {
     setValue(e.target.value);
@@ -178,7 +178,7 @@ const useFormInput = initialValue => {
   }
   return {
     value,// This is tied to the JSX 
-    onChange: handleChange, // This is tied to the JSX
+    onChange: handleChange, // This is tied to the JSX 
   }
 }
 
