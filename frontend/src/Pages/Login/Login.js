@@ -158,7 +158,7 @@ function Login(props) {
 
             <div className='forgot-password-row'>
               <p className="forgot-password text-left">
-                <a onClick={redirect()}  href="#a">Register</a>
+                <a onClick={() => {redirect()}}  href='javascript:void(0)'>Register</a>
               </p>
 
               <p className="forgot-password text-right">
