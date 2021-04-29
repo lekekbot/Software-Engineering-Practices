@@ -63,7 +63,7 @@ html,
 }
 
 .forgot-password-row {
-    display: inline-block;
+    display: flex;
     width: 100%;
 }
 
