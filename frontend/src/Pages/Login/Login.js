@@ -121,10 +121,7 @@ function Login(props) {
                   },
                 })} />
               <Form.Text className="text-muted"> We'll never share your email with anyone else.</Form.Text>
-              {/**
-                             * We provide validation configuration for email field above
-                             * error message are displayed with code below
-                             */}
+              {/** We provide validation configuration for email field above error message are displayed with code below */}
               {errors.email && (
                 <span className={`${styles.errorMessage} mandatory`}>
                   {errors.email.message}
