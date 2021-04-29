@@ -62,6 +62,15 @@ html,
     font-weight: 400;
 }
 
+.forgot-password-row {
+    display: flex;
+    width: 100%;
+}
+
+.forgot-password {
+    width: 50%
+}
+
 .forgot-password,
 .forgot-password a {
     text-align: right;
@@ -69,6 +78,7 @@ html,
     padding-top: 10px;
     color: #7f7d7d;
     margin: 0;
+    padding: 0;
 }
 
 .create-user,
