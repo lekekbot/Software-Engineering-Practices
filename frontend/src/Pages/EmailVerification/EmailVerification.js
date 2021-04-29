@@ -10,7 +10,7 @@ function App() {
                     <h3>Reset password</h3>
                     <form>
                         <div className="auth-form-body mt-3">
-                            <label className="securityLabel" for="email_field">Enter your user account's verified email address and we will send you a password reset link.</label>
+                            <label style={{ display: "inline-block", marginBottom: ".5rem", marginTop: "-5rem" }} for="email_field">Enter your user account's verified email address and we will send you a password reset link.</label>
                             <input type="email" className="form-control input-block" id="email_field" placeholder="Enter your email address" autofocus="autofocus" />
                             <input name="commit" type="submit" value="Send password reset email" className="btn btn-primary btn-block" disabled=""
                                 style={{ alignSelf: "stretch", display: "block", height: "2.2rem" }, style.inner__btn_block, style.inner__btn_primary, style.inner__btn_not__disabled__not__disabled} />

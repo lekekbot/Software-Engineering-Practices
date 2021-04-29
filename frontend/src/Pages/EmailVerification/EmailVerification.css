@@ -45,12 +45,6 @@ html,
     font-weight: 400;
 }
 
-.securityLabel {
-    display: inline-block;
-    margin-bottom: .5rem;
-    margin-top: -5rem;
-}
-
 form {
     display: block;
     margin-top: 0em;
