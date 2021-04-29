@@ -24,20 +24,8 @@ html,
     height: 100%;
 }
 
-.outer {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: left;
-}
-
 .inner {
-    width: 450px;
-    margin: auto;
-    background: #ffffff;
     box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-    padding: 40px 55px 45px 55px;
-    border-radius: 15px;
     transition: all .3s;
 }
 
@@ -84,42 +72,4 @@ form {
 
 .mt-3 {
     margin-top: 16px !important;
-}
-
-.btn:not(:disabled):not(.disabled) {
-    cursor: pointer;
-    background-color: #2ea44f;
-    margin-top: 1rem;
-}
-
-.inner .btn-primary.disabled,
-.inner .btn-primary:disabled,
-.inner .btn-primary {
-    color: hsla(0, 0%, 100%, 0.8);
-    background-color: #2ea44f;
-    border-color: rgba(27, 31, 35, 0.1);
-    width: 0.5rem;
-}
-
-.inner>.btn-block {
-    display: block;
-    width: 100%;
-    text-align: center;
-    height: 2.2rem;
-    margin-top: 1rem;
-
-}
-
-.inner>.btn-primary {
-    color: #fff;
-    background-color: #2ea44f;
-    border-color: rgba(27, 31, 35, 0.15);
-    box-shadow: 0 1px 0 rgba(27, 31, 35, 0.1), inset 0 1px 0 hsla(0, 0%, 100%, 0.03);
-}
-
-.header {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: left;
 }
