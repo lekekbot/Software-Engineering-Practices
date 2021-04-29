@@ -22,7 +22,7 @@ import ManageTeamMembers from './Pages/ManageTeamMembers/ManageTeamMembers';
 import UploadFile from './Pages/UploadFile/UploadFile';
 
 // FOR TESTING AND EXPERIMENTATION
-import Login2 from './Pages/TestingPZ/App';
+import Login2 from './Pages/TestingPZ/Login';
 
 const authGuard = (Component) => (props) => {
   console.log(props);

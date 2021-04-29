@@ -1,15 +1,13 @@
-//Reference:https://github.com/mohanramphp/auth-using-react
-import React, { useState } from 'react';
+import React, { Component, useState } from 'react';
+import styles from './Login.module.css';
+import './Login.module2.css';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 
-import styles from './Login.module.css';
-
-//Need the following 2 lines to communicate with the REST API
 import axios from 'axios';
 import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 
 import { useForm } from 'react-hook-form';
-import { Link } from "react-router-dom";
 import config from '../../config.js';
 import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 // Therefore, you need to use the {what function do you need} technique.
@@ -92,26 +90,26 @@ function Login(props) {
   }
 
   return (
-    <div className={`${styles.container} container-fluid d-flex align-items-center justify-content-center h-100`}>
-      <div className={styles.loginFormContainer}>
-        {message && (
-          <div
-            className={`alert fade show d-flex ${message.type}`}
-            role="alert" >
-            {message.data}
-            <span
-              aria-hidden="true"
-              className="ml-auto cursor-pointer"
-              onClick={() => setMessage(null)} >
-              &times;
-            </span>
-          </div>
-        )}
-        <fieldset className="border p-3 rounded">
-          <legend className={`${styles.loginFormLegend} border rounded p-1 text-center`} >
-            Login
-          </legend>
+    <div className="App">
+      <div className="outer">
+        <div className="inner">
           <Form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+            <div className={styles.loginFormContainer}>
+              {message && (
+                <div
+                  className={`alert fade show d-flex ${message.type}`}
+                  role="alert" >
+                  {message.data}
+                  <span
+                    aria-hidden="true"
+                    className="ml-auto cursor-pointer"
+                    onClick={() => setMessage(null)} >
+                    &times;
+            </span>
+                </div>
+              )}
+            </div>
+            <h3>Log in</h3>
             <Form.Group controlId="formEmail">
               <Form.Label>Email</Form.Label>
               {/* You cannot use such attribute value="abrizrio@abc.com" here */}
@@ -122,20 +120,17 @@ function Login(props) {
                     message: 'Please enter your email address',
                   },
                 })} />
-              <Form.Text className="text-muted">
-                We'll never share your email with anyone else.
-              </Form.Text>
+              <Form.Text className="text-muted"> We'll never share your email with anyone else.</Form.Text>
               {/**
-               * We provide validation configuration for email field above
-               * error message are displayed with code below
-               */}
+                             * We provide validation configuration for email field above
+                             * error message are displayed with code below
+                             */}
               {errors.email && (
                 <span className={`${styles.errorMessage} mandatory`}>
                   {errors.email.message}
                 </span>
               )}
             </Form.Group>
-
             <Form.Group controlId="formPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" name="password"
@@ -152,20 +147,30 @@ function Login(props) {
                 </span>
               )}
             </Form.Group>
-            <Button variant="primary" type="submit" disabled={loading}>
-              {loading ? 'Signing in now ...' : 'Login'}
-            </Button>
+            <div className="form-group">
+              <div className="custom-control custom-checkbox">
+                <input type="checkbox" className="custom-control-input" id="customCheck1" />
+                <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
+              </div>
+            </div>
+
+            <Button type="submit" className="btn btn-dark btn-lg btn-block" disabled={loading}>{loading ? 'Signing in now ...' : 'Login'}</Button>
+
+            <p className="forgot-password text-right">
+              Forgot <a href="#">password?</a>
+            </p>
           </Form>
-        </fieldset>
+        </div>
       </div>
     </div>
   );
 }
-//The author at cluemediator used this technique so that he does not need to 
-//prepare "two sets" of code just to manage or remember the user name and password. 
+
+//The author at cluemediator used this technique so that he does not need to
+//prepare "two sets" of code just to manage or remember the user name and password.
 const useFormInput = initialValue => {
   //Note advisable to change the value name to something else
-  //because it is used as a value attribute in the JSX which defines the textboxes.  
+  //because it is used as a value attribute in the JSX which defines the textboxes.
   const [value, setValue] = useState(initialValue);
   const handleChange = e => {
     setValue(e.target.value);
@@ -173,7 +178,7 @@ const useFormInput = initialValue => {
   }
   return {
     value,// This is tied to the JSX 
-    onChange: handleChange, // This is tied to the JSX 
+    onChange: handleChange, // This is tied to the JSX
   }
 }
 

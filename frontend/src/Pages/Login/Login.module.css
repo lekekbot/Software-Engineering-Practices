@@ -3,7 +3,7 @@
 }
 
 .loginFormContainer {
-    width: 24rem;
+    width: 25rem;
 }
 
 .loginFormLegend {
@@ -14,6 +14,5 @@
 .errorMessage {
     font-size: 12px;
     letter-spacing: 0.05rem;
-    padding-left: 0.25rem;
     color:#FF0000;
 }
