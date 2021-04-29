@@ -94,7 +94,6 @@ function Login(props) {
   return (
     <div className={`${styles.container} container-fluid d-flex align-items-center justify-content-center h-100`}>
       <div className={styles.loginFormContainer}>
-
         {message && (
           <div
             className={`alert fade show d-flex ${message.type}`}
@@ -112,13 +111,11 @@ function Login(props) {
           <legend className={`${styles.loginFormLegend} border rounded p-1 text-center`} >
             Login
           </legend>
-          <Form noValidate autoComplete="off"
-            onSubmit={handleSubmit(onSubmit)}>
+          <Form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <Form.Group controlId="formEmail">
               <Form.Label>Email</Form.Label>
               {/* You cannot use such attribute value="abrizrio@abc.com" here */}
-              <Form.Control type="email" name="email"
-                {...email} placeholder="Email"
+              <Form.Control type="email" name="email" {...email} placeholder="Email"
                 ref={register({
                   required: {
                     value: true,
@@ -161,6 +158,7 @@ function Login(props) {
           </Form>
         </fieldset>
       </div>
+      
     </div>
   );
 }

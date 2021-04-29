@@ -21,6 +21,9 @@ import ManageTeam from './Pages/ManageTeam/ManageTeam';
 import ManageTeamMembers from './Pages/ManageTeamMembers/ManageTeamMembers';
 import UploadFile from './Pages/UploadFile/UploadFile';
 
+// FOR TESTING AND EXPERIMENTATION
+import Login2 from './Pages/TestingPZ/login2';
+
 const authGuard = (Component) => (props) => {
   console.log(props);
   return localStorage.getItem('token') ? (
@@ -37,6 +40,13 @@ const Routes = (props) => (
       <Route path="/login">
         <Login />
       </Route>
+
+      {/**TO BE DELETED UPON SUCCESSFUL TESTING */}
+      <Route path="/login2">
+        <Login2 />
+      </Route>
+      {/**TO BE DELETED UPON SUCCESSFUL TESTING */}
+
       <Route path="/register">
         <Register />
       </Route>
