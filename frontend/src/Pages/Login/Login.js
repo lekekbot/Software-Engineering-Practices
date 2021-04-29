@@ -105,7 +105,7 @@ function Login(props) {
                     className="ml-auto cursor-pointer"
                     onClick={() => setMessage(null)} >
                     &times;
-            </span>
+                  </span>
                 </div>
               )}
             </div>
@@ -153,9 +153,16 @@ function Login(props) {
 
             <Button type="submit" className="btn btn-dark btn-lg btn-block" disabled={loading}>{loading ? 'Signing in now ...' : 'Login'}</Button>
 
-            <p className="forgot-password text-right">
-              Forgot <a href="#">password?</a>
-            </p>
+            <div>
+              <p className="forgot-password text-left">
+                <a href="#">Sign up?</a>
+              </p>
+
+              <p className="forgot-password text-right">
+                <a href="#">Forgot password?</a>
+              </p>
+            </div>
+
           </Form>
         </div>
       </div>

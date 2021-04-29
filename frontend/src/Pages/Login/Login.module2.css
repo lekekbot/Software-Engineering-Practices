@@ -71,6 +71,19 @@ html,
     margin: 0;
 }
 
+.create-user,
+.create-user a {
+    text-align: left;
+    font-size: 13px;
+    padding-top: 10px;
+    color: #7f7d7d;
+    margin: 0;
+}
+
 .forgot-password a {
+    color: #167bff;
+}
+
+.create-user a {
     color: #167bff;
 }
