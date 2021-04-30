@@ -24,6 +24,16 @@ html,
     height: 100%;
 }
 
+.vertical-center {
+    min-height: 100%;
+    /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh;
+    /* These two lines are counted as one :-)       */
+
+    display: flex;
+    align-items: center;
+}
+
 .inner {
     box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
     transition: all .3s;

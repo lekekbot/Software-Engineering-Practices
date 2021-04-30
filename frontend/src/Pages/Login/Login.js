@@ -97,9 +97,9 @@ function Login(props) {
     history.push('/register');
   }
   return (
-    <div class="OverallContainer">
+    <div class="OverallContainer" id="root">
       <div className="App">
-        <div className="outer">
+        <div className="outer vertical-center">
           <div className="inner">
             <Form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
               <div className={styles.loginFormContainer}>

@@ -69,7 +69,7 @@ export default function EmailVerification() {
     return (
         <div class="OverallContainer">
             <div className="App">
-                <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", textAlign: "left" }} className="outer">
+                <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", textAlign: "left" }} className="outer vertical-center">
                     <div style={{ width: "450px", margin: "auto", background: "#ffffff", borderRadius: "15px" }} className="inner">
                         <div className={styles.loginFormContainer}>
                             {message && (
