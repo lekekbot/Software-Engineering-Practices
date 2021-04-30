@@ -13,8 +13,10 @@ module.exports = {
     JWTKey: process.env.JWTKEY,
 
     mailGunApiKey: process.env.MAILGUN_API_KEY,
-    mailGunDomain:process.env.MAILGUN_DOMAIN
+    mailGunDomain:process.env.MAILGUN_DOMAIN,
 
+    GMAIL_USER: "forthisemailconfig@gmail.com",
+    GMAIL_PASSWORD:"abc123def456",
 };
 //Reference:
 //https://medium.com/the-node-js-collection/making-your-node-js-work-everywhere-with-environment-variables-2da8cdf6e786
