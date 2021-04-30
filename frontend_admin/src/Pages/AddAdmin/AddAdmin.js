@@ -22,7 +22,10 @@ const AddAdmin = () => {
         axios.post(`${config.baseUrl}/a/addadmin`,
         {first_name: data['first-name'], last_name: data['last-name'], email: data.email})
         .then(response => {
-            console.log('quck quack shit shit ')
+            alert('user created')
+        }).catch(err => {
+            console.log(err)
+            alert('error')
         })
     }
 

@@ -25,13 +25,12 @@ exports.addNewAdmin = (req, res) => {
     let email = req.body.email
 
     try {
-        console.log(first_name);
         //add to SQL
         create_temp.tempUser(first_name, last_name, email, (error, result) => {
             if (error) {
                 console.log(error);
-                return res.status(505).send({
-                    code: 505,
+                return res.status(500).send({
+                    code: 500,
                     error: true,
                     description: 'cannot add shit dude...',
                     content: []
@@ -71,7 +70,7 @@ exports.verifyAdmin = (req, res) => {
 
         create_temp.getTempData(id.user, (err, result) => {
             if (err) {
-                return res.status(505)
+                return res.status(500)
             } else {
                 if (result.length == 1) {
                     return res.status(200).send(result)
@@ -80,18 +79,26 @@ exports.verifyAdmin = (req, res) => {
         })
     } catch (err) {
         console.log(err);
-        return res.send(505)
+        return res.send(500)
     }
 }
 
+exports.createAdmin = (req,res) => {
+    let { user_id } = req.body
 
-
-// temp not needed for now 
-            //  //make usertemp data to accepted, baasically alter table 
-            //  create_temp.alterTempData(id.user, (err, result) => {
-            //     if (err) {
-            //         return res.status(200)
-            //     } else {
-            //         //redirect? 
-            //     }
-            // })
+     create_temp.alterTempData(user_id, (err, result) => {
+        if (err) {
+            console.log(err)
+            return res.status(500)
+        } else {
+            create_temp.createAdmin(req.body, (err,result) => {
+                if(err) {
+                    console.log(err)
+                    return res.status(500)
+                } else {
+                    return res.status(201).send('Created')
+                }
+            })
+        }
+    })
+}
