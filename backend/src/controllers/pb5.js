@@ -2,6 +2,7 @@
 const config = require('../config/config');
 const nodeMailer = require('nodemailer')
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 
 //import stuff i actually don't use 
@@ -83,22 +84,50 @@ exports.verifyAdmin = (req, res) => {
     }
 }
 
-exports.createAdmin = (req,res) => {
-    let { user_id } = req.body
+exports.createAdmin = (req, res) => {
 
-     create_temp.alterTempData(user_id, (err, result) => {
+    let { user_id, first_name, last_name, email, password } = req.body
+
+    bcrypt.hash(password, 10, async (err, hash) => {
         if (err) {
-            console.log(err)
-            return res.status(500)
+            console.log('Error on hashing password')
+            return res.status(500).json({
+                message: 'Unable to complete registration'
+            })
         } else {
-            create_temp.createAdmin(req.body, (err,result) => {
-                if(err) {
+            create_temp.alterTempData(user_id, (err, result) => {
+                if (err) {
                     console.log(err)
                     return res.status(500)
-                } else {
-                    return res.status(201).send('Created')
                 }
             })
+            try {
+                results = await create_temp.createAdmin(first_name, last_name, email, hash)
+                console.log(results)
+                return res.status(200).json({
+                    code: 200,
+                    error: false,
+                    description: 'Invitation Accepted',
+                    content: []
+                })
+            }catch(err) {
+                console.log(err);
+                return res.status(500).send({code:500, error:true, content:[],
+                    description: 'Unable to complete registration' });
+            }
+
+        }
+    })
+}
+
+exports.verifyMasterAdmin = (req,res) => {
+    let email = req.params.email
+
+    create_temp.getId(email, (err,result) => {
+        if(err) {
+            return res.status(500)
+        }else {
+            return res.status(200).send(result)
         }
     })
 }

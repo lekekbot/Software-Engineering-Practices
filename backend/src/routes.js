@@ -68,4 +68,5 @@ exports.appRoute = router => {
     router.post('/api/a/addadmin', pb5.addNewAdmin)
     router.get('/api/a/confirmation/:token', pb5.verifyAdmin)
     router.post('/api/a/admin/createAdmin', pb5.createAdmin)
+    router.get('/api/a/admin/adminid/:email', pb5.verifyMasterAdmin)
 };

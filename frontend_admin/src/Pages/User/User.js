@@ -42,7 +42,9 @@ const User = () => {
   //Reference: https://github.com/react-bootstrap-table/react-bootstrap-table2/issues/1106
   const userRoles = [
     { value: 1, label: 'admin' },
-    { value: 2, label: 'user' }
+    { value: 2, label: 'user' },
+    { value: 3, label: 'master admin' }
+
   ];
   const handleSaveChanges = () => {
     //console.log(userData);
