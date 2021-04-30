@@ -65,6 +65,9 @@ function Login(props) {
         setLoading(false);
         //https://stackoverflow.com/questions/3390396/how-can-i-check-for-undefined-in-javascript
         if (typeof (error.response) != 'undefined') {
+          setMessage({
+            data: '',
+          });
           if (error.response.request.status === 401) {
             setMessage({
               data: 'Login credential is not valid. Please provide your email and password.',
@@ -114,6 +117,7 @@ function Login(props) {
               )}
             </div>
             <h3>Log in</h3>
+            {/**Email Form Column */}
             <Form.Group controlId="formEmail">
               <Form.Label>Email</Form.Label>
               {/* You cannot use such attribute value="abrizrio@abc.com" here */}
@@ -132,6 +136,8 @@ function Login(props) {
                 </span>
               )}
             </Form.Group>
+
+            {/**Password Form Column */}
             <Form.Group controlId="formPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" name="password"
@@ -148,15 +154,19 @@ function Login(props) {
                 </span>
               )}
             </Form.Group>
-            <div className="form-group">
+
+            {/**Remember me Form Column */}
+            <Form.Group className="form-group">
               <div className="custom-control custom-checkbox">
                 <input type="checkbox" className="custom-control-input" id="customCheck1" />
                 <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
               </div>
-            </div>
+            </Form.Group>
 
+            {/**Submit button */}
             <Button type="submit" className="btn btn-dark btn-lg btn-block" disabled={loading}>{loading ? 'Signing in now ...' : 'Login'}</Button>
 
+            {/**Links to Register and forgot passsword */}
             <div className='forgot-password-row'>
               <p className="forgot-password text-left">
                 <Link to="/register">Register</Link>

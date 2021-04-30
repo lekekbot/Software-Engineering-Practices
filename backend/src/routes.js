@@ -60,11 +60,11 @@ exports.appRoute = router => {
 
     router.get('/api/a/teams/summary', teamController.processGetAllTeams);
 
-    //TASK PROBLEM 4 - CHAI PIN ZHENG
+    //PROBLEM 4 - CHAI PIN ZHENG
     //Sends an email to the user using mailgun in order to send them a OTP
     router.post('/api/u/users/resetpassword/:userEmail', pb4.processUserEmailOTP);
 
-    //problem 5 routes
+    //Problem 5 routes - Bryan
     router.post('/api/a/addadmin', pb5.addNewAdmin)
     router.get('/api/a/confirmation/:token', pb5.verifyAdmin)
     router.post('/api/a/admin/createAdmin', pb5.createAdmin)
