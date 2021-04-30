@@ -8,21 +8,24 @@ const sleep = require('sleep-promise');
 //Code: 204 No Content
 //METHOD : POST -> http://localhost:8081/u/users/resetpassword/:userEmail
 exports.processUserEmailOTP = async (req, res, next) => {
-    const userEmail = req.params.userEmail;
+    const userEmail = req.body.email;
     const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
 
+    console.log(userEmail)
     code = "OBQEZE"
     try {
+        // TO DO LIST
+        // increase upon success
         await sleep(3500);
         let emailData = {
             from: `Competition System Admin <support@sp.competitionmanagementsystem.org>`,
-            to: `chaipinzheng@gmail.com`,
+            to: `${userEmail}`,
             subject: `Competition System Verification Code`,
-            text: `You are currently submitting a form on FormSG.\n
+            text: `
             \nYour OTP is ${code}. It will expire in 5 minutes. Please use this to verify your submission.
             \nIf your OTP does not work, please request for a new OTP.
             \nIf you did not make this request, you may ignore this email.
-            \n\nThe Competition Management System Support Team`
+            \n\n-The Competition Management System Support Team`
         };
 
         mg.messages().send(emailData, function (error, body) {
@@ -32,6 +35,7 @@ exports.processUserEmailOTP = async (req, res, next) => {
                 console.log(`Sent email.`, body);
             }
         });
+        return res.status(200).send({ message: 'Email is set to your system' });
     } catch (error) {
         console.log('processUserEmailOTP method : catch block section code is running');
         console.log(error, '=======================================================================');

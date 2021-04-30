@@ -2,7 +2,7 @@
     box-sizing: border-box;
 }
 
-.OverallContainer {
+body {
     min-height: 100vh;
     display: flex;
     font-weight: 400;
@@ -15,7 +15,7 @@
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
-.OverallContainer,
+body,
 html,
 .App,
 #root,

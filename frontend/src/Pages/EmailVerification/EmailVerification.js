@@ -1,17 +1,15 @@
 import React, { Component, useState } from 'react';
 
 //Styling
-import './EmailVerification.css';
 import styles from '../Login/Login.module.css';
+import './EmailVerification.css';
 
 //Imports
-import { useHistory } from "react-router-dom";
-
 import axios from 'axios';
-import { Form, Button } from "react-bootstrap";
-
-import { useForm } from 'react-hook-form';
 import config from '../../config.js';
+import { useForm } from 'react-hook-form';
+import { useHistory } from "react-router-dom";
+import { Form, Button } from "react-bootstrap";
 import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 
 export default function EmailVerification() {
@@ -19,10 +17,11 @@ export default function EmailVerification() {
     const history = useHistory();
     const [message, setMessage] = useState({ data: '', type: '' });
     const [loading, setLoading] = useState(false);
+    const email = useFormInput('chaipinzheng@gmail.com');
 
     const onSubmit = (data, e) => {
         setMessage({
-            data: 'Trying to reset your password...',
+            data: 'Verifying your email...',
             type: 'alert-warning',
         });
         setLoading(true);
@@ -30,23 +29,6 @@ export default function EmailVerification() {
             .then(response => {
                 alert("Success!")
                 setLoading(false);
-                if (response.data.status != 'pending') {
-                    setMessage({
-                        data: 'Logged in successfully, redirecting...',
-                        type: 'alert-success',
-                    });
-                    //Direct the user to the dashboard page.
-                    saveUserDataToLocalStore(response.data.token, response.data.displayName, response.data.email);
-                    history.push('/dashboard');
-                } else {
-                    setMessage({
-                        data: 'Logged in successfully. Your registration is still pending. Redirecting...',
-                        type: 'alert-success',
-                    });
-                    //Direct the user to the user status page
-                    saveUserDataToLocalStore('', response.data.displayName, response.data.email);
-                    history.push(`/userstatus/${response.data.email}`);
-                }
             }).catch(error => {
                 //If you purposely make the database unavailable (backend failed to connect to db),
                 //the error.response.request is "empty string". Therefore, the experession
@@ -85,46 +67,53 @@ export default function EmailVerification() {
 
     console.log(register)
     return (
-        <div className="App">
-            <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", textAlign: "left" }} className="outer">
-                <div style={{ width: "450px", margin: "auto", background: "#ffffff", borderRadius: "15px" }} className="inner">
-                    <div className={styles.loginFormContainer}>
-                        {message && (
-                            <div
-                                className={`alert fade show d-flex ${message.type}`}
-                                role="alert" >
-                                {message.data}
-                                <span
-                                    aria-hidden="true"
-                                    className="ml-auto cursor-pointer"
-                                    onClick={() => setMessage(null)} >
-                                    &times;
+        <div class="OverallContainer">
+            <div className="App">
+                <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", textAlign: "left" }} className="outer">
+                    <div style={{ width: "450px", margin: "auto", background: "#ffffff", borderRadius: "15px" }} className="inner">
+                        <div className={styles.loginFormContainer}>
+                            {message && (
+                                <div
+                                    className={`alert fade show d-flex ${message.type}`}
+                                    role="alert" >
+                                    {message.data}
+                                    <span
+                                        aria-hidden="true"
+                                        className="ml-auto cursor-pointer"
+                                        onClick={() => setMessage(null)} >
+                                        &times;
                             </span>
-                            </div>
-                        )}
-                    </div>
-                    <h3>Reset password</h3>
-                    <Form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-                        <div className="auth-form-body mt-3">
-                            <Form.Group>
-                                <Form.Label style={{ display: "inline-block", marginBottom: ".5rem", marginTop: "-5rem" }} for="email_field">Enter your user account's verified email address and we will send you a password reset link.</Form.Label>
-                                <Form.Control type="email" name="email" id="email_field"
-                                    className="form-control input-block"
-                                    autofocus="autofocus" placeholder="Enter your email address"
-                                    ref={register({
-                                        required: {
-                                            value: true,
-                                            message: 'Please enter your email address',
-                                        },
-                                    })} />
-                            </Form.Group>
-                            <input name="commit" type="submit" value="Send password reset email" className="btn btn-primary btn-block" disabled=""
-                                style={{ alignSelf: "stretch", display: "block", height: "2.2rem" }, style.inner__btn_block, style.inner__btn_primary, style.inner__btn_not__disabled__not__disabled} />
+                                </div>
+                            )}
                         </div>
-                    </Form>
+                        <h3>Reset password</h3>
+                        <Form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+                            <div className="auth-form-body mt-3">
+                                <Form.Group controlId="formEmail">
+                                    <Form.Label style={{ display: "inline-block", marginBottom: ".5rem", marginTop: "-5rem" }} for="email_field">To reset your password, please provide your email you signed up with Competiton Management System.</Form.Label>
+                                    <Form.Control
+                                        type="email"
+                                        name="email"
+                                        id="email_field"
+                                        {...email}
+                                        className="form-control input-block"
+                                        autofocus="autofocus"
+                                        placeholder="Enter your email address"
+                                        ref={register({
+                                            required: {
+                                                value: true,
+                                                message: 'Please enter your email address',
+                                            },
+                                        })} />
+                                </Form.Group>
+                                <input name="commit" type="submit" value="Send password reset email" className="btn btn-primary btn-block" disabled=""
+                                    style={{ alignSelf: "stretch", display: "block", height: "2.2rem" }, style.inner__btn_block, style.inner__btn_primary, style.inner__btn_not__disabled__not__disabled} />
+                            </div>
+                        </Form>
+                    </div>
                 </div>
-            </div>
-        </div >
+            </div >
+        </div>
     );
 }
 
@@ -148,3 +137,19 @@ const style = ({
         marginTop: "1rem"
     },
 })
+
+//The author at cluemediator used this technique so that he does not need to 
+//prepare "two sets" of code just to manage or remember the user name and password. 
+const useFormInput = initialValue => {
+    //Note advisable to change the value name to something else
+    //because it is used as a value attribute in the JSX which defines the textboxes.  
+    const [value, setValue] = useState(initialValue);
+    const handleChange = e => {
+        setValue(e.target.value);
+        // More information about setValue and hooks is at https://reactjs.org/docs/hooks-state.html
+    }
+    return {
+        value,// This is tied to the JSX 
+        onChange: handleChange, // This is tied to the JSX 
+    }
+}

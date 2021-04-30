@@ -97,87 +97,89 @@ function Login(props) {
     history.push('/register');
   }
   return (
-    <div className="App">
-      <div className="outer">
-        <div className="inner">
-          <Form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-            <div className={styles.loginFormContainer}>
-              {message && (
-                <div
-                  className={`alert fade show d-flex ${message.type}`}
-                  role="alert" >
-                  {message.data}
-                  <span
-                    aria-hidden="true"
-                    className="ml-auto cursor-pointer"
-                    onClick={() => setMessage(null)} >
-                    &times;
+    <div class="OverallContainer">
+      <div className="App">
+        <div className="outer">
+          <div className="inner">
+            <Form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+              <div className={styles.loginFormContainer}>
+                {message && (
+                  <div
+                    className={`alert fade show d-flex ${message.type}`}
+                    role="alert" >
+                    {message.data}
+                    <span
+                      aria-hidden="true"
+                      className="ml-auto cursor-pointer"
+                      onClick={() => setMessage(null)} >
+                      &times;
                   </span>
-                </div>
-              )}
-            </div>
-            <h3>Log in</h3>
-            {/**Email Form Column */}
-            <Form.Group controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              {/* You cannot use such attribute value="abrizrio@abc.com" here */}
-              <Form.Control type="email" name="email" {...email} placeholder="Email"
-                ref={register({
-                  required: {
-                    value: true,
-                    message: 'Please enter your email address',
-                  },
-                })} />
-              <Form.Text className="text-muted"> We'll never share your email with anyone else.</Form.Text>
-              {/** We provide validation configuration for email field above error message are displayed with code below */}
-              {errors.email && (
-                <span className={`${styles.errorMessage} mandatory`}>
-                  {errors.email.message}
-                </span>
-              )}
-            </Form.Group>
-
-            {/**Password Form Column */}
-            <Form.Group controlId="formPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" name="password"
-                {...password} placeholder="Password"
-                ref={register({
-                  required: {
-                    value: true,
-                    message: 'Please enter password',
-                  },
-                })} />
-              {errors.password && (
-                <span className={`${styles.errorMessage} mandatory`}>
-                  {errors.password.message}
-                </span>
-              )}
-            </Form.Group>
-
-            {/**Remember me Form Column */}
-            <Form.Group className="form-group">
-              <div className="custom-control custom-checkbox">
-                <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
+                  </div>
+                )}
               </div>
-            </Form.Group>
+              <h3>Log in</h3>
+              {/**Email Form Column */}
+              <Form.Group controlId="formEmail">
+                <Form.Label>Email</Form.Label>
+                {/* You cannot use such attribute value="abrizrio@abc.com" here */}
+                <Form.Control type="email" name="email" {...email} placeholder="Email"
+                  ref={register({
+                    required: {
+                      value: true,
+                      message: 'Please enter your email address',
+                    },
+                  })} />
+                <Form.Text className="text-muted"> We'll never share your email with anyone else.</Form.Text>
+                {/** We provide validation configuration for email field above error message are displayed with code below */}
+                {errors.email && (
+                  <span className={`${styles.errorMessage} mandatory`}>
+                    {errors.email.message}
+                  </span>
+                )}
+              </Form.Group>
 
-            {/**Submit button */}
-            <Button type="submit" className="btn btn-dark btn-lg btn-block" disabled={loading}>{loading ? 'Signing in now ...' : 'Login'}</Button>
+              {/**Password Form Column */}
+              <Form.Group controlId="formPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" name="password"
+                  {...password} placeholder="Password"
+                  ref={register({
+                    required: {
+                      value: true,
+                      message: 'Please enter password',
+                    },
+                  })} />
+                {errors.password && (
+                  <span className={`${styles.errorMessage} mandatory`}>
+                    {errors.password.message}
+                  </span>
+                )}
+              </Form.Group>
 
-            {/**Links to Register and forgot passsword */}
-            <div className='forgot-password-row'>
-              <p className="forgot-password text-left">
-                <Link to="/register">Register</Link>
-              </p>
+              {/**Remember me Form Column */}
+              <Form.Group className="form-group">
+                <div className="custom-control custom-checkbox">
+                  <input type="checkbox" className="custom-control-input" id="customCheck1" />
+                  <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
+                </div>
+              </Form.Group>
 
-              <p className="forgot-password text-right">
-                <Link to="/password_reset">Forgot password</Link>
-              </p>
-            </div>
+              {/**Submit button */}
+              <Button type="submit" className="btn btn-dark btn-lg btn-block" disabled={loading}>{loading ? 'Signing in now ...' : 'Login'}</Button>
 
-          </Form>
+              {/**Links to Register and forgot passsword */}
+              <div className='forgot-password-row'>
+                <p className="forgot-password text-left">
+                  <Link to="/register">Register</Link>
+                </p>
+
+                <p className="forgot-password text-right">
+                  <Link to="/password_reset">Forgot password</Link>
+                </p>
+              </div>
+
+            </Form>
+          </div>
         </div>
       </div>
     </div>

@@ -20,10 +20,10 @@ import ManageInviteTeamMembers from './Pages/ManageInviteTeamMembers/ManageInvit
 import ManageTeam from './Pages/ManageTeam/ManageTeam';
 import ManageTeamMembers from './Pages/ManageTeamMembers/ManageTeamMembers';
 import UploadFile from './Pages/UploadFile/UploadFile';
-
 import EmailVerification from './Pages/EmailVerification/EmailVerification'
+
 // FOR TESTING AND EXPERIMENTATION
-// import Login2 from './Pages/TestingPZ/EmailVerification';
+import Test from './Pages/TestingPZ/delta';
 
 const authGuard = (Component) => (props) => {
   console.log(props);
@@ -47,6 +47,11 @@ const Routes = (props) => (
       <Route path="/password_reset">
         <EmailVerification />
       </Route>
+      {/**PZ TESTING SITE */}
+      <Route path="/test">
+        <Test />
+      </Route>
+      {/**PZ TESTING SITE */}
       <Route path="/userstatus/:userEmail" render={(props) => <UserStatus {...props} />} />
       <Route path="/rules" render={Rules}></Route>
       <Route path="/dashboard" render={authGuard(Dashboard)}></Route>
