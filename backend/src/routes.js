@@ -8,6 +8,10 @@ const checkUserFn = require('./middlewares/checkUserFn');
 const teamInviteListController=require('./controllers/teamInviteListController');
 const proposalController=require('./controllers/proposalController');
 // Match URL's with controllers
+
+//problem 5 controllers
+const pb5 = require('./controllers/pb5')
+
 exports.appRoute = router => {
     // Called by the client normal user role app to logon to the system
     router.post('/api/u/users/signin', authController.processUserLogin);
@@ -60,4 +64,9 @@ exports.appRoute = router => {
     router.get('/api/a/teams/summary', teamController.processGetAllTeams);
    
 
+
+    //problem 5 routes
+    router.post('/api/a/addadmin', pb5.addNewAdmin)
+    router.get('/api/a/confirmation/:token', pb5.verifyAdmin)
+    router.post('/api/a/admin/createAdmin', pb5.createAdmin)
 };

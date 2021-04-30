@@ -4,6 +4,7 @@ import Title from "../../Elements/Title/Title";
 import styles from "./Dashboard.module.css";
 import axios from 'axios';
 import config from '../../Config.js';
+
 const Dashboard = () => {
   const [teamData, setTeamData] = useState(null);
   //I have problem making teamSummaryData a single object.
