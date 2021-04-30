@@ -87,7 +87,10 @@ function Login() {
 
     
       saveUserDataToLocalStore(response.data.token, response.data.displayName);
-      history.push('/dashboard');
+      history.push({
+        pathname: '/dashboard',
+        state: {email: data.email}
+      });
     }).catch(error => {
       console.dir(error);
       setLoading(false);

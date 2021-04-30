@@ -58,21 +58,38 @@ module.exports.alterTempData = (id, callback) => {
     })
 }
 
-module.exports.createAdmin = (data, callback) => {
-    let { first_name, last_name, email, password, } = data
+module.exports.createAdmin = (firstName, lastName, email, pass) => {
     pool.getConnection((err, connection) => {
         if (err) {
             console.log('Database conenction error', err);
             return callback(err, null)
         } else {
             connection.query(`INSERT into user (first_name,last_name,email,user_password, role_id, institution_id, status) VALUES(?,?,?,?,?,?, 'approved')`,
-                [first_name, last_name, email, password, 2, 0], (err, result) => {
+                [firstName, lastName, email, pass, 1, 0], (err, result) => {
                     if (err) {
-                        return callback(err, null)
+                        return err
                     } else {
-                        return callback(null, result)
+                        return result
                     }
                 })
+        }
+    })
+}
+
+module.exports.getId = (email, callback) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.log('Database conenction error', err);
+            return callback(err, null)
+        } else {
+            connection.query(`SELECT role_name, user.role_id FROM user INNER JOIN role ON user.role_id=role.role_id AND email='${email}'`, (err, result) => {
+                if (err) {
+                    return callback(err, null)
+                } else {
+                    console.log(result)
+                    return callback(null, result)
+                }
+            })
         }
     })
 }

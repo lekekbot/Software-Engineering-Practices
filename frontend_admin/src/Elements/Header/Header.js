@@ -1,12 +1,45 @@
 
-import React from "react";
-import {useHistory} from "react-router-dom";
+import axios from "axios";
+import React, {useEffect, useState} from "react";
+import {useHistory, useLocation} from "react-router-dom";
+import config from "../../Config.js";
 
 
 import { getUserDisplayNameFromLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 const Header = () => {
 
 const history = useHistory();
+const location = useLocation()
+
+const [id,setId] = useState()
+
+
+  useEffect(()=> {
+    if(location.state != undefined) {
+      setId(location.state.email)
+      console.log(location)
+      localStorage.setItem('email', location.state.email);
+    }
+
+  }, [location])  
+
+  const GetId = () => {
+    var email = localStorage.getItem('email')
+    axios.get(`${config.baseUrl}/a/admin/adminid/${email}`)
+    .then((response) => {
+      console.log(response.data);
+      if(response.data[0].role_name == 'master_admin') {
+        return true
+      } else {
+        return false
+      }
+    })
+    .catch(err => {
+      console.log(err)
+      return false
+    })
+  }
+
 // Careful on using the useEffect because wrong usage can cause
 // infinite REST API calls
 // https://medium.com/@andrewmyint/infinite-loop-inside-useeffect-react-hooks-6748de62871
@@ -59,11 +92,12 @@ const history = useHistory();
                   Team
                 </a>
               </li>
+              {GetId() ? 
               <li className="nav-item active">
                 <a className="nav-link" href="/AddAdmin">
                   Add New Admin
                 </a>
-              </li> 
+              </li>  : ''}
               <li className="nav-item">
                 <span
                   className="nav-link cursor-pointer"
