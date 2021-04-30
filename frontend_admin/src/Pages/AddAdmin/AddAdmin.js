@@ -18,7 +18,12 @@ const AddAdmin = () => {
     const { register, handleSubmit, errors } = useForm();
 
     const onSubmit = (data,e) => {
-        console.dir(data)
+        // console.dir(data)
+        axios.post(`${config.baseUrl}/a/addadmin`,
+        {first_name: data['first-name'], last_name: data['last-name'], email: data.email})
+        .then(response => {
+            console.log('quck quack shit shit ')
+        })
     }
 
     return (
