@@ -12,6 +12,7 @@ const history = useHistory();
 const location = useLocation()
 
 const [id,setId] = useState()
+const [master,setmaster] = useState(false)
 
 
   useEffect(()=> {
@@ -20,6 +21,7 @@ const [id,setId] = useState()
       console.log(location)
       localStorage.setItem('email', location.state.email);
     }
+    GetId()
 
   }, [location])  
 
@@ -27,16 +29,15 @@ const [id,setId] = useState()
     var email = localStorage.getItem('email')
     axios.get(`${config.baseUrl}/a/admin/adminid/${email}`)
     .then((response) => {
-      console.log(response.data);
       if(response.data[0].role_name == 'master_admin') {
-        return true
+        setmaster(true)
       } else {
-        return false
+        setmaster(false)
       }
     })
     .catch(err => {
       console.log(err)
-      return false
+      setmaster(false)
     })
   }
 
@@ -92,7 +93,7 @@ const [id,setId] = useState()
                   Team
                 </a>
               </li>
-              {GetId() ? 
+              {master ? 
               <li className="nav-item active">
                 <a className="nav-link" href="/AddAdmin">
                   Add New Admin

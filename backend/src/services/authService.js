@@ -60,7 +60,7 @@ module.exports.authenticateAdmin = (email, callback) => {
         } else {
             try {
                 connection.query(`SELECT user.user_id, first_name, last_name, email, user_password, role_name, user.role_id  
-                   FROM user INNER JOIN role ON user.role_id=role.role_id AND role_name='admin' AND email=?`, [email], (err, rows) => {
+                   FROM user INNER JOIN role ON user.role_id=role.role_id WHERE email=? AND role_name In ('master_admin','admin')`, [email], (err, rows) => {
                     if (err) {
                         if (err) return callback(err, null);
                     } else {
