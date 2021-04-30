@@ -13,15 +13,12 @@ exports.processAdminLogin = (req, res, next) => {
     try {
         auth.authenticateAdmin(email, function (error, results) {
             if (error) {
-
                 return res.status(401).send({
                     code: 401,
                     error: true,
                     description: 'Login failed.',
                     content: []
                 });
-
-
             } else {
                 if (results.length == 1) {
                     if ((password == null) || (results[0] == null)) {
@@ -33,7 +30,6 @@ exports.processAdminLogin = (req, res, next) => {
                         });
                     }
                     if (bcrypt.compareSync(password, results[0].user_password) == true) {
-
                         let data = {
                             displayName: results[0].first_name + ' ' + results[0].last_name,
                             email: results[0].email,
@@ -50,14 +46,10 @@ exports.processAdminLogin = (req, res, next) => {
                             description: 'Login failed.',
                             content: []
                         });
-
                     } // End of password comparison with the retrieved decoded password.
                 } // End of checking if there are returned SQL results
-
             }
-
         })
-
     } catch (error) {
         return res.status(500).send({
             code: 500,
@@ -66,9 +58,6 @@ exports.processAdminLogin = (req, res, next) => {
             content: []
         });
     } //end of try
-
-
-
 };// End of processAdminLogin
 
 //  /api/u/users/signin
@@ -96,7 +85,6 @@ exports.processUserLogin = (req, res, next) => {
                         });
                     }
                     if (bcrypt.compareSync(password, results[0].user_password) == true) {
-
                         const responseBody = {
                             //user_id: results[0].user_id,
                             //role_name: results[0].role_name,
@@ -112,18 +100,13 @@ exports.processUserLogin = (req, res, next) => {
                                 expiresIn: 86400 //Expires in 24 hrs
                             })
                         }; //End of data variable setup
-
                         return res.status(200).send(responseBody);
                     } else {
-
                         return res.status(401).send({ error: true, code: 401, description: 'Login fail.', content: [] });
                     } //End of password comparison with the retrieved decoded password.
                 } //End of checking if there are returned SQL results
-
             }
-
         })
-
     } catch (error) {
         return res.status(500).send({
             code: 500,
@@ -160,11 +143,8 @@ exports.processRegister = (req, res, next) => {
         } else {
             try {
                 //Enter email here
-                let results = await user.createUser(firstName, lastName, email, institutionId, hash);
-                
-                
+                let results = await user.createUser(firstName, lastName, email, institutionId, hash); 
                 let register = async () => {
-                    
                     console.log("it is sending")
                     console.log(results[0]+ "this is results[0");
                     // console.log(results)
@@ -216,8 +196,6 @@ exports.processGetOneUserStatusData = async (req, res, next) => {
 
     const userEmail = req.params.userEmail;
 
-
-
     try {
         await sleep(7000);
         let oneResult = await auth.getOneUserStatusData(userEmail);
@@ -230,6 +208,4 @@ exports.processGetOneUserStatusData = async (req, res, next) => {
         console.log(error, '=======================================================================');
         return res.status(500).send({ error: true, code: 500, description: 'Internal technical problem has occurred.', content: [] });
     }
-
-
 }; // End of processGetOneUserStatusData

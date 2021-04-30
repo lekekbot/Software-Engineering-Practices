@@ -3,7 +3,7 @@ const config = require('../config/config');
 const mailgun = require("mailgun-js");
 // 
 
-exports.processGetAllUserDataForAdmin = async(req, res, next) => {
+exports.processGetAllUserDataForAdmin = async (req, res, next) => {
 
     try {
         let results = await userManager.getAllUserDataForAdmin();
@@ -28,13 +28,13 @@ exports.processGetAllUserDataForAdmin = async(req, res, next) => {
         /*Must change this json response data in the future to something else so 
         that client side dont get the error details*/
         return res.status(500).send({
-            message: error 
+            message: error
         });
     }
 
 }; //End of processGetAllUserDataForAdmin
 
-exports.processGetOneUserData = async(req, res, next) => {
+exports.processGetOneUserData = async (req, res, next) => {
     let recordId = req.params.recordId;
 
     try {
@@ -56,7 +56,7 @@ exports.processGetOneUserData = async(req, res, next) => {
 }; //End of processGetOneUserData
 
 
-exports.processUpdateOneUser = async(req, res, next) => {
+exports.processUpdateOneUser = async (req, res, next) => {
     console.log('processUpdateOneUser running');
     //Collect data from the request body 
     let recordId = req.body.recordId;
@@ -73,7 +73,7 @@ exports.processUpdateOneUser = async(req, res, next) => {
 
 
 }; //End of processUpdateOneUser
-exports.processUpdateUsersOnRoleAndStatus = async(req, res, next) => {
+exports.processUpdateUsersOnRoleAndStatus = async (req, res, next) => {
     console.log('processUpdateUsersOnRoleAndStatus running');
     // Collect data from the request body 
     let data = req.body;
@@ -83,24 +83,23 @@ exports.processUpdateUsersOnRoleAndStatus = async(req, res, next) => {
         console.log(results);
         //I copied the code from official MailGun API tutorial website
         const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
-        for(index=0;index<data.length;index++){
-        if(data[index].status=='approved'){
-        let emailData = {
-            from: `competition system admin <admin@samples.mailgun.org>`,
-            to: 'billhstan4@gmail.com',
-            subject: 'Your user registration has been approved',
-            text: `Thank you ${data[index].firstName} ${data[index].lastName} for registering as participant for the competition. Please submit your business plans before the deadline.`
-        };
-        mg.messages().send(emailData, function (error, body) {
-            if(error){
-                console.log(`Sending email has failed`,error);
-            }else{   
-            console.log(`Sent email.`,body);
-
+        for (index = 0; index < data.length; index++) {
+            if (data[index].status == 'approved') {
+                let emailData = {
+                    from: `competition system admin <admin@samples.mailgun.org>`,
+                    to: 'chaipinzheng@gmail.com',
+                    subject: 'Your user registration has been approved',
+                    text: `Thank you ${data[index].firstName} ${data[index].lastName} for registering as participant for the competition. Please submit your business plans before the deadline.`
+                };
+                mg.messages().send(emailData, function (error, body) {
+                    if (error) {
+                        console.log(`Sending email has failed`, error);
+                    } else {
+                        console.log(`Sent email.`, body);
+                    }
+                });
             }
-        });
-        }
-    }// End of for loop to send emails
+        }// End of for loop to send emails
         return res.status(200).send({ message: 'Completed update' });
     } catch (error) {
         console.log('processUpdateUsersOnRoleAndStatus method : catch block section code is running');
