@@ -19,9 +19,6 @@ module.exports = {
     GMAIL_PASS: process.env.GMAIL_PASS,
 
     EMAIL_SECRET: process.env.EMAIL_SECRET,
-
-    GMAIL_USER: "forthisemailconfig@gmail.com",
-    GMAIL_PASSWORD:"abc123def456",
 };
 //Reference:
 //https://medium.com/the-node-js-collection/making-your-node-js-work-everywhere-with-environment-variables-2da8cdf6e786

@@ -150,7 +150,7 @@ exports.processRegister = (req, res, next) => {
         service: 'Gmail',
         auth:{
             user:config.GMAIL_USER,
-            pass:config.GMAIL_PASSWORD,
+            pass:config.GMAIL_PASS,
         }
     })
     bcrypt.hash(password, 10, async (err, hash) => {
@@ -160,35 +160,36 @@ exports.processRegister = (req, res, next) => {
         } else {
             try {
                 //Enter email here
-                results = await user.createUser(firstName, lastName, email, institutionId, hash);
+                let results = await user.createUser(firstName, lastName, email, institutionId, hash);
                 
                 
-                let register = async (results) => {
+                let register = async () => {
+                    
                     console.log("it is sending")
                     console.log(results[0]+ "this is results[0");
                     // console.log(results)
-                    console.log(results.user_id)
+                    
                     // console.log(results[0].user_id)
                     // async email
                     jwt.sign(
                         {
                             user_id: 1,
                         },
-                        "JJJJJ",
+                        config.EMAIL_SECRET,
                         {
                             expiresIn: '1d',
                         },
                         (err, emailToken) => {
                             const url = `http://localhost:3003/confirmation/${emailToken}`;
                             transporter.sendMail({
-                                to: "mchanjh.20@ichat.sp.edu.sg",
+                                to: email,
                                 subject: 'Confirm Email',
                                 html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
                             });
                         },
                     );
                 }
-                register(results)
+                register()
                 return res.status(200).json({
                     code: 200,
                     error: false,

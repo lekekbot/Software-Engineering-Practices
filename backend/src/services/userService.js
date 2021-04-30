@@ -1,7 +1,7 @@
 const config = require('../config/config');
 const pool = require('../config/database');
 const mysql = require("../utils/mysql.js");
-module.exports.createUser = (firstName, lastName, email,  instituionId,password) => {
+module.exports.createUser = async(firstName, lastName, email,  instituionId,password) => {
         console.log(firstName,lastName, email, password);
         return new Promise((resolve, reject) => {
             //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
@@ -28,8 +28,9 @@ module.exports.createUser = (firstName, lastName, email,  instituionId,password)
                     });
                 }
             });
+            
         }); //End of new Promise object creation
-
+        
     } //End of createUser
 
 module.exports.updateUser = (recordId, newRoleId) => {
