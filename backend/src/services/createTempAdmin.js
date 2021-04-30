@@ -59,27 +59,20 @@ module.exports.alterTempData = (id, callback) => {
 }
 
 module.exports.createAdmin = (data, callback) => {
-    let {
-        first_name,
-        last_name,
-        email,
-        password,
-    } = data
+    let { first_name, last_name, email, password, } = data
     pool.getConnection((err, connection) => {
         if (err) {
             console.log('Database conenction error', err);
             return callback(err, null)
         } else {
-            connection.query(`INSERT into user (first_name,last_name,email,user_password, role_id, institution_id, status) VALUES(?,?,?,?,?,?, 'approved')`, 
-            [first_name, last_name, email, password, 2, 0], (err, result) => {
-                if(err) {
-                    return callback(err,null)
-                } else {
-                    return callback(null,result)
-                }
-            })
+            connection.query(`INSERT into user (first_name,last_name,email,user_password, role_id, institution_id, status) VALUES(?,?,?,?,?,?, 'approved')`,
+                [first_name, last_name, email, password, 2, 0], (err, result) => {
+                    if (err) {
+                        return callback(err, null)
+                    } else {
+                        return callback(null, result)
+                    }
+                })
         }
-
     })
-
 }
