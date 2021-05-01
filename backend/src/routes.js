@@ -64,7 +64,9 @@ exports.appRoute = router => {
 
     //PROBLEM 4 - CHAI PIN ZHENG
     //Sends an email to the user using mailgun in order to send them a OTP
-    router.post('/api/u/users/resetpassword/:userEmail', pb4.processUserEmailOTP);
+    router.post('/api/u/users/resetpassword/:userEmail', pb4.sendEmail);
+    //Verifies what the user otp + their corresponding emails
+    router.get('/api/u/users/validate_2fa/', pb4.verifyUserOTP);
 
     //Problem 5 routes - Bryan
     //add new admin to temp table

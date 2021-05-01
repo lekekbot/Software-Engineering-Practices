@@ -8,13 +8,13 @@ const sleep = require('sleep-promise');
 //Success Response
 //Code: 204 No Content
 //METHOD : POST -> http://localhost:8081/u/users/resetpassword/:userEmail
-exports.processUserEmailOTP = async (req, res, next) => {
+exports.sendEmail = async (req, res, next) => {
     const userEmail = req.body.email;
     const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
 
     //before we send the email... lets run through our database if the user does exist
     //afterall, we don't want a user to send to other random users as spam!
-    emailValidation.validateEmail(userEmail, async function (error, results) {
+    emailValidation.validateEmailDoesExist(userEmail, async function (error, results) {
         await sleep(3500);
         if (error) {
             return res.status(401).send({
@@ -62,4 +62,33 @@ exports.processUserEmailOTP = async (req, res, next) => {
             }
         }
     })
+}; // End of processGetOneUserStatusData
+
+//Task 04 - Uses what the OTP sent to the user is and verifies if it matches!
+//Success Response
+//Code: 204 No Content
+//METHOD : POST -> http://localhost:8081/u/users/resetpassword/:userEmail
+exports.verifyUserOTP = async (req, res, next) => {
+    const userEmail = "chaipinzheng@gmail.com";
+    //const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
+    try {
+        let result = await emailValidation.findEmail(userEmail)
+        let { user_id } = result
+        emailValidation.validateOTP(user_id, function (results, error) {
+            if (error) {
+                return res.status(401).send({
+                    code: 401,
+                    error: true,
+                    description: 'Error!',
+                    content: []
+                });
+            } else {
+                console.log(results[0])
+                return res.status(200).send({ OTP: `${results[0].one_time_password}` });
+            }
+        })
+    } catch (error) {
+        return res.status(500).send({ message: 'Error! Unable to verify OTP!' });
+    }
+
 }; // End of processGetOneUserStatusData

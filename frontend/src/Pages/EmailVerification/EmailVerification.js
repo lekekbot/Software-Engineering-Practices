@@ -10,6 +10,7 @@ import config from '../../config.js';
 import { useForm } from 'react-hook-form';
 import { useHistory } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
+import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 
 export default function EmailVerification() {
     const { register, handleSubmit, errors } = useForm();
@@ -30,6 +31,9 @@ export default function EmailVerification() {
                 setMessage({
                     data: 'Done!',
                 });
+                // set the token and user from the local storage
+                saveUserDataToLocalStore('', '', data.email);
+
                 history.push(`/one_time_password`);
             }).catch(error => {
                 // Validation Logic
