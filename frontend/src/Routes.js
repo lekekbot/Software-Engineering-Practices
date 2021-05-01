@@ -24,7 +24,7 @@ import UploadFile from './Pages/UploadFile/UploadFile';
 import EmailVerification from './Pages/EmailVerification/EmailVerification'
 
 // FOR TESTING AND EXPERIMENTATION
-import Test from './Pages/TestingPZ/delta';
+import Test from './Pages/TestingPZ/OneTimePassword';
 
 const authGuard = (Component) => (props) => {
   console.log(props);

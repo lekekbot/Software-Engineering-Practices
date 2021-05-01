@@ -11,7 +11,12 @@ exports.processUserEmailOTP = async (req, res, next) => {
     const userEmail = req.body.email;
     const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
 
-    console.log(userEmail)
+
+    // Yes! We have validated that the email does exist and has registered with the system.
+    // Now, lets send an email to them to user that they have requested for the change
+    
+
+    //lets generate a code and store it in the user database
     code = "OBQEZE"
     try {
         // TO DO LIST

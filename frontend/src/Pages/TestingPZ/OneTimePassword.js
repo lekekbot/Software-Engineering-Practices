@@ -1,22 +1,34 @@
 import React, { Component, useState } from 'react';
 
 //Styling
+import './OneTimePassword.module.css'
 import styles from '../Login/Login.module.css';
-import './EmailVerification.css';
 
 //Imports
 import axios from 'axios';
 import config from '../../config.js';
-import { useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form'
 import { useHistory } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
+import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
+import OtpInput from 'react-otp-input';
 
-export default function EmailVerification() {
+export default function OneTimePassword(props) {
+    const [otp, setOtp] = useState(0);
     const { register, handleSubmit, errors } = useForm();
     const history = useHistory();
     const [message, setMessage] = useState({ data: '', type: '' });
     const [loading, setLoading] = useState(false);
     const email = useFormInput('chaipinzheng@gmail.com');
+
+    const handleOtpChange = (otp) => {
+        setOtp({ otp });
+    };
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     alert(e.otp);
+    // };
 
     const onSubmit = (data, e) => {
         setMessage({
@@ -60,6 +72,7 @@ export default function EmailVerification() {
                 e.target.reset();
             });
     }
+
     const redirect = () => {
         history.push('/login');
     }
@@ -80,34 +93,35 @@ export default function EmailVerification() {
                                         className="ml-auto cursor-pointer"
                                         onClick={() => setMessage(null)} >
                                         &times;
-                            </span>
+                                    </span>
                                 </div>
                             )}
                         </div>
                         <h3>Reset password</h3>
-                        <Form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-                            <div className="auth-form-body mt-3">
-                                <Form.Group controlId="formEmail">
-                                    <Form.Label style={{ display: "inline-block", marginBottom: ".5rem", marginTop: "-5rem" }} for="email_field">To reset your password, please provide your email you signed up with Competiton Management System.</Form.Label>
-                                    <Form.Control
-                                        type="email"
-                                        name="email"
-                                        id="email_field"
-                                        {...email}
-                                        className="form-control input-block"
-                                        autofocus="autofocus"
-                                        placeholder="Enter your email address"
-                                        ref={register({
-                                            required: {
-                                                value: true,
-                                                message: 'Please enter your email address',
-                                            },
-                                        })} />
-                                </Form.Group>
-                                <input name="commit" type="submit" value="Send password reset email" className="btn btn-primary btn-block" disabled=""
-                                    style={{ alignSelf: "stretch", display: "block", height: "2.2rem" }, style.inner__btn_block, style.inner__btn_primary, style.inner__btn_not__disabled__not__disabled} />
+                        <form onSubmit={handleSubmit}>
+                            <h2>Enter verification code</h2>
+                            <div className="margin-top--small">
+                                <OtpInput
+                                    inputStyle={{
+                                        width: '2.5rem',
+                                        height: '2.5rem',
+                                        margin: '-0 1rem',
+                                        fontSize: '2rem',
+                                        borderRadius: 4,
+                                        border: '1px solid rgba(0,0,0,0.3)',
+                                    }}
+                                    numInputs={6}
+                                    isDisabled={false}
+                                    hasErrored={false}
+                                    errorStyle="error"
+                                    onChange={handleOtpChange}
+                                    separator={<span>-</span>}
+                                    isInputNum={true}
+                                    shouldAutoFocus
+                                />
                             </div>
-                        </Form>
+                            <button className="btn margin-top--large" disabled={otp.length < 0}>Verify OTP</button>
+                        </form>
                     </div>
                 </div>
             </div >
