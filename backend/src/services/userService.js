@@ -1,7 +1,9 @@
 const config = require('../config/config');
 const pool = require('../config/database');
 const mysql = require("../utils/mysql.js");
-module.exports.createUser = async (firstName, lastName, email, instituionId, password) => {
+const jwt = require('jsonwebtoken');
+
+module.exports.createUser = async (firstName, lastName, email, instituionId, password,callback) => {
     console.log(firstName, lastName, email, password);
     return new Promise((resolve, reject) => {
         //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
@@ -16,13 +18,13 @@ module.exports.createUser = async (firstName, lastName, email, instituionId, pas
                         institution_id,role_id,status ) VALUES (?,?,?,?,?,2, 'pending') `,
                     [firstName, lastName, email, password, instituionId], (err, rows) => {
                         if (err) {
-                            reject(err);
+                            return callback(err, null)
                         } else {
                             //By inspecting the rows variable, you will notice that
                             //the rows is an object {} of information after a record
                             //has been inserted.
                             //console.log(rows);
-                            resolve(rows);
+                            return callback(null, rows)
                         }
                         connection.release();
                     });
@@ -30,7 +32,35 @@ module.exports.createUser = async (firstName, lastName, email, instituionId, pas
         });
     }); //End of new Promise object creation
 } //End of createUser
-
+module.exports.createUserConfirmation = async (uid) => {
+    console.log(firstName, lastName, email, password);
+    return new Promise((resolve, reject) => {
+        //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
+        //to prepare the following code pattern which does not use callback technique (uses Promise technique)
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                // The SQL will create a pending status user record.
+                connection.query(`INSERT INTO user ( first_name, last_name, email, user_password, 
+                        institution_id,role_id,status ) VALUES (?,?,?,?,?,2, 'pending') `,
+                    [firstName, lastName, email, password, instituionId], (err, rows) => {
+                        if (err) {
+                            return callback(err, null)
+                        } else {
+                            //By inspecting the rows variable, you will notice that
+                            //the rows is an object {} of information after a record
+                            //has been inserted.
+                            //console.log(rows);
+                            return callback(null, rows)
+                        }
+                        connection.release();
+                    });
+            }
+        });
+    }); //End of new Promise object creation
+} //End of createUser
 module.exports.updateUser = (recordId, newRoleId) => {
     return new Promise((resolve, reject) => {
         //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
@@ -205,4 +235,40 @@ module.exports.updateDesign = (recordId, title, description) => {
         });
     }); //End of new Promise object creation
 
+} //End of updateDesign
+
+module.exports.verifyUserEmail = async(req, res, callback) => {
+    let user_id
+    try {
+        console.log(req)
+        req = req.substring(1);
+        let jwtObject = jwt.verify(req, config.EMAIL_SECRET);
+        user_id = jwtObject.user_id;
+        console.log(user_id)
+      } catch (e) {
+          console.log(e)
+        res.send('error');
+      }
+    return new Promise((resolve, reject) => {
+        //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
+        //to prepare the following code pattern which does not use callback technique (uses Promise technique)
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                connection.query(`UPDATE competiton_system_4_db.user SET is_verified=true WHERE user_id=${user_id} ;`, (err, rows) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(rows);
+                    }
+                });
+            }
+        });
+    }); //End of new Promise object creation
+        
+      
+        
+      
 } //End of updateDesign

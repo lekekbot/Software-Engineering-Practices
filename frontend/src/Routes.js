@@ -10,6 +10,7 @@ import ManageSubmissions from './Pages/ManageSubmissions/ManageSubmissions';
 import Login from './Pages/Login/Login';
 import Rules from './Pages/Rules/Rules';
 import Register from './Pages/Register/Register';
+import Confirmation from './Pages/Confirmation/Confirmation';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import NotFound from './Pages/NotFound/NotFound';
 import UserStatus from './Pages/UserStatus/UserStatus';
@@ -46,6 +47,9 @@ const Routes = (props) => (
       </Route>
       <Route path="/password_reset">
         <EmailVerification />
+      </Route>
+      <Route path="/confirmation">
+        <Confirmation />
       </Route>
       {/**PZ TESTING SITE */}
       <Route path="/test">

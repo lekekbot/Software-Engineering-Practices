@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const config = require('../config/config');
 const jwt = require('jsonwebtoken');
 const nodeMailer = require('nodemailer')
+
 // I used this to simulate a delay so that I can test the client-side laoding spinner.
 const sleep = require('sleep-promise');
 exports.processAdminLogin = (req, res, next) => {
@@ -131,9 +132,9 @@ exports.processRegister = (req, res, next) => {
     let data = req.body;
     let transporter = nodeMailer.createTransport({
         service: 'Gmail',
-        auth:{
-            user:config.GMAIL_USER,
-            pass:config.GMAIL_PASS,
+        auth: {
+            user: config.GMAIL_USER,
+            pass: config.GMAIL_PASS,
         }
     })
     bcrypt.hash(password, 10, async (err, hash) => {
@@ -143,17 +144,12 @@ exports.processRegister = (req, res, next) => {
         } else {
             try {
                 //Enter email here
-                let results = await user.createUser(firstName, lastName, email, institutionId, hash); 
-                let register = async () => {
-                    console.log("it is sending")
-                    console.log(results[0]+ "this is results[0");
-                    // console.log(results)
-                    
-                    // console.log(results[0].user_id)
-                    // async email
+                user.createUser(firstName, lastName, email, institutionId, hash, (error, results) => {
+
+                    //Signing of jwt token.. we will standardise an email secret ig
                     jwt.sign(
                         {
-                            user_id: 1,
+                            user_id: Object.values(results)[2],
                         },
                         config.EMAIL_SECRET,
                         {
@@ -168,15 +164,13 @@ exports.processRegister = (req, res, next) => {
                             });
                         },
                     );
-                }
-                register()
-                return res.status(200).json({
-                    code: 200,
-                    error: false,
-                    description: 'Completed registration',
-                    content: []
-                });
-
+                    return res.status(200).json({
+                        code: 200,
+                        error: false,
+                        description: 'Completed registration',
+                        content: []
+                    });
+                })
             } catch (error) {
                 console.log('The processRegister method : catch block section code is running');
                 console.log(error, '=======================================================================');
@@ -190,7 +184,21 @@ exports.processRegister = (req, res, next) => {
 
 
 }; // End of processRegister
+// /api/users/confirmation
+exports.processConfirmation = async (req, res, next) => {
+    console.log("It is entering here 1")
+    let token = req.params.token
+    try {
+        console.log("It is entering here 2")
+        await user.verifyUserEmail(token, (error, results) => {
+            console.log(results)
+        })
+    } catch (e) {
+        res.send('error');
+    }
+    return res.redirect('http://localhost:3001/login');
 
+}; // End of processRegister
 exports.processGetOneUserStatusData = async (req, res, next) => {
     console.log('The processGetOneUserStatusData running');
 

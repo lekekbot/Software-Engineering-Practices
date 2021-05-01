@@ -18,6 +18,8 @@ exports.appRoute = router => {
     router.post('/api/u/users/signin', authController.processUserLogin);
     // Called by the client normal user role app to register to the system
     router.post('/api/users/register', authController.processRegister);
+    // Called to process verification
+    router.post('/api/users/confirmation/:token', authController.processConfirmation);
     // Called by the client normal user role app at the user status page.
     router.get('/api/u/users/status/:userEmail', authController.processGetOneUserStatusData);
     // Called by the client admin role app to update approve status for registered users.
