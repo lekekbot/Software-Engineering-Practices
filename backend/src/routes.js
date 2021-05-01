@@ -77,4 +77,8 @@ exports.appRoute = router => {
     router.get('/api/a/admin/adminid/:email', pb5.verifyMasterAdmin)
     //get pending list from temp table
     router.get('/api/a/admin/list', pb5.getPendingList)
+    //get email from temp data, then send invitation to email
+    router.post('/api/a/admin/resend', pb5.resendEmail)
+    //delete temp user
+    router.delete('/api/a/admin/removetemp/:id', pb5.checkvalid, pb5.removetemp)
 };

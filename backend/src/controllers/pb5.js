@@ -5,12 +5,12 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 
-//import stuff i actually don't use 
 const create_temp = require('../services/createTempAdmin');
 const {
     EMAIL_SECRET
 } = require('../config/config');
 
+//nodeMailer thing
 let transporter = nodeMailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -19,7 +19,7 @@ let transporter = nodeMailer.createTransport({
     }
 })
 
-
+// send data to temp table 
 exports.addNewAdmin = (req, res) => {
     let first_name = req.body.first_name;
     let last_name = req.body.last_name;
@@ -84,10 +84,17 @@ exports.verifyAdmin = (req, res) => {
     }
 }
 
+//push user to user table 
 exports.createAdmin = (req, res) => {
+    let {
+        user_id,
+        first_name,
+        last_name,
+        email,
+        password
+    } = req.body
 
-    let { user_id, first_name, last_name, email, password } = req.body
-
+    //password hashing
     bcrypt.hash(password, 10, async (err, hash) => {
         if (err) {
             console.log('Error on hashing password')
@@ -95,12 +102,14 @@ exports.createAdmin = (req, res) => {
                 message: 'Unable to complete registration'
             })
         } else {
+            //change accepted to 1 
             create_temp.alterTempData(user_id, (err, result) => {
                 if (err) {
                     console.log(err)
                     return res.status(500)
                 }
             })
+            //add admin to user table 
             try {
                 results = await create_temp.createAdmin(first_name, last_name, email, hash)
                 console.log(results)
@@ -110,34 +119,85 @@ exports.createAdmin = (req, res) => {
                     description: 'Invitation Accepted',
                     content: []
                 })
-            }catch(err) {
+            } catch (err) {
                 console.log(err);
-                return res.status(500).send({code:500, error:true, content:[],
-                    description: 'Unable to complete registration' });
+                return res.status(500).send({
+                    code: 500,
+                    error: true,
+                    content: [],
+                    description: 'Unable to complete registration'
+                });
             }
 
         }
     })
 }
 
-exports.verifyMasterAdmin = (req,res) => {
+//for login, cos only master admin can invite 
+exports.verifyMasterAdmin = (req, res) => {
     let email = req.params.email
 
-    create_temp.getId(email, (err,result) => {
-        if(err) {
-            return res.status(500)
-        }else {
-            return res.status(200).send(result)
-        }
-    })
-}
-
-exports.getPendingList = (req,res) => {
-    create_temp.getList((err,result)=> {
-        if(err) {
+    create_temp.getId(email, (err, result) => {
+        if (err) {
             return res.status(500)
         } else {
             return res.status(200).send(result)
         }
     })
+}
+
+//for pending table 
+exports.getPendingList = async (req, res) => {
+    try {
+        let results = await create_temp.getList()
+        return res.status(200).send(results)
+
+    } catch (err) {
+        console.log(err)
+        return res.status(500)
+
+    }
+}
+
+exports.resendEmail = (req, res) => {
+    let id = req.body.id
+    create_temp.getTempData(id, (err, result) => {
+        if (err) {
+            return res.status(500)
+        } else {
+            const data = result[0]
+            jwt.sign({
+                    user: data.user_id
+                },
+                config.EMAIL_SECRET, {
+                    expiresIn: '1d'
+                },
+                (err, token) => {
+                    const url = `http://localhost:3004/admin/confirmation/${token}`
+
+                    transporter.sendMail({
+                        to: data.email,
+                        subject: 'Invitation for Admin Privileges',
+                        html: `Hi, here is your invitation to becoming an admin. Click <a href="${url}">Here</a> to accept the invite.`
+                    })
+                }
+            )
+            return res.status(200).send(data)
+        }
+    })
+}
+
+exports.checkvalid = (req, res, next) => {
+  next()
+}
+
+exports.removetemp = async (req, res) => {
+    let id = req.params.id
+    try {
+        let results = await create_temp.deleteTemp(id)
+        console.log(results)
+        return res.status(200).send(results)
+    } catch (err) {
+        return res.status(500)
+    }
 }
