@@ -50,24 +50,6 @@ a {
     background-color: #f2f2f3;
 }
 
-.side-bar__segment>label>input[type='number'],
-.side-bar__segment>label>input[type='text'] {
-    width: 150px;
-    border-radius: 4px;
-    border: 1px solid lightgrey;
-    margin: 0.5rem 0;
-    height: 1.5rem;
-    padding: 0 0.5rem;
-}
-
-.side-bar__segment>label>input[type='checkbox'] {
-    border-radius: 4px;
-    border: 1px solid lightgrey;
-    margin: 0.5rem;
-    width: 1rem;
-    height: 1rem;
-}
-
 .card {
     min-width: 360px;
     padding: 2rem;
