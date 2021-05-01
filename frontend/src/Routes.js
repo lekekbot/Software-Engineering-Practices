@@ -22,9 +22,10 @@ import ManageTeam from './Pages/ManageTeam/ManageTeam';
 import ManageTeamMembers from './Pages/ManageTeamMembers/ManageTeamMembers';
 import UploadFile from './Pages/UploadFile/UploadFile';
 import EmailVerification from './Pages/EmailVerification/EmailVerification'
+import OneTimePassword from './Pages/OneTimePassword/OneTimePassword';
 
 // FOR TESTING AND EXPERIMENTATION
-import Test from './Pages/TestingPZ/OneTimePassword';
+//import Test from './Pages/TestingPZ/OneTimePassword';
 
 const authGuard = (Component) => (props) => {
   console.log(props);
@@ -51,10 +52,10 @@ const Routes = (props) => (
       <Route path="/confirmation">
         <Confirmation />
       </Route>
-      {/**PZ TESTING SITE */}
-      <Route path="/test">
-        <Test />
+      <Route path="/one_time_password">
+        <OneTimePassword />
       </Route>
+      {/**PZ TESTING SITE */}
       {/**PZ TESTING SITE */}
       <Route path="/userstatus/:userEmail" render={(props) => <UserStatus {...props} />} />
       <Route path="/rules" render={Rules}></Route>

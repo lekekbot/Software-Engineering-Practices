@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Container, Row , Col, Spinner, DropDown } from 'react-bootstrap';
+import { Button, Container, Row, Col, Spinner, DropDown } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import config from '../../config.js';
@@ -9,14 +9,14 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
 import Title from '../Title/Title';
 import Header from '../../Elements/Header';
-import { confirmAlert } from 'react-confirm-alert'; 
+import { confirmAlert } from 'react-confirm-alert';
 import ManageSubmissionsRowMenu from '../../Elements/ManageSubmissionsRowMenu';
 //The following library is for creating notification alerts when user 
 //clicks the save button.
 import { ToastContainer, toast } from 'react-toastify';
 //Reference: https://fkhadra.github.io/react-toastify/introduction/
 
-const ManageSubmissions = ({match}) => {
+const ManageSubmissions = ({ match }) => {
   const teamId = match.params.teamId;
   const history = useHistory();
   const [removeSubmissionActionCounter, setRemoveSubmissionActionCounter] = useState(0);
@@ -29,90 +29,90 @@ const ManageSubmissions = ({match}) => {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`${config.baseUrl}/u/teams/${teamId}/proposals`, 
-    {
+    axios.get(`${config.baseUrl}/u/teams/${teamId}/proposals`,
+      {
         headers: {
-          'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}`
         }
       })
-    .then(response => {
+      .then(response => {
         console.log(response.data.content);
         let records = response.data.content;
         // I need to apply the following map method to rebuild the
         // array of team data so that the Browser don't give warnings such as
         // Warning: Failed prop type: The prop `column.text` is marked as required in `HeaderCell`, but its value is `undefined`.
         const formattedRecords = records.map(data => {
-          console.log('Checking data variable in the map callback ',data);
-          data.dummyId1= data.fileId;
+          console.log('Checking data variable in the map callback ', data);
+          data.dummyId1 = data.fileId;
           return data;
-      });
-      console.dir(formattedRecords);
+        });
+        console.dir(formattedRecords);
         setSubmissionData(formattedRecords);
         setLoading(false);
-    }).catch(error => {
+      }).catch(error => {
         console.log(error);
         setLoading(false);
-    });
+      });
   }, [removeSubmissionActionCounter]);//End of useEffect({function code,[removeSubmissonActionCounter]})
 
-  const handleRemoveSubmissionAction=(event,fileId, cloudinaryFileId)=>{
+  const handleRemoveSubmissionAction = (event, fileId, cloudinaryFileId) => {
     event.stopPropagation();
     console.log('Inpect the fileId, cloudinaryFileId variable value inside handleRemoveSubmissionAction');
-    console.log('cloudinaryFileId ',cloudinaryFileId);
-    console.log('fileId ',fileId);
+    console.log('cloudinaryFileId ', cloudinaryFileId);
+    console.log('fileId ', fileId);
     const token = getTokenFromLocalStore();
-    const payload = {fileId : fileId,cloudinaryFileId : cloudinaryFileId};
+    const payload = { fileId: fileId, cloudinaryFileId: cloudinaryFileId };
     confirmAlert({
-        title: 'Confirm to remove file?',
-        message: 'Are you sure to do this?',
-        buttons: [
-          {
-            label: 'Yes',
-            onClick: () => {
-                setLoading(true);
-                //https://stackoverflow.com/questions/51069552/axios-delete-request-with-body-and-headers
-                axios.delete(`${config.baseUrl}/u/proposals`,
-                {
-                    headers: {'Authorization': `Bearer ${token}`},
-                    data: payload
-                })
-                .then(response => {
-                  setLoading(false);
-                  toast.success(response.data.message, {
-                    position: 'top-center',
+      title: 'Confirm to remove file?',
+      message: 'Are you sure to do this?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => {
+            setLoading(true);
+            //https://stackoverflow.com/questions/51069552/axios-delete-request-with-body-and-headers
+            axios.delete(`${config.baseUrl}/u/proposals`,
+              {
+                headers: { 'Authorization': `Bearer ${token}` },
+                data: payload
+              })
+              .then(response => {
+                setLoading(false);
+                toast.success(response.data.message, {
+                  position: 'top-center',
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined
+                });
+                setRemoveSubmissionActionCounter(removeSubmissionActionCounter + 1);
+              }).catch(error => {
+                setLoading(false);
+                if (error.response != null) {
+                  toast.error(error.response.data.description, {
+                    position: "top-center",
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined
-                    }); 
-                    setRemoveSubmissionActionCounter(removeSubmissionActionCounter + 1);
-                }).catch(error => {
-                  setLoading(false);
-                  if (error.response!=null) {
-                    toast.error(error.response.data.description, {
-                        position: "top-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined
-                        }); 
-                  }
-                  
-                  event.preventDefault();
-                });
-            
-            }// End of onClick section (YES)
-          },
-          {
-            label: 'No',
-            onClick: () => setLoading(false)
-          }
-        ]
-      });    
+                  });
+                }
+
+                event.preventDefault();
+              });
+
+          }// End of onClick section (YES)
+        },
+        {
+          label: 'No',
+          onClick: () => setLoading(false)
+        }
+      ]
+    });
   }// End of handleRemoveSubmissionAction
 
 
@@ -133,14 +133,14 @@ const ManageSubmissions = ({match}) => {
     sort: true
   },
   {
-    dataField:'dummyId1',
-    isDummyField:true,
+    dataField: 'dummyId1',
+    isDummyField: true,
     text: 'Actions',
-  
+
     sort: false,
     /*You need the formatter property for the cell which has the navigation menu*/
     formatter: (cell, row) => {
-      
+
       return 'You can ...';
     },
     editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => {
@@ -152,12 +152,12 @@ const ManageSubmissions = ({match}) => {
         columnIndex: columnIndex,
         parentThis: this
       };
-      return <ManageSubmissionsRowMenu { ...editorProps } {...params}  handleRemoveSubmissionAction={handleRemoveSubmissionAction.bind(this)} />
+      return <ManageSubmissionsRowMenu {...editorProps} {...params} handleRemoveSubmissionAction={handleRemoveSubmissionAction.bind(this)} />
 
     }
   }];
 
-  
+
   const defaultSorted = [{
     dataField: 'fileId',
     order: 'desc'
@@ -166,17 +166,17 @@ const ManageSubmissions = ({match}) => {
   function ShowLoadingSpinner(props) {
     const isLoading = props.loading;
     if (isLoading) {
-      return  (
-      <Spinner animation="border" role="status">
-      <span className="sr-only">Loading...</span>
-    </Spinner>
-    )
-    }else{
-    return '';
+      return (
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      )
+    } else {
+      return '';
     }
   }// End of conditional rendering Bootstrap Spinner logic
   return (
-    
+
     <div>
       <Header />
 
@@ -194,53 +194,53 @@ const ManageSubmissions = ({match}) => {
       />
       {/* ToastContainer - put it outside the Container. */}
 
-      <Container className="fluid" style={{border:'solid 1px black'}}>
+      <Container className="fluid" style={{ border: 'solid 1px black' }}>
         <Row>
-          <Col md={{size:9,offset:-1}}>
+          <Col md={{ size: 9, offset: -1 }}>
             <p class="font-weight-light">This UI has client-side code example which triggers useEffect when there are data changes (e.g. deleted a file)</p>
           </Col>
         </Row>
         <Row>
-          <Col md={{ size: 9, offset: -1}}  
-          lg={{ size: 9, offset: -1}}
-           style={{border:'solid 1px black'}}>
+          <Col md={{ size: 9, offset: -1 }}
+            lg={{ size: 9, offset: -1 }}
+            style={{ border: 'solid 1px black' }}>
             <h3>
-            Manage your team proposal submissions
+              Manage your team proposal submissions
             </h3>
           </Col>
         </Row>
         <Row >
-        <Col md={{ size: 9, offset: -1 }}        lg={{ size: 9, offset: -1}} style={{border:'solid 1px black'}} >
-          <Button variant="btn btn-link float-right">
-                <Link to={`/manageteam/${teamId}`}>Cancel</Link>
-              </Button>
+          <Col md={{ size: 9, offset: -1 }} lg={{ size: 9, offset: -1 }} style={{ border: 'solid 1px black' }} >
+            <Button variant="btn btn-link float-right">
+              <Link to={`/manageteam/${teamId}`}>Cancel</Link>
+            </Button>
           </Col>
-        </Row>     
+        </Row>
         <Row>
-        <Col md={{ size: 9, offset: -1 }}        lg={{ size: 9, offset: -1}} style={{border:'solid 1px black'}} >   
-        <div className="d-flex justify-content-center">
-            <ShowLoadingSpinner loading={loading} />
-        </div>
-        </Col>
-        </Row>   
+          <Col md={{ size: 9, offset: -1 }} lg={{ size: 9, offset: -1 }} style={{ border: 'solid 1px black' }} >
+            <div className="d-flex justify-content-center">
+              <ShowLoadingSpinner loading={loading} />
+            </div>
+          </Col>
+        </Row>
         <Row>
-          <Col md={{ size: 9, offset: -1 }}        lg={{ size: 9, offset: -1}} style={{border:'solid 1px black'}} >
+          <Col md={{ size: 9, offset: -1 }} lg={{ size: 9, offset: -1 }} style={{ border: 'solid 1px black' }} >
             <BootstrapTable
               bootstrap4
               keyField="id"
               data={submissionData}
               columns={columns}
               defaultSorted={defaultSorted}
-              cellEdit={cellEditFactory({ mode: 'click', blurToSave: false })}             
+              cellEdit={cellEditFactory({ mode: 'click', blurToSave: false })}
             />
           </Col>
         </Row>
 
         <Row >
-          <Col md={{ size: 9, offset: -1}}        lg={{ size: 9, offset: -1}} style={{border:'solid 1px black'}} >
-          <Button variant="btn btn-link float-right">
-          <Link to={`/manageteam/${teamId}`}>Cancel</Link>
-              </Button>
+          <Col md={{ size: 9, offset: -1 }} lg={{ size: 9, offset: -1 }} style={{ border: 'solid 1px black' }} >
+            <Button variant="btn btn-link float-right">
+              <Link to={`/manageteam/${teamId}`}>Cancel</Link>
+            </Button>
           </Col>
         </Row>
       </Container>

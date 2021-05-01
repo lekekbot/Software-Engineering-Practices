@@ -97,31 +97,26 @@ export default function OneTimePassword(props) {
                                 </div>
                             )}
                         </div>
-                        <h3>Reset password</h3>
-                        <form onSubmit={handleSubmit}>
-                            <h2>Enter verification code</h2>
-                            <div className="margin-top--small">
-                                <OtpInput
-                                    inputStyle={{
-                                        width: '2.5rem',
-                                        height: '2.5rem',
-                                        margin: '-0 1rem',
-                                        fontSize: '2rem',
-                                        borderRadius: 4,
-                                        border: '1px solid rgba(0,0,0,0.3)',
-                                    }}
-                                    numInputs={6}
-                                    isDisabled={false}
-                                    hasErrored={false}
-                                    errorStyle="error"
-                                    onChange={handleOtpChange}
-                                    separator={<span>-</span>}
-                                    isInputNum={true}
-                                    shouldAutoFocus
-                                />
+                        <h3>Two-Factor Authentication</h3>
+                        <Form role="validateForm">
+                            <div class="input-text-wrap is-full-width" role="authyTokenContainer">
+
+                                <Form.Label class="input-text-label delta1" for="authyTokenContainer-input-id" role="label">
+                                    In order to verify who you are, we've sent you a email message. Please enter the code below.
+                                </Form.Label>
+
+                                <br />
+
+                                <Form.Control class="input-text" data-field="" id="authyTokenContainer-input-id" type="text" role="input" value="" maxlength="{{max_length}}" autofocus="" />
+                                <span class="input-info danger hidden" role="error">
+
+                                </span><span class="input-info hidden" role="info"></span>
                             </div>
-                            <button className="btn margin-top--large" disabled={otp.length < 0}>Verify OTP</button>
-                        </form>
+                            <input name="commit" type="submit" value="Continue" className="btn btn-primary btn-block" disabled=""
+                                style={{ alignSelf: "stretch", display: "block", height: "2.2rem" }, style.inner__btn_block, style.inner__btn_primary, style.inner__btn_not__disabled__not__disabled} />
+                            <br />
+                            <div role="resendTextBtn"><a class="pointer delta2">Resend code via email &gt;</a></div>
+                        </Form>
                     </div>
                 </div>
             </div >
@@ -150,11 +145,11 @@ const style = ({
     },
 })
 
-//The author at cluemediator used this technique so that he does not need to 
-//prepare "two sets" of code just to manage or remember the user name and password. 
+//The author at cluemediator used this technique so that he does not need to
+//prepare "two sets" of code just to manage or remember the user name and password.
 const useFormInput = initialValue => {
     //Note advisable to change the value name to something else
-    //because it is used as a value attribute in the JSX which defines the textboxes.  
+    //because it is used as a value attribute in the JSX which defines the textboxes.
     const [value, setValue] = useState(initialValue);
     const handleChange = e => {
         setValue(e.target.value);
@@ -162,6 +157,6 @@ const useFormInput = initialValue => {
     }
     return {
         value,// This is tied to the JSX 
-        onChange: handleChange, // This is tied to the JSX 
+        onChange: handleChange, // This is tied to the JSX
     }
 }

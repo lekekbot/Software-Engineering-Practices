@@ -26,11 +26,11 @@ export default function EmailVerification() {
         setLoading(true);
         axios.post(`${config.baseUrl}/u/users/resetpassword/:userEmail`, { email: data.email })
             .then(response => {
-                alert("Success!")
                 setLoading(false);
                 setMessage({
                     data: 'Done!',
                 });
+                history.push(`/one_time_password`);
             }).catch(error => {
                 // Validation Logic
                 setLoading(false);

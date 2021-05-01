@@ -15,7 +15,7 @@ exports.processUserEmailOTP = async (req, res, next) => {
     //before we send the email... lets run through our database if the user does exist
     //afterall, we don't want a user to send to other random users as spam!
     emailValidation.validateEmail(userEmail, async function (error, results) {
-        // await sleep(3500);
+        await sleep(3500);
         if (error) {
             return res.status(401).send({
                 code: 401,
@@ -30,7 +30,7 @@ exports.processUserEmailOTP = async (req, res, next) => {
             let password = Math.random() * (1000000 - 10000) + 10000;
             password = Math.ceil(password)
 
-            code = "OBQEZE"
+            //afterwards lets store the code inside a database
 
             // Now, lets send an email to them to user that they have requested for the change
             try {
@@ -47,13 +47,13 @@ exports.processUserEmailOTP = async (req, res, next) => {
                         \n\n-The Competition Management System Support Team`
                 };
 
-                // mg.messages().send(emailData, function (error, body) {
-                //     if (error) {
-                //         console.log(`Sending email has failed`, error);
-                //     } else {
-                //         console.log(`Sent email.`, body);
-                //     }
-                // });
+                mg.messages().send(emailData, function (error, body) {
+                    if (error) {
+                        console.log(`Sending email has failed`, error);
+                    } else {
+                        console.log(`Sent email.`, body);
+                    }
+                });
                 return res.status(200).send({ message: 'Email is set to your system' });
             } catch (error) {
                 console.log('processUserEmailOTP method : catch block section code is running');
