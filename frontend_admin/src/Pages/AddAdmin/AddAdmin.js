@@ -71,10 +71,11 @@ const AddAdmin = () => {
 
 
     const resendInvite = (e,id) => { 
-        console.log(e)
+        // brute force the button 
         e.target.disabled = true
         e.target.innerHTML = 'Invitation Sent'
-        //axios shit for email       
+
+        //resend invite to email
         axios.post(`${config.baseUrl}/a/admin/resend`, {id:id})
         .then(response => {
             console.log(response)
@@ -129,7 +130,7 @@ const AddAdmin = () => {
             {/* header */}
             <Header/>
 
-            {/* form thing ya */}
+            {/* form thing */}
             <Row>
                 <Col md={{size: 6}}>
                     <Title title='Add New Admin'/>
