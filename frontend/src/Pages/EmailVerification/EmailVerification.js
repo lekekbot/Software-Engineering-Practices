@@ -28,20 +28,19 @@ export default function EmailVerification() {
             .then(response => {
                 alert("Success!")
                 setLoading(false);
+                setMessage({
+                    data: 'Done!',
+                });
             }).catch(error => {
-                //If you purposely make the database unavailable (backend failed to connect to db),
-                //the error.response.request is "empty string". Therefore, the experession
-                //error.response.request.status will cause run time error.
-                console.dir(error);
+                // Validation Logic
                 setLoading(false);
-                //https://stackoverflow.com/questions/3390396/how-can-i-check-for-undefined-in-javascript
                 if (typeof (error.response) != 'undefined') {
                     setMessage({
                         data: '',
                     });
                     if (error.response.request.status === 401) {
                         setMessage({
-                            data: 'Login credential is not valid. Please provide your email and password.',
+                            data: "We can't find an email tied to your account! Please try again!",
                             type: 'alert-danger'
                         });
                     } else {
@@ -55,7 +54,6 @@ export default function EmailVerification() {
                         data: 'You are unable to login. If situation persists, please send a support ticket to seek assistance.',
                         type: 'alert-danger'
                     });
-
                 }
                 e.target.reset();
             });
