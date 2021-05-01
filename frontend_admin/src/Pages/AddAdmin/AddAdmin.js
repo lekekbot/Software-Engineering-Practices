@@ -16,20 +16,21 @@ import { useForm } from "react-hook-form";
 const AddAdmin = () => {
     const { register, handleSubmit, errors } = useForm();
     const [data, setData] = useState([])
+    const [resendState, setresendState] = useState({btnmessage: 'Resend Invitation', resend: false})
 
     //componenetDidMount
     useEffect(()=> {
         //get table data for pending fucks
         axios.get(`${config.baseUrl}/a/admin/list`)
         .then(response => {
-            console.log(response.data);
             let records = response.data
-            console.log(records);
             setData(records)
         }).catch(err =>
             console.log(err)
         )
-    })  
+    }, [data,resendState])  
+
+    //send email verification and create temp row 
     const onSubmit = (data,e) => {
         // console.dir(data)
         axios.post(`${config.baseUrl}/a/addadmin`,
@@ -41,7 +42,57 @@ const AddAdmin = () => {
             return alert('error')
         })
      }
+
      //table stuff
+
+     const linkCell = (cell,row) => {
+            let accepted = row.accepted
+            let id = row.user_id
+    
+            return(
+                <div>
+                    {accepted == 1 ? 
+                    <Button
+                    key={id}
+                    onClick={() => handleDelete(id)}>
+                        Delete Record
+                    </Button> :
+                    <Button 
+                    key={id}
+                    onClick={e => 
+                    resendInvite(e,id)
+                    } 
+                    disabled={resendState.resend}>
+                        {resendState.btnmessage}  
+                    </Button>}
+                </div>
+            )
+     }
+
+
+    const resendInvite = (e,id) => { 
+        console.log(e)
+        e.target.disabled = true
+        e.target.innerHTML = 'Invitation Sent'
+        //axios shit for email       
+        axios.post(`${config.baseUrl}/a/admin/resend`, {id:id})
+        .then(response => {
+            console.log(response)
+        })
+        .catch(err => {
+            return console.log(err)
+        })
+    }
+
+    const handleDelete = (id) => {
+        axios.delete(`${config.baseUrl}/a/admin/removetemp/${id}`)
+        .then(response => {
+            return alert('user deleted')
+        })
+        .catch(err => {
+            return console.log(err)
+        })
+    }
      const columns = [{
         dataField: 'user_id',
         text: 'User id',
@@ -65,12 +116,14 @@ const AddAdmin = () => {
         dataField: 'Accepted',
         text: 'Accepted',
         sort: true,
+        formatter: linkCell
 
     }]
     const defaultSorted = [{
         dataField: 'email',
         order: 'desc'
       }];
+
     return (
         <div>
             {/* header */}
@@ -122,7 +175,7 @@ const AddAdmin = () => {
                 </Col>
             </Row>
             
-            {/* table thing for pending admins ya */}
+            {/* table thing for pending admins */}
             <Row>
                 <h1>Pending List</h1>
                 <BootstrapTable
