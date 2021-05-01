@@ -65,8 +65,14 @@ exports.appRoute = router => {
     router.post('/api/u/users/resetpassword/:userEmail', pb4.processUserEmailOTP);
 
     //Problem 5 routes - Bryan
+    //add new admin to temp table
     router.post('/api/a/addadmin', pb5.addNewAdmin)
+    //confirmation when user clicks invite in email
     router.get('/api/a/confirmation/:token', pb5.verifyAdmin)
+    //create admin row to user table
     router.post('/api/a/admin/createAdmin', pb5.createAdmin)
+    //get masteradmin/admin role 
     router.get('/api/a/admin/adminid/:email', pb5.verifyMasterAdmin)
+    //get pending list from temp table
+    router.get('/api/a/admin/list', pb5.getPendingList)
 };

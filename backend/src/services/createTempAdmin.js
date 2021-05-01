@@ -93,3 +93,20 @@ module.exports.getId = (email, callback) => {
         }
     })
 }
+
+module.exports.getList = (callback) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.log('Database conenction error', err);
+            return callback(err, null)
+        } else {
+            connection.query(`SELECT * FROM user_temp`, (err, result) => {
+                if (err) {
+                    return callback(err, null)
+                } else {
+                    return callback(null, result)
+                }
+            })
+        }
+    })
+}

@@ -8,27 +8,69 @@ import config from '../../Config.js';
 
 
 // react related shit
-import { Form, Button, Container, Row , Col  } from "react-bootstrap";
+import { Form, Button, Container, Row , Col,  } from "react-bootstrap";
+import BootstrapTable from 'react-bootstrap-table-next';
 import { useForm } from "react-hook-form";
-
-
 
 
 const AddAdmin = () => {
     const { register, handleSubmit, errors } = useForm();
+    const [data, setData] = useState([])
 
+    //componenetDidMount
+    useEffect(()=> {
+        //get table data for pending fucks
+        axios.get(`${config.baseUrl}/a/admin/list`)
+        .then(response => {
+            console.log(response.data);
+            let records = response.data
+            console.log(records);
+            setData(records)
+        }).catch(err =>
+            console.log(err)
+        )
+    })  
     const onSubmit = (data,e) => {
         // console.dir(data)
         axios.post(`${config.baseUrl}/a/addadmin`,
         {first_name: data['first-name'], last_name: data['last-name'], email: data.email})
         .then(response => {
-            alert('user created')
+            return alert('user created')
         }).catch(err => {
             console.log(err)
-            alert('error')
+            return alert('error')
         })
-    }
+     }
+     //table stuff
+     const columns = [{
+        dataField: 'user_id',
+        text: 'User id',
+        sort: false,
+        hidden: true
+      }, {
+        dataField: 'first_name',
+        text: 'First name',
+        sort: true
+      }, {
+        dataField: 'last_name',
+        text: 'Last name',
+        sort: true
+      },
+      {
+        dataField: 'email',
+        text: 'Email',
+        sort: true
+     },
+    {
+        dataField: 'Accepted',
+        text: 'Accepted',
+        sort: true,
 
+    }]
+    const defaultSorted = [{
+        dataField: 'email',
+        order: 'desc'
+      }];
     return (
         <div>
             {/* header */}
@@ -83,9 +125,13 @@ const AddAdmin = () => {
             {/* table thing for pending admins ya */}
             <Row>
                 <h1>Pending List</h1>
-                <table>
-
-                </table>
+                <BootstrapTable
+                boostrap4
+                keyField="id"
+                data={data}
+                columns={columns}
+                defaultSorted={defaultSorted}
+                />
             </Row>
         </div>
     )

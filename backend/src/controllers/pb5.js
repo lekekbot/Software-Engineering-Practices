@@ -131,3 +131,13 @@ exports.verifyMasterAdmin = (req,res) => {
         }
     })
 }
+
+exports.getPendingList = (req,res) => {
+    create_temp.getList((err,result)=> {
+        if(err) {
+            return res.status(500)
+        } else {
+            return res.status(200).send(result)
+        }
+    })
+}
