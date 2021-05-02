@@ -28,7 +28,7 @@ function Confirmation(props) {
     const onSubmit = (data) => {
         alert("Hello World")
         let token = window.location.href.split("/").slice(-1)
-        console.log(token)
+        history.push(`/login`);
         // console.dir(data);
         setMessage({
             data: 'Login is in progress...',
@@ -36,7 +36,7 @@ function Confirmation(props) {
         });
         axios.post(`${config.baseUrl}/users/confirmation/:${token}`)
             .then(response => {
-                alert(response)
+                history.push(`/login`);
                 setLoading(false);
                 if (response.data.status != 'pending') {
                     setMessage({
@@ -49,7 +49,7 @@ function Confirmation(props) {
                         type: 'alert-success',
                     });
                     //Direct the user to the user status page
-                    // history.push(`/userstatus/${data.email}`);
+                    history.push(`/login`);
                 }
             }).catch(error => {
                 //If you purposely make the database unavailable (backend failed to connect to db),
@@ -61,6 +61,7 @@ function Confirmation(props) {
                     setMessage({
                         data: '',
                     });
+                    console.log(error.response.request.status);
                     if (error.response.request.status === 401) {
                         setMessage({
                             data: 'Login credential is not valid. Please provide your email and password.',
@@ -84,9 +85,23 @@ function Confirmation(props) {
     return (
 
         <div class="OverallContainer" id="root">
+            {message && (
+          <div
+            className={`alert fade show d-flex ${message.type}`}
+            role="alert">
+            {message.data}
+            <span
+              aria-hidden="true"
+              className="ml-auto cursor-pointer"
+              onClick={() => setMessage(null)}
+            >
+              &times;
+            </span>
+          </div>
+        )}
             <form noValidate autoComplete="off">
                 <button onClick={onSubmit}>
-                    Activate Lasers
+                    Verify user
                     </button>
             </form>
         </div>

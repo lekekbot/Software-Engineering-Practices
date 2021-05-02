@@ -153,7 +153,7 @@ exports.processRegister = (req, res, next) => {
                         },
                         config.EMAIL_SECRET,
                         {
-                            expiresIn: '1d',
+                            expiresIn: '30d',
                         },
                         (err, emailToken) => {
                             const url = `http://localhost:3003/confirmation/${emailToken}`;
@@ -191,7 +191,23 @@ exports.processConfirmation = async (req, res, next) => {
     try {
         console.log("It is entering here 2")
         await user.verifyUserEmail(token, (error, results) => {
-            console.log(results)
+            if(results){
+                console.log("it is entering here 3")
+                return res.status(200).json({
+                    code: 200,
+                    error: false,
+                    description: 'Verification is complete',
+                    content: []
+                });
+            }else{
+                console.log("it is entering here 4")
+                return res.status(500).json({
+                    code: 500,
+                    error: true,
+                    description: 'Unable to complete verification, please contact an admin',
+                    content: []
+                });
+            }
         })
     } catch (e) {
         res.send('error');
