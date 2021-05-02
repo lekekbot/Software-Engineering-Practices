@@ -73,7 +73,6 @@ exports.sendEmail = async (req, res, next) => {
 //Success Response
 //Code: 204 No Content
 exports.verifyUserOTP = async (req, res, next) => {
-    //const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
     try {
         var { email, OTP } = req.params
         // findemail translates the user email to a user_id as a Point of Reference
@@ -90,10 +89,8 @@ exports.verifyUserOTP = async (req, res, next) => {
                 let actualOTP = results[0].one_time_password
                 //sentTime
                 let sentTime = results[0].created_at
-
                 //currentTime
-                timestamp = (Date.now())
-                var currentTime = new Date(timestamp - expireTimer);
+                var currentTime = new Date(Date.now() - expireTimer);
 
                 if (actualOTP == OTP) {
                     if (sentTime > currentTime) {

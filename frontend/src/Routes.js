@@ -62,6 +62,7 @@ const Routes = (props) => (
       <Route path="/dashboard" render={authGuard(Dashboard)}></Route>
       <Route path="/createteam" render={authGuard(CreateTeam)}></Route>
       <Route path="/manageteam" render={authGuard(ManageTeam)}></Route>
+      <Route path="/resetpassword" render={authGuard(ManageTeam)}></Route>
       <Route path="/updateteam/:teamId" render={authGuard(UpdateTeam)} />
       <Route path="/jointeam/:teamId/:teamName" render={authGuard(JoinTeam)} />
       <Route path="/manageinvites/:teamId" render={authGuard(ManageInviteTeamMembers)} />
