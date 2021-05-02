@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const emailValidation = require('../services/EmailValidation');
 const mailgun = require("mailgun-js");
@@ -74,7 +75,7 @@ exports.sendEmail = async (req, res, next) => {
 exports.verifyUserOTP = async (req, res, next) => {
     //const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
     try {
-        console.log(req.body)
+        var { email, OTP } = req.params
         // findemail translates the user email to a user_id as a Point of Reference
         let result = await emailValidation.findEmail(email)
         let { user_id } = result
@@ -83,14 +84,38 @@ exports.verifyUserOTP = async (req, res, next) => {
         //This function finds the latest OTP that was sent to the user. It thens validates.
         emailValidation.validateOTP(user_id, function (results, error) {
             if (error) {
-                return res.status(401).send({
-                    code: 401,
-                    error: true,
-                    description: 'Error!',
-                    content: []
-                });
+                return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
             } else {
-                return res.status(200).send({ OTP: `${results[0].one_time_password}` });
+                var actualOTP = results[0].one_time_password
+                if (actualOTP == OTP) {
+                    emailValidation.correctOTP(email, function (results, error) {
+                        if (error) {
+                            console.log(error)
+                            return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
+                        } else {
+                            console.log("Here was reached")
+                            const responseBody = {
+                                //user_id: results[0].user_id,
+                                //role_name: results[0].role_name,
+                                displayName: results[0].first_name + ' ' + results[0].last_name,
+                                status: results[0].status,
+                                email: results[0].email,
+                                token: jwt.sign({
+                                    userId: results[0].user_id,
+                                    role: results[0].role_name,
+                                    email: results[0].email
+                                },
+                                    config.JWTKey, {
+                                    expiresIn: 86400 //Expires in 24 hrs
+                                })
+                            }; //End of data variable setup
+                            console.log(responseBody)
+                            return res.status(200).send(responseBody);
+                        }
+                    })
+                } else {
+                    return res.status(401).send({ message: `The OTP you key in was wrong!` });
+                }
             }
         })
     } catch (error) {

@@ -29,12 +29,10 @@ export default function OneTimePassword(props) {
 
         //logic
         var email = getEmailFromLocalStore()
-        //alert(email)
         var OTP = data.OTP
-        //alert(OTP)
 
-        //uses logic to validate
-        axios.get(`${config.baseUrl}/u/user/validate_2fa/`, { email: email, OTP: OTP })
+        //Verify the OTP the user keyed in as well as the one in the database
+        axios.get(`${config.baseUrl}/u/user/validate_2fa/${email}/${OTP}`)
             .then(response => {
                 setLoading(false);
                 if (response.data.status != 'pending') {
@@ -66,18 +64,18 @@ export default function OneTimePassword(props) {
                     });
                     if (error.response.request.status === 401) {
                         setMessage({
-                            data: 'Login credential is not valid. Please provide your email and password.',
+                            data: 'The OTP you have keyed in is wrong! Please try again!',
                             type: 'alert-danger'
                         });
                     } else {
                         setMessage({
-                            data: 'You are unable to login. If situation persists, please send a support ticket to seek assistance.',
+                            data: 'You are unable to verify. If situation persists, please send a support ticket to seek assistance.',
                             type: 'alert-danger'
                         });
                     }// end if ( error.response.request.status === 401)
                 } else {
                     setMessage({
-                        data: 'You are unable to login. If situation persists, please send a support ticket to seek assistance.',
+                        data: 'You are unable to verify. If situation persists, please send a support ticket to seek assistance.',
                         type: 'alert-danger'
                     });
 
