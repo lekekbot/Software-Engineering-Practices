@@ -25,7 +25,7 @@ import EmailVerification from './Pages/EmailVerification/EmailVerification'
 import OneTimePassword from './Pages/OneTimePassword/OneTimePassword';
 
 // FOR TESTING AND EXPERIMENTATION
-//import Test from './Pages/TestingPZ/OneTimePassword';
+import Test from './Pages/TestingPZ/ResetPassword';
 
 const authGuard = (Component) => (props) => {
   console.log(props);
@@ -55,14 +55,14 @@ const Routes = (props) => (
       <Route path="/one_time_password">
         <OneTimePassword />
       </Route>
-      {/**PZ TESTING SITE */}
-      {/**PZ TESTING SITE */}
       <Route path="/userstatus/:userEmail" render={(props) => <UserStatus {...props} />} />
       <Route path="/rules" render={Rules}></Route>
       <Route path="/dashboard" render={authGuard(Dashboard)}></Route>
       <Route path="/createteam" render={authGuard(CreateTeam)}></Route>
       <Route path="/manageteam" render={authGuard(ManageTeam)}></Route>
-      <Route path="/resetpassword" render={authGuard(ManageTeam)}></Route>
+      {/**PZ TESTING SITE */}
+      <Route path="/resetpassword" render={authGuard(Test)}></Route>
+      {/**PZ TESTING SITE */}
       <Route path="/updateteam/:teamId" render={authGuard(UpdateTeam)} />
       <Route path="/jointeam/:teamId/:teamName" render={authGuard(JoinTeam)} />
       <Route path="/manageinvites/:teamId" render={authGuard(ManageInviteTeamMembers)} />
