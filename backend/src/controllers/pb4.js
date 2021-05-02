@@ -77,8 +77,9 @@ exports.verifyUserOTP = async (req, res, next) => {
     try {
         var { email, OTP } = req.params
         // findemail translates the user email to a user_id as a Point of Reference
-        let result = await emailValidation.findEmail(email)
-        let { user_id } = result
+        let { user_id } = await emailValidation.findEmail(email)
+        //set time out for password so after 5 mins, the OTP won't be usable
+        let expireTimer = 60 * 5
         //since a user_id is individually tied to a OTP, retrive all the OTP tied to the user, but then send only the 
         //latest version
         //This function finds the latest OTP that was sent to the user. It thens validates.
@@ -86,33 +87,56 @@ exports.verifyUserOTP = async (req, res, next) => {
             if (error) {
                 return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
             } else {
-                var actualOTP = results[0].one_time_password
+                let actualOTP = results[0].one_time_password
+                //sentTime
+                let sentTime = results[0].created_at
+
+                //currentTime
+                console.log(Date.now())
+                console.log(Date.now() - 5 * 60 * 1000)
+                timestamp = (Date.now())
+                var date = new Date(timestamp - 5 * 60 * 1000);
+                // equation of accepting and throwing
+                // ACCEPT if 
+                // sentTime + 5 mins > currentTime
+                // therefore sentTime > currentTime - 5 mins
+
+                console.log(sentTime)
+                console.log(date)
+                console.log(sentTime > date)
+
                 if (actualOTP == OTP) {
-                    emailValidation.correctOTP(email, function (results, error) {
-                        if (error) {
-                            console.log(error)
-                            return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
-                        } else {
-                            console.log("Here was reached")
-                            const responseBody = {
-                                //user_id: results[0].user_id,
-                                //role_name: results[0].role_name,
-                                displayName: results[0].first_name + ' ' + results[0].last_name,
-                                status: results[0].status,
-                                email: results[0].email,
-                                token: jwt.sign({
-                                    userId: results[0].user_id,
-                                    role: results[0].role_name,
-                                    email: results[0].email
-                                },
-                                    config.JWTKey, {
-                                    expiresIn: 86400 //Expires in 24 hrs
-                                })
-                            }; //End of data variable setup
-                            console.log(responseBody)
-                            return res.status(200).send(responseBody);
-                        }
-                    })
+                    if (sentTime > date) {
+                        console.log("Time has not breached")
+                        emailValidation.correctOTP(email, function (results, error) {
+                            if (error) {
+                                console.log(error)
+                                return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
+                            } else {
+                                console.log("Here was reached")
+                                const responseBody = {
+                                    //user_id: results[0].user_id,
+                                    //role_name: results[0].role_name,
+                                    displayName: results[0].first_name + ' ' + results[0].last_name,
+                                    status: results[0].status,
+                                    email: results[0].email,
+                                    token: jwt.sign({
+                                        userId: results[0].user_id,
+                                        role: results[0].role_name,
+                                        email: results[0].email
+                                    },
+                                        config.JWTKey, {
+                                        expiresIn: 86400 //Expires in 24 hrs
+                                    })
+                                }; //End of data variable setup
+                                console.log(responseBody)
+                                return res.status(200).send(responseBody);
+                            }
+                        })
+                    } else {
+                        console.log("Error time was breeched")
+                        return res.status(402).send({ code: 402, error: true, description: 'Time has expired!', content: [] });
+                    }
                 } else {
                     return res.status(401).send({ message: `The OTP you key in was wrong!` });
                 }
