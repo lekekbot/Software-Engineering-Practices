@@ -92,21 +92,11 @@ exports.verifyUserOTP = async (req, res, next) => {
                 let sentTime = results[0].created_at
 
                 //currentTime
-                console.log(Date.now())
-                console.log(Date.now() - 5 * 60 * 1000)
                 timestamp = (Date.now())
-                var date = new Date(timestamp - 5 * 60 * 1000);
-                // equation of accepting and throwing
-                // ACCEPT if 
-                // sentTime + 5 mins > currentTime
-                // therefore sentTime > currentTime - 5 mins
-
-                console.log(sentTime)
-                console.log(date)
-                console.log(sentTime > date)
+                var currentTime = new Date(timestamp - 5 * 60 * 1000);
 
                 if (actualOTP == OTP) {
-                    if (sentTime > date) {
+                    if (currentTime > date) {
                         console.log("Time has not breached")
                         emailValidation.correctOTP(email, function (results, error) {
                             if (error) {
