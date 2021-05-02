@@ -8,14 +8,14 @@ import Title from "../../Elements/Title/Title";
 import "./DeleteUser.css";
 import config from '../../Config.js';
 
-//functions can't handle state well, so i changed to clas
+//functions can't handle state well, so i changed to class
 export default class kek extends React.Component {
     constructor() {
         super()
         this.state = {
             searchData: [],
             userData: [],
-            master: false,
+            master: '',
             prevData: '',
             deleteUser: [],
             deletemsg: '',
@@ -24,14 +24,34 @@ export default class kek extends React.Component {
             confirm: false
         }
         this.handleSearch.bind(this)
-        this.gay.bind(this)
+        this.handleRowClick.bind(this)
     }
-    componentDidMount(){
-        axios.get(`${config.baseUrl}/a/userList`, {master: this.state.master})
+
+    async componentDidMount (){
+        //get table 
+
+        //check if master admin or admin
+        var email = localStorage.getItem('email')
+        await axios.get(`${config.baseUrl}/a/admin/adminid/${email}`)
+        .then((response) => {
+          if(response.data[0].role_name === 'master_admin') {
+            this.setState({master: true})
+          } else {
+            this.setState({master: false})
+          }
+        })
+        .catch(err => {
+            console.log(err)
+            this.setState({master: false})
+          })
+
+        //get user table
+
+        axios.get(`${config.baseUrl}/a/userList/${this.state.master}`)
         .then(response => {
             let data = response.data.map(e => 
                 <div key={e.user_id} id={e.user_id} className='rows'
-                onClick={e => this.gay(e)}>
+                onClick={e => this.handleRowClick(e)}>
                     <div>{e.first_name}</div>
                     <div>{e.last_name}</div>
                     <div>{e.role_name}</div>
@@ -41,11 +61,9 @@ export default class kek extends React.Component {
         .catch(err => console.log(err))
     }
 
-    handleAdmin = (data) => {
-        this.setState({master: data})
-    }
+    //get data if user is master admin/admin 
 
-    gay = (e) => {
+    handleRowClick = (e) => {
         this.setState({prevData: e.currentTarget})
         if(this.state.prevData) this.state.prevData.style.backgroundColor = 'transparent'
         e.currentTarget.style.backgroundColor = 'orange'  
@@ -71,22 +89,23 @@ export default class kek extends React.Component {
         .catch(err => console.log(err))
     }
 
+    // handle search when user types something
     handleSearch = (e) => {
             let val = e.currentTarget.value
             if(val != '') {
-                let cheese = this.state.userData.map((e)=> {
+                let html = this.state.userData.map((e)=> {
                     return (e.props.children[0].props.children.toLowerCase().includes(val.toLowerCase()) || e.props.children[1].props.children.toLowerCase().includes(val.toLowerCase()) ?
                         <div key={e.key} id={e.key} className='rows'
-                        onClick={evt => this.gay(evt)}>
+                        onClick={evt => this.handleRowClick(evt)}>
                             <div>{e.props.children[0].props.children}</div>
                             <div>{e.props.children[1].props.children}</div>
                             <div>{e.props.children[2].props.children}</div>
                         </div> : '')
                 })
-                cheese = cheese.filter(el => el)
+                html = html.filter(el => el)
     
-                if(cheese.length > 0) { 
-                   return this.setState({searchData: cheese})
+                if(html.length > 0) { 
+                   return this.setState({searchData: html})
                 } else {
                 return this.setState({searchData: [<div key="nothing" className='rows'>nothing mate, try harder</div>]})
                 }
@@ -95,6 +114,7 @@ export default class kek extends React.Component {
             }
         }
 
+    //it is what it is, deletes user stuff
     handleDelete =() => {
         if(this.state.confirm) {
             //handle axios delete 
@@ -106,7 +126,7 @@ export default class kek extends React.Component {
                 .then(response => {
                     let data = response.data.map(e => 
                         <div key={e.user_id} id={e.user_id} className='rows'
-                        onClick={e => this.gay(e)}>
+                        onClick={e => this.handleRowClick(e)}>
                             <div>{e.first_name}</div>
                             <div>{e.last_name}</div>
                             <div>{e.role_name}</div>
@@ -125,8 +145,8 @@ export default class kek extends React.Component {
     render(){
         return (
             <div>
-                    <Title title={'Delete User'}/>
-                <Header masteradmin={this.handleAdmin}/>
+                <Title title={'Delete User'}/>
+                <Header/>
                 <h1>Delete User</h1>
                 <div className="searchBar">
                    <h6>Search:</h6> <input type="text" onChange={e => this.handleSearch(e)}/>

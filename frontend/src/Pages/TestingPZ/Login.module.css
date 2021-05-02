@@ -1,0 +1,18 @@
+.container {
+    height: 100vh;
+}
+
+.loginFormContainer {
+    width: 21rem;
+}
+
+.loginFormLegend {
+    width: 14rem;
+    background: #dee2e6;
+}
+
+.errorMessage {
+    font-size: 12px;
+    letter-spacing: 0.05rem;
+    color:#FF0000;
+}

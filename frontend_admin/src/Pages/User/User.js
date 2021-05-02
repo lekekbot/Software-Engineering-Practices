@@ -171,7 +171,7 @@ const User = () => {
   return (
     
     <div>
-      <Header />
+      <Header/>
 
       <Title title="Manage users"></Title>
       <ToastContainer

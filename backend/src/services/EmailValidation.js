@@ -93,7 +93,7 @@ module.exports.validateOTP = (user_id, callback) => {
             if (err) throw err;
         } else {
             try {
-                let query = `SELECT password.one_time_password FROM competiton_system_4_db.one_time_password password, competiton_system_4_db.user user where user_id=user_id_fk2 and user_id = ? ORDER BY password.created_at DESC;`;
+                let query = `SELECT password.one_time_password, password.created_at FROM competiton_system_4_db.one_time_password password, competiton_system_4_db.user user where user_id=user_id_fk2 and user_id = ? ORDER BY password.created_at DESC;`;
                 connection.query(query, [user_id], (err, results) => {
                     if (err) {
                         if (err) return callback(err, null);

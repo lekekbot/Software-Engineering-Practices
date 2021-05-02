@@ -3,6 +3,7 @@ const config = require('../config/config');
 const pool = require('../config/database');
 const mysql = require("../utils/mysql.js");
 
+// create temporary user
 module.exports.tempUser = (firstName, lastName, email, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -24,6 +25,7 @@ module.exports.tempUser = (firstName, lastName, email, callback) => {
     })
 }
 
+//get temporary user data
 module.exports.getTempData = (id, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -45,7 +47,7 @@ module.exports.getTempData = (id, callback) => {
     })
 }
 
-
+// update temporary data to reflect changes if accepted
 module.exports.alterTempData = (id, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -67,6 +69,7 @@ module.exports.alterTempData = (id, callback) => {
     })
 }
 
+//create admin in user table
 module.exports.createAdmin = (firstName, lastName, email, pass) => {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -79,11 +82,9 @@ module.exports.createAdmin = (firstName, lastName, email, pass) => {
                 [firstName, lastName, email, pass, 1, 0], (err, result) => {
                     if (err) {
                         connection.release()
-
                         return err
                     } else {
                         connection.release()
-
                         return result
                     }
                 })
@@ -91,6 +92,7 @@ module.exports.createAdmin = (firstName, lastName, email, pass) => {
     })
 }
 
+//get role for condition: only master admin can add new admin
 module.exports.getId = (email, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -103,7 +105,6 @@ module.exports.getId = (email, callback) => {
                     connection.release()
                     return callback(err, null)
                 } else {
-                    console.log(result)
                     connection.release()
                     return callback(null, result)
                 }
@@ -112,6 +113,7 @@ module.exports.getId = (email, callback) => {
     })
 }
 
+//get list for pending table
 module.exports.getList = () => {
     let TempDataQuery = `SELECT * FROM user_temp`
 
@@ -134,7 +136,8 @@ module.exports.getList = () => {
     })
 }
 
-module.exports.deleteTemp = (id, callback) => {
+// delete temporary row from user_temp table
+module.exports.deleteTemp = (id) => {
     let deleteTempData = `DELETE FROM user_Temp WHERE user_id = ${id}`
 
     return new Promise((resolve, reject) => {
@@ -157,8 +160,10 @@ module.exports.deleteTemp = (id, callback) => {
     })
 }
 
+//get users for delete table
 module.exports.getusers = (master) => {
-    let master_adminQuery = `SELECT user_id,first_name,last_name,email,role_name FROM user u INNER JOIN role r ON u.role_id=r.role_id WHERE r.role_name<>'master_admin`
+    console.log(master)
+    let master_adminQuery = `SELECT user_id,first_name,last_name,email,role_name FROM user u INNER JOIN role r ON u.role_id=r.role_id WHERE r.role_name<>'master_admin'`
     let adminQuery = `SELECT user_id,first_name,last_name,email,role_name FROM user u INNER JOIN role r ON u.role_id=r.role_id WHERE r.role_name<>'master_admin' AND r.role_name<>'admin'`
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
@@ -192,6 +197,7 @@ module.exports.getusers = (master) => {
     })
 }
 
+//system to list out if user is part of the team
 module.exports.getuserlist = (id) => {
     let getdataquery = `SELECT user_id,first_name,last_name,t.team_id, t.name,tm.leader,tm.team_member_id FROM USER u
     jOIN team_member tm on tm.member_id=u.user_id
@@ -233,6 +239,7 @@ module.exports.getuserlist = (id) => {
     })
 }
 
+// deletes record of user, team and team members
 module.exports.deleteLeadTeam = (teamId, userId) => {
     //delete 2 things from table 
     //delete team member table if leader table is 1
@@ -276,6 +283,7 @@ module.exports.deleteLeadTeam = (teamId, userId) => {
     })
 }
 
+// deletes record of user and team members
 module.exports.deleteTeamMember = (memberId) => {
     //delete only team member db
     let deleteTeamMemberQuery = `delete from team_member where  member_id=?`

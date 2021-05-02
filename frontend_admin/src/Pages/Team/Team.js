@@ -11,7 +11,7 @@ function Team () {
 
     return (
         <div>
-            <Header/>
+            <Header />
             <h1>gay fk</h1>
         </div>
     )

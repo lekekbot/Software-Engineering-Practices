@@ -86,8 +86,7 @@ exports.appRoute = router => {
     router.delete('/api/a/admin/removetemp/:id', pb5.checkvalid, pb5.removetemp)
 
     //problem 5 use case 2
-    router.get('/api/a/userList', pb5.getUserList)
+    router.get('/api/a/userList/:master', pb5.getUserList)
     router.get('/api/a/delete/pending/:id', pb5.getdeleteList)
-    router.delete('/api/a/delete/:id', pb5.verifyUser, pb5.deleteUser)
-
+    router.delete('/api/a/delete/:id', pb5.checkvalid, pb5.deleteUser)
 };

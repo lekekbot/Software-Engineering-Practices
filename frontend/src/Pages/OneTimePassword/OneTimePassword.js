@@ -67,9 +67,14 @@ export default function OneTimePassword(props) {
                             data: 'The OTP you have keyed in is wrong! Please try again!',
                             type: 'alert-danger'
                         });
+                    } else if (error.response.request.status === 402) {
+                        setMessage({
+                            data: 'Your OTP has expired! Would you like us to resend?',
+                            type: 'alert-danger'
+                        });
                     } else {
                         setMessage({
-                            data: 'You are unable to verify. If situation persists, please send a support ticket to seek assistance.',
+                            data: 'Your OTP has expired! Would you like us to resend?',
                             type: 'alert-danger'
                         });
                     }// end if ( error.response.request.status === 401)
