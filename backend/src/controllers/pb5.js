@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 
-const create_temp = require('../services/createTempAdmin');
+const pb5_service = require('../services/pb5Service');
 const {
     EMAIL_SECRET
 } = require('../config/config');
@@ -27,7 +27,7 @@ exports.addNewAdmin = (req, res) => {
 
     try {
         //add to SQL
-        create_temp.tempUser(first_name, last_name, email, (error, result) => {
+        pb5_service.tempUser(first_name, last_name, email, (error, result) => {
             if (error) {
                 console.log(error);
                 return res.status(500).send({
@@ -69,7 +69,7 @@ exports.verifyAdmin = (req, res) => {
     try {
         const id = jwt.verify(token, EMAIL_SECRET)
 
-        create_temp.getTempData(id.user, (err, result) => {
+        pb5_service.getTempData(id.user, (err, result) => {
             if (err) {
                 return res.status(500)
             } else {
@@ -86,13 +86,7 @@ exports.verifyAdmin = (req, res) => {
 
 //push user to user table 
 exports.createAdmin = (req, res) => {
-    let {
-        user_id,
-        first_name,
-        last_name,
-        email,
-        password
-    } = req.body
+    let { user_id, first_name, last_name, email, password } = req.body
 
     //password hashing
     bcrypt.hash(password, 10, async (err, hash) => {
@@ -103,7 +97,7 @@ exports.createAdmin = (req, res) => {
             })
         } else {
             //change accepted to 1 
-            create_temp.alterTempData(user_id, (err, result) => {
+            pb5_service.alterTempData(user_id, (err, result) => {
                 if (err) {
                     console.log(err)
                     return res.status(500)
@@ -111,7 +105,7 @@ exports.createAdmin = (req, res) => {
             })
             //add admin to user table 
             try {
-                results = await create_temp.createAdmin(first_name, last_name, email, hash)
+                results = await pb5_service.createAdmin(first_name, last_name, email, hash)
                 console.log(results)
                 return res.status(200).json({
                     code: 200,
@@ -137,7 +131,7 @@ exports.createAdmin = (req, res) => {
 exports.verifyMasterAdmin = (req, res) => {
     let email = req.params.email
 
-    create_temp.getId(email, (err, result) => {
+    pb5_service.getId(email, (err, result) => {
         if (err) {
             return res.status(500)
         } else {
@@ -149,7 +143,7 @@ exports.verifyMasterAdmin = (req, res) => {
 //for pending table 
 exports.getPendingList = async (req, res) => {
     try {
-        let results = await create_temp.getList()
+        let results = await pb5_service.getList()
         return res.status(200).send(results)
 
     } catch (err) {
@@ -161,7 +155,7 @@ exports.getPendingList = async (req, res) => {
 
 exports.resendEmail = (req, res) => {
     let id = req.body.id
-    create_temp.getTempData(id, (err, result) => {
+    pb5_service.getTempData(id, (err, result) => {
         if (err) {
             return res.status(500)
         } else {
@@ -194,7 +188,7 @@ exports.checkvalid = (req, res, next) => {
 exports.removetemp = async (req, res) => {
     let id = req.params.id
     try {
-        let results = await create_temp.deleteTemp(id)
+        let results = await pb5_service.deleteTemp(id)
         console.log(results)
         return res.status(200).send(results)
     } catch (err) {
@@ -207,7 +201,7 @@ exports.getUserList = async (req, res) => {
     console.log(master_admin)
     if (master_admin === 'true') {
         try {
-            let results = await create_temp.getusers(true)
+            let results = await pb5_service.getusers(true)
             return res.status(200).send(results)
         } catch (err) {
             console.log(err)
@@ -215,7 +209,7 @@ exports.getUserList = async (req, res) => {
         }
     } else {
         try {
-            let results = await create_temp.getusers(false)
+            let results = await pb5_service.getusers(false)
             return res.status(200).send(results)
         } catch (err) {
             console.log(err)
@@ -223,18 +217,16 @@ exports.getUserList = async (req, res) => {
         }
     }
 }
+
 exports.getdeleteList = async (req, res) => {
     let id = req.params.id
     try {
-        let results = await create_temp.getuserlist(id)
+        let results = await pb5_service.getuserlist(id)
         return res.status(200).send(results)
     } catch (err) {
         console.log(err)
         return res.status(500)
     }
-}
-exports.verifyUser = (req, res, next) => {
-    next()
 }
 
 exports.deleteUser = async (req, res) => {
@@ -243,11 +235,11 @@ exports.deleteUser = async (req, res) => {
     for (i = 0; i < data.length; i++) {
         if (data[i].leader == 1) {
             //delete anything related to leader
-            let results = await create_temp.deleteLeadTeam(data[i].team_id, data[i].user_id)
+            let results = await pb5_service.deleteLeadTeam(data[i].team_id, data[i].user_id)
             return res.status(200).send(results)
         } else {
             //delete member role in team member
-            let results = await create_temp.deleteTeamMember(data[i].user_id)
+            let results = await pb5_service.deleteTeamMember(data[i].user_id)
             return res.status(200).send(results)
         }
     }

@@ -25,7 +25,6 @@ export default class kek extends React.Component {
         }
         this.handleSearch.bind(this)
         this.handleRowClick.bind(this)
-        this.handleAdmin.bind(this)
     }
 
     async componentDidMount (){
