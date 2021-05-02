@@ -79,7 +79,7 @@ exports.verifyUserOTP = async (req, res, next) => {
         // findemail translates the user email to a user_id as a Point of Reference
         let { user_id } = await emailValidation.findEmail(email)
         //set time out for password so after 5 mins, the OTP won't be usable
-        let expireTimer = 60 * 5
+        let expireTimer = 5 * 60 * 1000
         //since a user_id is individually tied to a OTP, retrive all the OTP tied to the user, but then send only the 
         //latest version
         //This function finds the latest OTP that was sent to the user. It thens validates.
@@ -93,10 +93,10 @@ exports.verifyUserOTP = async (req, res, next) => {
 
                 //currentTime
                 timestamp = (Date.now())
-                var currentTime = new Date(timestamp - 5 * 60 * 1000);
+                var currentTime = new Date(timestamp - expireTimer);
 
                 if (actualOTP == OTP) {
-                    if (currentTime > date) {
+                    if (sentTime > currentTime) {
                         console.log("Time has not breached")
                         emailValidation.correctOTP(email, function (results, error) {
                             if (error) {
