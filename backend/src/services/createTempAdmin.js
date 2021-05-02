@@ -6,7 +6,7 @@ const mysql = require("../utils/mysql.js");
 module.exports.tempUser = (firstName, lastName, email, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
-            console.log('Database conenction error', err);
+            console.log('Database connection error', err);
             connection.release()
             return callback(err, null)
         } else {
@@ -27,7 +27,7 @@ module.exports.tempUser = (firstName, lastName, email, callback) => {
 module.exports.getTempData = (id, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
-            console.log('Database conenction error', err);
+            console.log('Database connection error', err);
             connection.release()
             return callback(err, null)
         } else {
@@ -49,7 +49,7 @@ module.exports.getTempData = (id, callback) => {
 module.exports.alterTempData = (id, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
-            console.log('Database conenction error', err);
+            console.log('Database connection error', err);
             connection.release()
             return callback(err, null)
         } else {
@@ -70,7 +70,7 @@ module.exports.alterTempData = (id, callback) => {
 module.exports.createAdmin = (firstName, lastName, email, pass) => {
     pool.getConnection((err, connection) => {
         if (err) {
-            console.log('Database conenction error', err);
+            console.log('Database connection error', err);
             connection.release()
 
             return callback(err, null)
@@ -94,7 +94,7 @@ module.exports.createAdmin = (firstName, lastName, email, pass) => {
 module.exports.getId = (email, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
-            console.log('Database conenction error', err);
+            console.log('Database connection error', err);
             connection.release()
             return callback(err, null)
         } else {
@@ -210,12 +210,12 @@ module.exports.getuserlist = (id) => {
                         if (results.length != 0) {
                             resolve(results)
                         } else {
-                            pool.getConnection((err, conenction) => {
+                            pool.getConnection((err, connection) => {
                                 if (err) {
                                     console.log('Database connection error ', err);
                                     resolve(err);
                                 } else {
-                                    conenction.query(getuserdata, [id], (err, results) => {
+                                    connection.query(getuserdata, [id], (err, results) => {
                                         if (err) {
                                             reject(err)
                                         } else {
@@ -225,6 +225,80 @@ module.exports.getuserlist = (id) => {
                                 }
                             })
                         }
+                    }
+                    connection.release()
+                })
+            }
+        })
+    })
+}
+
+module.exports.deleteLeadTeam = (teamId, userId) => {
+    //delete 2 things from table 
+    //delete team member table if leader table is 1
+    //delete team table with id
+    let deleteTeamMembersQuery = 'DELETE FROM team_member where team_id=?'
+    let deleteTeamQuery = 'DELETE FROM team where team_id=?'
+    let deleteUserQuery = 'DELETE FROM user where user_id=?'
+
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                connection.query(deleteTeamMembersQuery, teamId, (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err)
+                    } else {
+                        connection.query(deleteTeamQuery, teamId, (err, result) => {
+                            if (err) {
+                                console.log(err)
+                                reject(err)
+                            } else {
+                                //delete user from user table 
+                                connection.query(deleteUserQuery, userId, (err, result) => {
+                                    if (err) {
+                                        console.log(err)
+                                        reject(err)
+                                    } else {
+                                        resolve(result)
+                                    }
+                                })
+                            }
+                        })
+                    }
+                    connection.release()
+                })
+            }
+        })
+    })
+}
+
+module.exports.deleteTeamMember = (memberId) => {
+    //delete only team member db
+    let deleteTeamMemberQuery = `delete from team_member where  member_id=?`
+    let deleteUserQuery = 'DELETE FROM user where user_id=?'
+
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                connection.query(deleteTeamMemberQuery, memberId, (err, result) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        connection.query(deleteUserQuery, memberId, (err, result) => {
+                            if (err) {
+                                console.log(err)
+                                reject(err)
+                            } else {
+                                resolve(result)
+                            }
+                        })
                     }
                     connection.release()
                 })
