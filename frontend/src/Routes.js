@@ -61,7 +61,7 @@ const Routes = (props) => (
       <Route path="/createteam" render={authGuard(CreateTeam)}></Route>
       <Route path="/manageteam" render={authGuard(ManageTeam)}></Route>
       {/**PZ TESTING SITE */}
-      {/* <Route path="/resetpassword" render={authGuard(Test)}></Route> */}
+      <Route path="/resetpassword" render={authGuard(Test)}></Route>
       {/**PZ TESTING SITE */}
       <Route path="/updateteam/:teamId" render={authGuard(UpdateTeam)} />
       <Route path="/jointeam/:teamId/:teamName" render={authGuard(JoinTeam)} />
