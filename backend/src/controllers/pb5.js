@@ -203,9 +203,9 @@ exports.removetemp = async (req, res) => {
 }
 
 exports.getUserList = async (req, res) => {
-    let master_admin = req.body.master
-
-    if (master_admin) {
+    let master_admin = req.params.master
+    console.log(master_admin)
+    if (master_admin === 'true') {
         try {
             let results = await create_temp.getusers(true)
             return res.status(200).send(results)

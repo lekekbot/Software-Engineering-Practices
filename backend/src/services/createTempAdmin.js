@@ -103,7 +103,6 @@ module.exports.getId = (email, callback) => {
                     connection.release()
                     return callback(err, null)
                 } else {
-                    console.log(result)
                     connection.release()
                     return callback(null, result)
                 }
@@ -158,7 +157,8 @@ module.exports.deleteTemp = (id, callback) => {
 }
 
 module.exports.getusers = (master) => {
-    let master_adminQuery = `SELECT user_id,first_name,last_name,email,role_name FROM user u INNER JOIN role r ON u.role_id=r.role_id WHERE r.role_name<>'master_admin`
+    console.log(master)
+    let master_adminQuery = `SELECT user_id,first_name,last_name,email,role_name FROM user u INNER JOIN role r ON u.role_id=r.role_id WHERE r.role_name<>'master_admin'`
     let adminQuery = `SELECT user_id,first_name,last_name,email,role_name FROM user u INNER JOIN role r ON u.role_id=r.role_id WHERE r.role_name<>'master_admin' AND r.role_name<>'admin'`
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {

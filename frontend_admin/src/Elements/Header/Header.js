@@ -6,7 +6,7 @@ import config from "../../Config.js";
 
 
 import { getUserDisplayNameFromLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
-const Header = (props) => {
+const Header = () => {
 
 const history = useHistory();
 const location = useLocation()
@@ -29,12 +29,9 @@ const [master,setmaster] = useState(false)
     var email = localStorage.getItem('email')
     axios.get(`${config.baseUrl}/a/admin/adminid/${email}`)
     .then((response) => {
-      if(response.data[0].role_name == 'master_admin') {
-        props.masteradmin(true)
+      if(response.data[0].role_name === 'master_admin') {
         setmaster(true)
       } else {
-        props.masteradmin(false)
-
         setmaster(false)
       }
     })

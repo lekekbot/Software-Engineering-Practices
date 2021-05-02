@@ -69,7 +69,6 @@ const AddAdmin = () => {
             )
      }
 
-
     const resendInvite = (e,id) => { 
         // brute force the button 
         e.target.disabled = true
@@ -125,10 +124,11 @@ const AddAdmin = () => {
         order: 'desc'
       }];
 
+
     return (
         <div>
             {/* header */}
-            <Header/>
+            <Header />
 
             {/* form thing */}
             <Row>
