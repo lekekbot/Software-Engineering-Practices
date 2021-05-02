@@ -25,7 +25,7 @@ import EmailVerification from './Pages/EmailVerification/EmailVerification'
 import OneTimePassword from './Pages/OneTimePassword/OneTimePassword';
 
 // FOR TESTING AND EXPERIMENTATION
-import Test from './Pages/TestingPZ/ResetPassword';
+//import Test from './Pages/TestingPZ/ResetPassword';
 
 const authGuard = (Component) => (props) => {
   console.log(props);
