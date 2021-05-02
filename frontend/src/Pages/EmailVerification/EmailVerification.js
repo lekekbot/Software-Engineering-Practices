@@ -27,16 +27,19 @@ export default function EmailVerification() {
         setLoading(true);
         axios.post(`${config.baseUrl}/u/users/resetpassword/:userEmail`, { email: data.email })
             .then(response => {
+                //since all is successful, lets store all the info
                 setLoading(false);
                 setMessage({
                     data: 'Done!',
                 });
+
                 // set the token and user from the local storage
                 saveUserDataToLocalStore('', '', data.email);
 
                 history.push(`/one_time_password`);
             }).catch(error => {
-                // Validation Logic
+                //If no email can be found in relation to the user, execute this code here
+                //or if theres an unknown err with the DB
                 setLoading(false);
                 if (typeof (error.response) != 'undefined') {
                     setMessage({

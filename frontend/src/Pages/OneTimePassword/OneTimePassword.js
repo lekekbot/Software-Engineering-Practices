@@ -9,26 +9,15 @@ import axios from 'axios';
 import config from '../../config.js';
 import { useForm } from 'react-hook-form'
 import { useHistory } from "react-router-dom";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
-import OtpInput from 'react-otp-input';
 
 export default function OneTimePassword(props) {
-    const [otp, setOtp] = useState(0);
     const { register, handleSubmit, errors } = useForm();
     const history = useHistory();
+    const OTP = useFormInput('');
     const [message, setMessage] = useState({ data: '', type: '' });
     const [loading, setLoading] = useState(false);
-    const email = useFormInput('chaipinzheng@gmail.com');
-
-    const handleOtpChange = (otp) => {
-        setOtp({ otp });
-    };
-
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     alert(e.otp);
-    // };
 
     const onSubmit = (data, e) => {
         setMessage({
@@ -100,17 +89,23 @@ export default function OneTimePassword(props) {
                         <h3>Two-Factor Authentication</h3>
                         <Form role="validateForm">
                             <div class="input-text-wrap is-full-width" role="authyTokenContainer">
+                                <Form.Group>
+                                    <Form.Label class="input-text-label delta1" for="authyTokenContainer-input-id" role="label">
+                                        In order to verify who you are, we've sent you a email message. Please enter the code below.
+                                    </Form.Label>
+                                    <br />
 
-                                <Form.Label class="input-text-label delta1" for="authyTokenContainer-input-id" role="label">
-                                    In order to verify who you are, we've sent you a email message. Please enter the code below.
-                                </Form.Label>
+                                    <Form.Control type="text" name="OTP" {...OTP} placeholder="e.g. 0123456"
+                                        class="input-text" id="authyTokenContainer-input-id" role="input" value="" autofocus=""
+                                        ref={register({
+                                            required: {
+                                                value: true,
+                                                message: 'Please key in your OTP',
+                                            },
+                                        })} />
 
-                                <br />
-
-                                <Form.Control class="input-text" data-field="" id="authyTokenContainer-input-id" type="text" role="input" value="" maxlength="{{max_length}}" autofocus="" />
-                                <span class="input-info danger hidden" role="error">
-
-                                </span><span class="input-info hidden" role="info"></span>
+                                    <span class="input-info danger hidden" role="error"></span><span class="input-info hidden" role="info"></span>
+                                </Form.Group>
                             </div>
                             <input name="commit" type="submit" value="Continue" className="btn btn-primary btn-block" disabled=""
                                 style={{ alignSelf: "stretch", display: "block", height: "2.2rem" }, style.inner__btn_block, style.inner__btn_primary, style.inner__btn_not__disabled__not__disabled} />
@@ -145,11 +140,9 @@ const style = ({
     },
 })
 
-//The author at cluemediator used this technique so that he does not need to
-//prepare "two sets" of code just to manage or remember the user name and password.
 const useFormInput = initialValue => {
     //Note advisable to change the value name to something else
-    //because it is used as a value attribute in the JSX which defines the textboxes.
+    //because it is used as a value attribute in the JSX which defines the textboxes.  
     const [value, setValue] = useState(initialValue);
     const handleChange = e => {
         setValue(e.target.value);
@@ -157,6 +150,6 @@ const useFormInput = initialValue => {
     }
     return {
         value,// This is tied to the JSX 
-        onChange: handleChange, // This is tied to the JSX
+        onChange: handleChange, // This is tied to the JSX 
     }
 }

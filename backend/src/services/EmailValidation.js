@@ -2,12 +2,6 @@
 const cloudinary = require('cloudinary').v2;
 const config = require('../config/config');
 const pool = require('../config/database')
-cloudinary.config({
-    cloud_name: config.cloudinaryCloudName,
-    api_key: config.cloudinaryApiKey,
-    api_secret: config.cloudinaryApiSecret,
-    upload_preset: 'upload_to_proposals'
-});
 
 //checks with the db whether an account under xxx@gmail.com does exist. Else flag an error using status codes
 //only two answer using CallBacks. - either yes, it does exist or no.
@@ -66,6 +60,30 @@ module.exports.findEmail = (email) => {
         });
     }); //End of new Promise object creation
 } // End of getOneUserStatusData
+
+//Afterwards, the user_id is used to insert the OTP associated to the user_id
+//Success Response - ?
+module.exports.insertOTP = (OTP, user_id, callback) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            if (err) throw err;
+        } else {
+            try {
+                let query = "INSERT INTO competiton_system_4_db.one_time_password(one_time_password, user_id_fk2) VALUES(?,?)";
+                connection.query(query, [OTP, user_id], (error, result) => {
+                    if (error) {
+                        if (error) return callback(error, null);
+                    } else {
+                        return callback(null, result);
+                    }
+                    connection.release();
+                });
+            } catch (error) {
+                return callback(error, null);;
+            }
+        }
+    });
+} //End of createFileData
 
 //Afterwards, the user_id is used to find all the OTP associated to the user_id. We sort by desc using time and 
 //use the first result

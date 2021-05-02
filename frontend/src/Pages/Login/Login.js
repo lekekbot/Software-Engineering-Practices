@@ -1,17 +1,17 @@
 import React, { Component, useState } from 'react';
-import styles from './Login.module.css';
+
+//Styling
 import './Login.module2.css';
+import styles from './Login.module.css';
 
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
-
+//Imports
 import axios from 'axios';
-import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-
-import { useForm } from 'react-hook-form';
 import config from '../../config.js';
+import { useForm } from 'react-hook-form';
+import { useHistory } from "react-router-dom";
 import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
-// Therefore, you need to use the {what function do you need} technique.
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 
 function Login(props) {
   const { register, handleSubmit, errors } = useForm();
