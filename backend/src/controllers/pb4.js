@@ -72,15 +72,15 @@ exports.sendEmail = async (req, res, next) => {
 //Success Response
 //Code: 204 No Content
 exports.verifyUserOTP = async (req, res, next) => {
-    // to change
-    const userEmail = "chaipinzheng@gmail.com";
     //const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
     try {
+        console.log(req.body)
         // findemail translates the user email to a user_id as a Point of Reference
-        let result = await emailValidation.findEmail(userEmail)
+        let result = await emailValidation.findEmail(email)
         let { user_id } = result
         //since a user_id is individually tied to a OTP, retrive all the OTP tied to the user, but then send only the 
         //latest version
+        //This function finds the latest OTP that was sent to the user. It thens validates.
         emailValidation.validateOTP(user_id, function (results, error) {
             if (error) {
                 return res.status(401).send({
@@ -90,7 +90,6 @@ exports.verifyUserOTP = async (req, res, next) => {
                     content: []
                 });
             } else {
-                console.log(results[0])
                 return res.status(200).send({ OTP: `${results[0].one_time_password}` });
             }
         })

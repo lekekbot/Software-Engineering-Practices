@@ -10,7 +10,7 @@ import config from '../../config.js';
 import { useForm } from 'react-hook-form'
 import { useHistory } from "react-router-dom";
 import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
-import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
+import { getEmailFromLocalStore, saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 
 export default function OneTimePassword(props) {
     const { register, handleSubmit, errors } = useForm();
@@ -20,15 +20,39 @@ export default function OneTimePassword(props) {
     const [loading, setLoading] = useState(false);
 
     const onSubmit = (data, e) => {
+        //Generation of message
         setMessage({
-            data: 'Verifying your email...',
+            data: 'Verifying your OTP...',
             type: 'alert-warning',
         });
         setLoading(true);
-        axios.post(`${config.baseUrl}/u/users/resetpassword/:userEmail`, { email: data.email })
+
+        //logic
+        var email = getEmailFromLocalStore()
+        //alert(email)
+        var OTP = data.OTP
+        //alert(OTP)
+
+        //uses logic to validate
+        axios.get(`${config.baseUrl}/u/user/validate_2fa/`, { email: email, OTP: OTP })
             .then(response => {
-                alert("Success!")
                 setLoading(false);
+                if (response.data.status != 'pending') {
+                    setMessage({
+                        data: 'Logged in successfully, redirecting...',
+                        type: 'alert-success',
+                    });
+                    saveUserDataToLocalStore(response.data.token, response.data.displayName, response.data.email);
+                    history.push('/dashboard');
+                } else {
+                    setMessage({
+                        data: 'Logged in successfully. Your registration is still pending. Redirecting...',
+                        type: 'alert-success',
+                    });
+                    //Direct the user to the user status page
+                    saveUserDataToLocalStore('', response.data.displayName, response.data.email);
+                    history.push(`/userstatus/${response.data.email}`);
+                }
             }).catch(error => {
                 //If you purposely make the database unavailable (backend failed to connect to db),
                 //the error.response.request is "empty string". Therefore, the experession
@@ -58,12 +82,15 @@ export default function OneTimePassword(props) {
                     });
 
                 }
+                // end if(error.response.request!='')
+
+                // Reset the form state
                 e.target.reset();
             });
     }
 
     const redirect = () => {
-        history.push('/login');
+        history.push('/register');
     }
 
     return (
@@ -87,16 +114,16 @@ export default function OneTimePassword(props) {
                             )}
                         </div>
                         <h3>Two-Factor Authentication</h3>
-                        <Form role="validateForm">
+                        <Form role="validateForm" noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
                             <div class="input-text-wrap is-full-width" role="authyTokenContainer">
-                                <Form.Group>
+                                <Form.Group controlId="formOTP">
                                     <Form.Label class="input-text-label delta1" for="authyTokenContainer-input-id" role="label">
                                         In order to verify who you are, we've sent you a email message. Please enter the code below.
                                     </Form.Label>
                                     <br />
 
                                     <Form.Control type="text" name="OTP" {...OTP} placeholder="e.g. 0123456"
-                                        class="input-text" id="authyTokenContainer-input-id" role="input" value="" autofocus=""
+                                        class="input-text" autofocus="" id="authyTokenContainer-input-id"
                                         ref={register({
                                             required: {
                                                 value: true,
