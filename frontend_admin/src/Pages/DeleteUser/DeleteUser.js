@@ -56,7 +56,6 @@ export default class kek extends React.Component {
             let data = response.data
             if(data[0].name == undefined) {
                 this.setState({deletemsg: `You are deleting ${data[0].first_name} ${data[0].last_name}: `, deleteUser: [<div>No Team involved</div>], disabledelete: false, confirm:false, pendingdeletedata:data})    
-
             } else {
                 let i = 0
                 let output = data.map(e => {
@@ -76,7 +75,6 @@ export default class kek extends React.Component {
             let val = e.currentTarget.value
             if(val != '') {
                 let cheese = this.state.userData.map((e)=> {
-                    console.log(e)
                     return (e.props.children[0].props.children.toLowerCase().includes(val.toLowerCase()) || e.props.children[1].props.children.toLowerCase().includes(val.toLowerCase()) ?
                         <div key={e.key} id={e.key} className='rows'
                         onClick={evt => this.gay(evt)}>
@@ -98,10 +96,27 @@ export default class kek extends React.Component {
         }
 
     handleDelete =() => {
-        console.log('clicku')
         if(this.state.confirm) {
-            console.log(this.state.pendingdeletedata)
             //handle axios delete 
+            axios.delete(`${config.baseUrl}/a/delete/${this.state.pendingdeletedata[0].user_id}`,{data: {data: this.state.pendingdeletedata}})
+            .then(response => {
+                console.log(response)
+                alert('User successfully deleted')
+                axios.get(`${config.baseUrl}/a/userList`, {master: this.state.master})
+                .then(response => {
+                    let data = response.data.map(e => 
+                        <div key={e.user_id} id={e.user_id} className='rows'
+                        onClick={e => this.gay(e)}>
+                            <div>{e.first_name}</div>
+                            <div>{e.last_name}</div>
+                            <div>{e.role_name}</div>
+                        </div>)
+                        this.setState({userData: data})
+                })
+                .catch(err => console.log(err))
+
+            })
+            .catch(err => console.log(err))
         }else {
             this.setState({confirm:true})
         }
@@ -110,34 +125,24 @@ export default class kek extends React.Component {
     render(){
         return (
             <div>
-            <Header masteradmin={this.handleAdmin}/>
-            <h1>gay fk</h1>
-            <div className="searchBar">
-                <input type="text" onChange={e => this.handleSearch(e)}/>
+                    <Title title={'Delete User'}/>
+                <Header masteradmin={this.handleAdmin}/>
+                <h1>Delete User</h1>
+                <div className="searchBar">
+                   <h6>Search:</h6> <input type="text" onChange={e => this.handleSearch(e)}/>
+                </div>
+                <div className='data-row'>
+                    {this.state.searchData.length > 0 ? this.state.searchData : this.state.userData}
+                </div>
+                <div className='user-data-row'>
+                    {this.state.deletemsg}
+                    {this.state.deleteUser}
+                    <button
+                    disabled={this.state.disabledelete}
+                    onClick={this.handleDelete}
+                    >{this.state.confirm ? 'Are you Sure? This action is irreversible': 'Delete User'}</button>
+                </div>
             </div>
-            <div className='data-row'>
-                {this.state.searchData.length > 0 ? this.state.searchData : this.state.userData}
-            </div>
-            <div className='user-data-row'>
-                {this.state.deletemsg}
-                {this.state.deleteUser}
-                <button
-                disabled={this.state.disabledelete}
-                onClick={this.handleDelete}
-                >{this.state.confirm ? 'Are you Sure? This action is irreversible': 'Delete User'}</button>
-            </div>
-        </div>
         )
     }
 }
-
-
-//check if is leader of group, if team member, delete entire team db
-//check if team member 
-
-//sql for getting table
-/*
-SELECT first_name,last_name, t.name,tm.leader FROM USER u
-jOIN team_member tm on tm.member_id=u.user_id
-JOIN team t on t.team_id=tm.team_id WHERE user_id=?;
-*/

@@ -233,3 +233,22 @@ exports.getdeleteList = async (req, res) => {
         return res.status(500)
     }
 }
+exports.verifyUser = (req, res, next) => {
+    next()
+}
+
+exports.deleteUser = async (req, res) => {
+    let id = req.params.id
+    let data = req.body.data
+    for (i = 0; i < data.length; i++) {
+        if (data[i].leader == 1) {
+            //delete anything related to leader
+            let results = await create_temp.deleteLeadTeam(data[i].team_id, data[i].user_id)
+            return res.status(200).send(results)
+        } else {
+            //delete member role in team member
+            let results = await create_temp.deleteTeamMember(data[i].user_id)
+            return res.status(200).send(results)
+        }
+    }
+}
