@@ -73,6 +73,11 @@ function Login(props) {
               data: 'Login credential is not valid. Please provide your email and password.',
               type: 'alert-danger'
             });
+          } else if (error.response.request.status === 402) {
+            setMessage({
+              data: 'Your email has not been approved. Please be patient and give the admin at least 3 working days',
+              type: 'alert-danger'
+            });
           } else {
             setMessage({
               data: 'You are unable to login. If situation persists, please send a support ticket to seek assistance.',

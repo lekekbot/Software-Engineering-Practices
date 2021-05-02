@@ -77,6 +77,7 @@ exports.processUserLogin = (req, res, next) => {
                 });
             } else {
                 if (results.length == 1) {
+                    console.log("it is entering here 1")
                     if ((password == null) || (results[0] == null)) {
                         return res.status(401).send({
                             code: 401,
@@ -86,7 +87,18 @@ exports.processUserLogin = (req, res, next) => {
                         });
                     }
                     if (bcrypt.compareSync(password, results[0].user_password) == true) {
+                        console.log("it is entering here 2")
+                        console.log(results[0]);
+                        if (results[0].status != "approved") {
+                            return res.status(402).send({
+                                code: 402,
+                                error: true,
+                                description: 'Looks like your account has not been approved',
+                                content: []
+                            });
+                        }
                         const responseBody = {
+                            
                             //user_id: results[0].user_id,
                             //role_name: results[0].role_name,
                             displayName: results[0].first_name + ' ' + results[0].last_name,

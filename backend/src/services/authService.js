@@ -6,7 +6,7 @@ module.exports.authenticateUser = (email, callback) => {
             if (err) throw err;
         } else {
             try {
-                connection.query(`SELECT user.user_id, first_name, last_name, status, email, user_password, role_name, user.role_id  
+                connection.query(`SELECT user.user_id, first_name, last_name, status, email, user_password, status, role_name, user.role_id  
                    FROM user INNER JOIN role ON user.role_id=role.role_id AND email='${email}'`, {}, (err, rows) => {
                     if (err) {
                         if (err) return callback(err, null);
