@@ -6,7 +6,7 @@ import config from "../../Config.js";
 
 
 import { getUserDisplayNameFromLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
-const Header = () => {
+const Header = (props) => {
 
 const history = useHistory();
 const location = useLocation()
@@ -18,7 +18,7 @@ const [master,setmaster] = useState(false)
   useEffect(()=> {
     if(location.state != undefined) {
       setId(location.state.email)
-      console.log(location)
+      // console.log(location)
       localStorage.setItem('email', location.state.email);
     }
     GetId()
@@ -30,8 +30,11 @@ const [master,setmaster] = useState(false)
     axios.get(`${config.baseUrl}/a/admin/adminid/${email}`)
     .then((response) => {
       if(response.data[0].role_name == 'master_admin') {
+        props.masteradmin(true)
         setmaster(true)
       } else {
+        props.masteradmin(false)
+
         setmaster(false)
       }
     })
@@ -63,7 +66,7 @@ const [master,setmaster] = useState(false)
         <>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <a className="navbar-brand" href="/">
-            RnR Business Plan Competition
+            RnR Business Plan Competitione
           </a>
           <button
             className="navbar-toggler"
@@ -93,12 +96,19 @@ const [master,setmaster] = useState(false)
                   Team
                 </a>
               </li>
+
+              <li className="nav-item active">
+                <a className="nav-link" href="/remove">
+                  Delete User
+                </a>
+              </li>
               {master ? 
               <li className="nav-item active">
                 <a className="nav-link" href="/AddAdmin">
                   Add New Admin
                 </a>
-              </li>  : ''}
+              </li>   
+              : ''}
               <li className="nav-item">
                 <span
                   className="nav-link cursor-pointer"

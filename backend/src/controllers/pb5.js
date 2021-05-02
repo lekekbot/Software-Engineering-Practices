@@ -188,7 +188,7 @@ exports.resendEmail = (req, res) => {
 }
 
 exports.checkvalid = (req, res, next) => {
-  next()
+    next()
 }
 
 exports.removetemp = async (req, res) => {
@@ -198,6 +198,38 @@ exports.removetemp = async (req, res) => {
         console.log(results)
         return res.status(200).send(results)
     } catch (err) {
+        return res.status(500)
+    }
+}
+
+exports.getUserList = async (req, res) => {
+    let master_admin = req.body.master
+
+    if (master_admin) {
+        try {
+            let results = await create_temp.getusers(true)
+            return res.status(200).send(results)
+        } catch (err) {
+            console.log(err)
+            return res.status(500)
+        }
+    } else {
+        try {
+            let results = await create_temp.getusers(false)
+            return res.status(200).send(results)
+        } catch (err) {
+            console.log(err)
+            return res.status(500)
+        }
+    }
+}
+exports.getdeleteList = async (req, res) => {
+    let id = req.params.id
+    try {
+        let results = await create_temp.getuserlist(id)
+        return res.status(200).send(results)
+    } catch (err) {
+        console.log(err)
         return res.status(500)
     }
 }

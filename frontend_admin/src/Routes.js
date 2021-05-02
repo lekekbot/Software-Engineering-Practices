@@ -9,9 +9,12 @@ import {
 import Login from './Pages/Login/Login';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import User from './Pages/User/User';
+import Team from './Pages/Team/Team'
 import AddAdmin from './Pages/AddAdmin/AddAdmin'
 import VerifyAdmin from './Pages/verifyAdmin/verifyAdmin'
+import DeleteUser from './Pages/DeleteUser/DeleteUser'
 console.log(User);
+
 const authGuard = (Component) => () => {
   return localStorage.getItem('token') ? (
     <Component />
@@ -31,8 +34,14 @@ const Routes = (props) => (
       <Route path="/user">
         <User />
       </Route>
+      <Route path="/team">
+        <Team />
+      </Route>
       <Route path='/AddAdmin'>
         <AddAdmin/>
+      </Route>
+      <Route path='/remove'>
+        <DeleteUser/>
       </Route>
       <Route path='/admin/confirmation/:token'>
         <VerifyAdmin/>

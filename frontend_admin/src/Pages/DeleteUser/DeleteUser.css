@@ -1,0 +1,11 @@
+.rows {
+    display: flex;
+    cursor:  pointer;
+}
+
+.data-row {
+    margin: 0 auto;
+    width: 50vw;
+    height: 50vh;
+    overflow:  scroll;
+}

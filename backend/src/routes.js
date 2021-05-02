@@ -69,6 +69,7 @@ exports.appRoute = router => {
     router.get('/api/u/users/validate_2fa/', pb4.verifyUserOTP);
 
     //Problem 5 routes - Bryan
+    //problem 5 use case 1
     //add new admin to temp table
     router.post('/api/a/addadmin', pb5.addNewAdmin)
     //confirmation when user clicks invite in email
@@ -83,4 +84,10 @@ exports.appRoute = router => {
     router.post('/api/a/admin/resend', pb5.resendEmail)
     //delete temp user
     router.delete('/api/a/admin/removetemp/:id', pb5.checkvalid, pb5.removetemp)
+
+    //problem 5 use case 2
+    router.get('/api/a/userList', pb5.getUserList)
+    router.get('/api/a/delete/pending/:id', pb5.getdeleteList)
+
+
 };

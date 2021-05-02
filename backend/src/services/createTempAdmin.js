@@ -156,3 +156,79 @@ module.exports.deleteTemp = (id, callback) => {
         })
     })
 }
+
+module.exports.getusers = (master) => {
+    let master_adminQuery = `SELECT user_id,first_name,last_name,email,role_name FROM user u INNER JOIN role r ON u.role_id=r.role_id WHERE r.role_name<>'master_admin`
+    let adminQuery = `SELECT user_id,first_name,last_name,email,role_name FROM user u INNER JOIN role r ON u.role_id=r.role_id WHERE r.role_name<>'master_admin' AND r.role_name<>'admin'`
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                if (master) {
+                    connection.query(master_adminQuery, [], (err, results) => {
+                        if (err) {
+                            console.log(err)
+                            reject(err)
+                        } else {
+                            resolve(results)
+                        }
+                        connection.release()
+                    })
+                } else {
+                    connection.query(adminQuery, [], (err, results) => {
+                        if (err) {
+                            console.log(err)
+                            reject(err)
+                        } else {
+                            resolve(results)
+                        }
+                        connection.release()
+                    })
+                }
+            }
+        })
+    })
+}
+
+module.exports.getuserlist = (id) => {
+    let getdataquery = `SELECT user_id,first_name,last_name,t.team_id, t.name,tm.leader,tm.team_member_id FROM USER u
+    jOIN team_member tm on tm.member_id=u.user_id
+    JOIN team t on t.team_id=tm.team_id WHERE user_id=?`
+    let getuserdata = `SELECT user_id,first_name,last_name FROM user WHERE user_id=?`
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                connection.query(getdataquery, [id], (err, results) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        if (results.length != 0) {
+                            resolve(results)
+                        } else {
+                            pool.getConnection((err, conenction) => {
+                                if (err) {
+                                    console.log('Database connection error ', err);
+                                    resolve(err);
+                                } else {
+                                    conenction.query(getuserdata, [id], (err, results) => {
+                                        if (err) {
+                                            reject(err)
+                                        } else {
+                                            resolve(results)
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                    connection.release()
+                })
+            }
+        })
+    })
+}
