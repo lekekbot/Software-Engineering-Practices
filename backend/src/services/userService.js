@@ -240,11 +240,9 @@ module.exports.updateDesign = (recordId, title, description) => {
 module.exports.verifyUserEmail = async(req, res, callback) => {
     let user_id
     try {
-        console.log(req)
         req = req.substring(1);
         let jwtObject = jwt.verify(req, config.EMAIL_SECRET);
         user_id = jwtObject.user_id;
-        console.log(user_id)
       } catch (e) {
           console.log(e)
         res.send('error');
@@ -259,10 +257,15 @@ module.exports.verifyUserEmail = async(req, res, callback) => {
             } else {
                 connection.query(`UPDATE competiton_system_4_db.user SET is_verified=true WHERE user_id=${user_id} ;`, (err, rows) => {
                     if (err) {
+                        
+                        console.log(err)
                         reject(err);
                     } else {
+                        console.log("it is entering")
+                        console.log(rows)
                         resolve(rows);
                     }
+                    connection.release();
                 });
             }
         });
