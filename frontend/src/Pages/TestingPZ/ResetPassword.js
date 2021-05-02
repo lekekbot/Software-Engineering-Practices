@@ -1,98 +1,124 @@
-import './Login.module2.css';
-import styles from './Login.module.css';
-
-//Imports
-import axios from 'axios';
-import config from '../../config.js';
-import { useForm } from 'react-hook-form';
+import React, { useState } from "react";
+import Form from "react-bootstrap/Form";
 import { useHistory } from "react-router-dom";
-import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import LoaderButton from "./LoaderButton";
+import { useAppContext } from "./contextLib";
+import { useFormFields } from "./hooksLib";
+import { onError } from "./errorLib";
+import "./Signup.css";
 
+export default function Signup() {
+  const [fields, handleFieldChange] = useFormFields({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    confirmationCode: "",
+  });
+  const history = useHistory();
+  const [newUser, setNewUser] = useState(null);
+  const { userHasAuthenticated } = useAppContext();
+  const [isLoading, setIsLoading] = useState(false);
 
-export default function ResetPassword(props) {
+  function validateForm() {
+    return (
+      fields.email.length > 0 &&
+      fields.password.length > 0 &&
+      fields.password === fields.confirmPassword
+    );
+  }
+
+  function validateConfirmationForm() {
+    return fields.confirmationCode.length > 0;
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    setIsLoading(true);
+
+    setNewUser("test");
+
+    setIsLoading(false);
+  }
+
+  async function handleConfirmationSubmit(event) {
+    event.preventDefault();
+
+    setIsLoading(true);
+  }
+
+  function renderConfirmationForm() {
+    return (
+      <Form onSubmit={handleConfirmationSubmit}>
+        <Form.Group controlId="confirmationCode" size="lg">
+          <Form.Label>Confirmation Code</Form.Label>
+          <Form.Control
+            autoFocus
+            type="tel"
+            onChange={handleFieldChange}
+            value={fields.confirmationCode}
+          />
+          <Form.Text muted>Please check your email for the code.</Form.Text>
+        </Form.Group>
+        <LoaderButton
+          block
+          size="lg"
+          type="submit"
+          variant="success"
+          isLoading={isLoading}
+          disabled={!validateConfirmationForm()}
+        >
+          Verify
+        </LoaderButton>
+      </Form>
+    );
+  }
+
+  function renderForm() {
+    return (
+      <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="email" size="lg">
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            autoFocus
+            type="email"
+            value={fields.email}
+            onChange={handleFieldChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="password" size="lg">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            value={fields.password}
+            onChange={handleFieldChange}
+          />
+        </Form.Group>
+        <Form.Group controlId="confirmPassword" size="lg">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            type="password"
+            onChange={handleFieldChange}
+            value={fields.confirmPassword}
+          />
+        </Form.Group>
+        <LoaderButton
+          block
+          size="lg"
+          type="submit"
+          variant="success"
+          isLoading={isLoading}
+          disabled={!validateForm()}
+        >
+          Signup
+        </LoaderButton>
+      </Form>
+    );
+  }
 
   return (
-    <div className="create_account_screen">
-
-      <div className="create_account_form">
-        <h1>Create account</h1>
-        <p>Example of form validation built with React.</p>
-        <form onSubmit={this.saveAndContinue}>
-
-          <Input
-            text="Email Address"
-            ref="email"
-            type="text"
-            defaultValue={this.state.email}
-            validate={this.validateEmail}
-            value={this.state.email}
-            onChange={this.handleEmailInput}
-            errorMessage="Email is invalid"
-            emptyMessage="Email can't be empty"
-            errorVisible={this.state.showEmailError}
-          />
-
-          <Input
-            text="Company Name"
-            ref="companyName"
-            validate={this.isEmpty}
-            value={this.state.companyName}
-            onChange={this.handleCompanyInput}
-            emptyMessage="Company name can't be empty"
-          />
-
-          <Input
-            text="Password"
-            type="password"
-            ref="password"
-            validator="true"
-            minCharacters="8"
-            requireCapitals="1"
-            requireNumbers="1"
-            forbiddenWords={this.state.forbiddenWords}
-            value={this.state.passsword}
-            emptyMessage="Password is invalid"
-            onChange={this.handlePasswordInput}
-          />
-
-          <Input
-            text="Confirm password"
-            ref="passwordConfirm"
-            type="password"
-            validate={this.isConfirmedPassword}
-            value={this.state.confirmPassword}
-            onChange={this.handleConfirmPasswordInput}
-            emptyMessage="Please confirm your password"
-            errorMessage="Passwords don't match"
-          />
-
-          <Select
-            options={STATES}
-            ref="state"
-            value={this.state.statesValue}
-            onChange={this.updateStatesValue}
-            searchable={this.props.searchable}
-            emptyMessage="Please select state"
-            errorMessage="Please select state"
-            placeholder="Choose Your State"
-            placeholderTitle="Your State"
-          />
-
-          <button
-            type="submit"
-            className="button button_wide">
-            CREATE ACCOUNT
-            </button>
-
-        </form>
-
-        <a href="https://github.com/mikepro4/react-signup-form" target="_blank" className="github_link" title="View Source Code">
-          <Icon type="guthub" />
-        </a>
-      </div>
-
+    <div className="Signup">
+      {newUser === null ? renderForm() : renderConfirmationForm()}
     </div>
-  )
+  );
 }
