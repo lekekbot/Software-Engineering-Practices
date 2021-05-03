@@ -2,6 +2,7 @@
 const cloudinary = require('cloudinary').v2;
 const config = require('../config/config');
 const pool = require('../config/database')
+const bcrypt = require('bcryptjs');
 
 //checks with the db whether an account under xxx@gmail.com does exist. Else flag an error using status codes
 //only two answer using CallBacks. - either yes, it does exist or no.
@@ -135,3 +136,46 @@ module.exports.correctOTP = (email, callback) => {
     }); // End of getConnection
 
 } // End of authenticate
+
+module.exports.extractPassword = async (user_id) => {
+    return new Promise((resolve, reject) => {
+        pool.getConnection(async (err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                //The SQL has to query by email.
+                //The SQL must not retrieve administrator data 
+                connection.query(`SELECT user_password, user_password_histories FROM competiton_system_4_db.user WHERE user_id = ?;`, [user_id],
+                    (err, results) => {
+                        if (err) {
+                            console.log(err);
+                            reject(err);
+                        } else {
+                            resolve(results[0]);
+                        }
+                    });
+            };
+        });
+    }); //End of new Promise object creation
+} //End of createFileData
+
+module.exports.storePassword = (password) => {
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                connection.query(`UPDATE user SET user_password =${password} WHERE user_id=${us}`, (err, rows) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(rows);
+                    }
+                    connection.release();
+                });
+            }
+        });
+    }); //End of new Promise object creation
+} //End of updateUser

@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 //styling
-import './Login.module2.css';
-import styles from './Login.module.css';
+import './ResetPassword.css';
+import styles from './ResetPassword2.css';
 import check from './check.svg'
 import close from './close.svg'
 
@@ -11,18 +11,18 @@ import axios from 'axios';
 import config from '../../config.js';
 import { useForm } from 'react-hook-form';
 import { useHistory } from "react-router-dom";
-import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
+import { saveUserDataToLocalStore, getTokenFromLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 import { usePasswordValidation } from "./hooks/usePasswordValidation";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 
 function App() {
-    const { register, handleSubmit, errors } = useForm();
     const history = useHistory();
-    const email = useFormInput('dazzelneo@abc.com');
-    const [password, setPassword] = useState({ firstPassword: "", secondPassword: "", });
-    const [message, setMessage] = useState({ data: '', type: '' });
+    const token = getTokenFromLocalStore();
     const [loading, setLoading] = useState(false);
+    const { register, handleSubmit, errors } = useForm();
+    const [password, setPassword] = useState({ firstPassword: "Abc12345!", secondPassword: "Abc12345!", });
+    const [message, setMessage] = useState({ data: '', type: '' });
     const [validLength, hasNumber, upperCase, lowerCase, match, specialChar,] = usePasswordValidation({ firstPassword: password.firstPassword, secondPassword: password.secondPassword, });
 
     const setFirst = (event) => {
@@ -36,7 +36,7 @@ function App() {
     // Logic missing
     const onSubmit = (data, e) => {
         var userNewPassword = (password.firstPassword)
-
+        alert(token)
         if (validLength && hasNumber && upperCase && lowerCase && match && specialChar) {
             setMessage({
                 data: 'Verification in progress...',

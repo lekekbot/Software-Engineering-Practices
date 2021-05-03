@@ -25,7 +25,7 @@ export default function EmailVerification() {
             type: 'alert-warning',
         });
         setLoading(true);
-        axios.post(`${config.baseUrl}/u/users/resetpassword/:userEmail`, { email: data.email })
+        axios.post(`${config.baseUrl}/u/users/resetpassword/userEmail`, { email: data.email })
             .then(response => {
                 //since all is successful, lets store all the info
                 setLoading(false);
