@@ -56,20 +56,18 @@ export default function Gay() {
         .then(response => {
             alert('Success! Account Created. Redirecting you to login page')
             history.push('/login');
-
         })
+        .catch(err => console.log(err))
     }
 
     return (
         <Container>
             <Row>
-                <h1>CIBAI</h1>
+                <h1>Create Admin Account</h1>
             </Row>
 
             <Row>
-
                 <Form autoComplete='false' onSubmit={handleSubmit(onSubmit)}>
-
                         <Form.Group controlId='first_name'>
                             <Form.Label>First Name</Form.Label>
                             <Form.Control type='text' name="first_name" value={datas ? datas.first_name : ''}
@@ -127,7 +125,6 @@ export default function Gay() {
 
                         <Button variant="primary" type="submit" >Accept Invite</Button>
                     </Form>     
-
             </Row>
         </Container>
     )

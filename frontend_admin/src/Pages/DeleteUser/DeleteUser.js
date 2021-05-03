@@ -115,13 +115,14 @@ export default class kek extends React.Component {
         }
 
     //it is what it is, deletes user stuff
-    handleDelete =() => {
+    handleDelete = () => {
         if(this.state.confirm) {
             //handle axios delete 
             axios.delete(`${config.baseUrl}/a/delete/${this.state.pendingdeletedata[0].user_id}`,{data: {data: this.state.pendingdeletedata}})
             .then(response => {
                 console.log(response)
                 alert('User successfully deleted')
+                //resets table cos react class isn't constantly refreshing
                 axios.get(`${config.baseUrl}/a/userList`, {master: this.state.master})
                 .then(response => {
                     let data = response.data.map(e => 
@@ -134,7 +135,6 @@ export default class kek extends React.Component {
                         this.setState({userData: data})
                 })
                 .catch(err => console.log(err))
-
             })
             .catch(err => console.log(err))
         }else {

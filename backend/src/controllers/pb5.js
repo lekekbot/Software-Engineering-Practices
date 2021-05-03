@@ -6,9 +6,7 @@ const bcrypt = require('bcrypt')
 
 
 const pb5_service = require('../services/pb5Service');
-const {
-    EMAIL_SECRET
-} = require('../config/config');
+const { EMAIL_SECRET } = require('../config/config');
 
 //nodeMailer thing
 let transporter = nodeMailer.createTransport({

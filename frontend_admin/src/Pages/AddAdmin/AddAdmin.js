@@ -13,6 +13,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import { useForm } from "react-hook-form";
 
 
+//might convert to class
+
 const AddAdmin = () => {
     const { register, handleSubmit, errors } = useForm();
     const [data, setData] = useState([])
