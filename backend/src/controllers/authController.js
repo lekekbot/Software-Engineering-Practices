@@ -157,7 +157,6 @@ exports.processRegister = (req, res, next) => {
             try {
                 //Enter email here
                 user.createUser(firstName, lastName, email, institutionId, hash, (error, results) => {
-
                     //Signing of jwt token.. we will standardise an email secret ig
                     jwt.sign(
                         {
@@ -169,11 +168,16 @@ exports.processRegister = (req, res, next) => {
                         },
                         (err, emailToken) => {
                             const url = `http://localhost:3003/confirmation/${emailToken}`;
-                            transporter.sendMail({
-                                to: email,
-                                subject: 'Confirm Email',
-                                html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
-                            });
+                            try{
+                                transporter.sendMail({
+                                    to: email,
+                                    subject: 'Confirm Email',
+                                    html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
+                                });
+                            }catch(err){
+                                console.log(err)
+                            }
+         
                         },
                     );
                     return res.status(200).json({

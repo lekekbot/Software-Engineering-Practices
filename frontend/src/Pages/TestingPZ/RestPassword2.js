@@ -3,14 +3,16 @@ import { useState } from "react";
 //styling
 import './Login.module2.css';
 import styles from './Login.module.css';
+import check from './check.svg'
+import close from './close.svg'
 
 //imports
 import axios from 'axios';
 import config from '../../config.js';
 import { useForm } from 'react-hook-form';
 import { useHistory } from "react-router-dom";
-import { usePasswordValidation } from "./hooks/usePasswordValidation";
 import { saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
+import { usePasswordValidation } from "./hooks/usePasswordValidation";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 
@@ -33,11 +35,44 @@ function App() {
 
     // Logic missing
     const onSubmit = (data, e) => {
-        // console.dir(data);
-        setMessage({
-            data: 'Login is in progress...',
-            type: 'alert-warning',
-        });
+        var userNewPassword = (password.firstPassword)
+
+        if (validLength && hasNumber && upperCase && lowerCase && match && specialChar) {
+            setMessage({
+                data: 'Verification in progress...',
+                type: 'alert-warning',
+            });
+            //execute db call
+        } else {
+            const message = 5;
+            var stringMessage = "The following of the requirements are lacking:"
+            switch (false) {
+                case (validLength):
+                    stringMessage += "- Should be greater than 6 characters"
+                case (hasNumber):
+                    stringMessage += "- Should consist of a number"
+                case (upperCase):
+                    stringMessage += "- Should consist of a upper case character"
+                case (lowerCase):
+                    stringMessage += "- should consist of a lower case character"
+                case (match):
+                    stringMessage += "- The password don't match!"
+                case (specialChar):
+                    stringMessage += "- Should be consist of special characters"
+            }
+            if (!match) {
+                setMessage({
+                    data: `Your password doesn't match!`,
+                    type: 'alert-success',
+                });
+            } else {
+                setMessage({
+                    data: `Your password doesn't meet one or more of the requirement`,
+                    type: 'alert-success',
+                });
+            }
+        }
+
         setLoading(true);
     }
     //Redirects the user, instead of using href we can use history
@@ -71,7 +106,7 @@ function App() {
                             {/**First Password */}
                             <Form.Group controlId="formEmail">
                                 <Form.Label for="password">New password:</Form.Label >
-                                <input onChange={setFirst} type='text' className="PasswordLabel" />
+                                <input onChange={setFirst} type='password' className="PasswordLabel" />
 
                                 {/* <div className="text-danger">{hasNumber.confirm_password}</div> */}
                             </Form.Group>
@@ -79,7 +114,7 @@ function App() {
                             {/**Second Password */}
                             <Form.Group>
                                 <Form.Label for="password">Re-type new</Form.Label >
-                                <input onChange={setSecond} type='text' className="PasswordLabel" />
+                                <input onChange={setSecond} type='password' className="PasswordLabel" />
                             </Form.Group>
 
                             {/**Statuses */}
@@ -87,21 +122,22 @@ function App() {
                                 <div>
                                     <ul>
                                         <li>
-                                            Valid Length: {validLength ? <span>True</span> : <span>False</span>}
+                                            {validLength ? <img src={check} alt="this is car image" style={{ width: "16px", marginRight: "1rem", marginRight: "1rem" }} /> : <img src={close} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} />} Valid Length
                                         </li>
                                         <li>
-                                            Has a Number: {hasNumber ? <span>True</span> : <span>False</span>}
+                                            {hasNumber ? <img src={check} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} /> : <img src={close} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} />} Has a Number:
                                         </li>
                                         <li>
-                                            UpperCase: {upperCase ? <span>True</span> : <span>False</span>}
+                                            {upperCase ? <img src={check} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} /> : <img src={close} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} />} UpperCase:
                                         </li>
                                         <li>
-                                            LowerCase: {lowerCase ? <span>True</span> : <span>False</span>}
+                                            {lowerCase ? <img src={check} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} /> : <img src={close} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} />} LowerCase:
                                         </li>
-                                        <li>Match: {match ? <span>True</span> : <span>False</span>}</li>
                                         <li>
-                                            Special Character:{" "}
-                                            {specialChar ? <span>True</span> : <span>False</span>}
+                                            {match ? <img src={check} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} /> : <img src={close} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} />} Match:
+                                            </li>
+                                        <li>
+                                            {specialChar ? <img src={check} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} /> : <img src={close} alt="this is car image" style={{ width: "16px", marginRight: "1rem" }} />} Special Character:{" "}
                                         </li>
                                     </ul>
                                 </div>
@@ -109,7 +145,7 @@ function App() {
                             </Form.Group>
 
                             {/**Submit button */}
-                            <Button type="submit" className="btn btn-dark btn-lg btn-block" disabled={loading}>{loading ? 'Signing in now ...' : 'Login'}</Button>
+                            <Button type="submit" className="btn btn-dark btn-lg btn-block" disabled={loading}>{loading ? 'Verifying with requirements...' : 'Reset'}</Button>
 
                         </Form>
                     </div>
