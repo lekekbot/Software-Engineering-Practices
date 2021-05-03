@@ -89,4 +89,8 @@ exports.appRoute = router => {
     router.get('/api/a/userList/:master', pb5.getUserList)
     router.get('/api/a/delete/pending/:id', pb5.getdeleteList)
     router.delete('/api/a/delete/:id', pb5.checkvalid, pb5.deleteUser)
+
+
+    //get pendings
+    router.get('/api/a/pending', pb5.getPending)
 };

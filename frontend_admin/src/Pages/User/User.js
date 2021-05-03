@@ -30,7 +30,7 @@ const User = () => {
         let records = response.data.data;
         records.forEach((element)=>{
           element.changeStatus = false;
-        });
+        }); 
         setUserData(records);
     }).catch(error => {
         console.log(error);

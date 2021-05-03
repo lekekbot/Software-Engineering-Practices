@@ -4,6 +4,7 @@ const pool = require('../config/database');
 const mysql = require("../utils/mysql.js");
 
 // create temporary user
+
 module.exports.tempUser = (firstName, lastName, email, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
@@ -314,3 +315,28 @@ module.exports.deleteTeamMember = (memberId) => {
         })
     })
 }
+
+//get pending
+module.exports.getPending =() => {
+    let getPending = `SELECT COUNT(status) count from user where status='pending'`
+
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                connection.query(getPending, [], (err, results) => {
+                    if (err) {
+                        console.log(err)
+                        reject(err)
+                    } else {
+                        resolve(results)
+                    }
+                    connection.release()
+                })
+            }
+        })
+    })
+}
+
