@@ -11,6 +11,8 @@ const { EMAIL_SECRET } = require('../config/config');
 //nodeMailer thing
 let transporter = nodeMailer.createTransport({
     service: 'Gmail',
+    port: 465,
+    secure: true,
     auth: {
         user: config.GMAIL_USER,
         pass: config.GMAIL_PASS,
@@ -241,4 +243,10 @@ exports.deleteUser = async (req, res) => {
             return res.status(200).send(results)
         }
     }
+}
+
+//get pending list 
+exports.getPending = async (req,res) => {
+    let results = await pb5_service.getPending()
+    return res.status(200).send(results)
 }

@@ -31,23 +31,15 @@ const Routes = (props) => (
       <Route path="/login">
         <Login />
       </Route>
-      <Route path="/user">
-        <User />
-      </Route>
-      <Route path="/team">
-        <Team />
-      </Route>
-      <Route path='/AddAdmin'>
-        <AddAdmin/>
-      </Route>
-      <Route path='/remove'>
-        <DeleteUser/>
-      </Route>
+      <Route path="/user" render={authGuard(User)}/>
+      <Route path="/team"render={authGuard(Team)}/>
+      <Route path='/AddAdmin'render={authGuard(AddAdmin)}/>
+      <Route path='/remove' render={authGuard(DeleteUser)}/>
       <Route path='/admin/confirmation/:token'>
         <VerifyAdmin/>
       </Route>
 
-      <Route path="/dashboard" render={authGuard(Dashboard)}></Route>
+      <Route path="/dashboard" render={authGuard(Dashboard)}/>
     
       <Route exact path="/">
         <Redirect to="/dashboard" />

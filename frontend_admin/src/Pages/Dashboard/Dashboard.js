@@ -10,6 +10,7 @@ const Dashboard = () => {
   //I have problem making teamSummaryData a single object.
   //Keep getting the error : "If you meant to render a collection of children, use an array instead"
   const [information, setInformation] = useState(null);
+  const [pendingState, setPendingState] = useState(0)
   useEffect(() => {
     axios.get(`${config.baseUrl}/a/teams/summary`, 
     {})
@@ -43,6 +44,14 @@ const Dashboard = () => {
     }).catch(error => {
         console.log(error);
     });
+
+    //get pending
+    axios.get(`${config.baseUrl}/a/pending`)
+    .then(response => {
+      let count = response.data[0].count
+        setPendingState(count)
+    })
+    .catch(err => console.log(err))
   }, []);//End of useEffect({function code,[]})
   
   return (
@@ -59,11 +68,8 @@ const Dashboard = () => {
       <h6>Total submissions : {information && information.totalNumOfSubmissions }</h6><p />
       <h6>Number of teams without submissions : {information && information.numOfTeamsWithNoSubmissions}</h6> <p />
       <h6>Number of teams with submissions : {information && information.numOfTeamsWithSubmissions}</h6> <p />
-      <h6>Number of teams with only 1 team member : {information && information.numofTeamsWithOneMember} </h6>
-      
-     
-              
-
+      <h6>Number of teams with only 1 team member : {information && information.numofTeamsWithOneMember} </h6>  <p />     
+      <h6>Number of Pending members: {pendingState}</h6>
             </div>
           </div>
           </div>
@@ -74,3 +80,11 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+
+
+/*
+
+SELECT COUNT('pending') FROM user
+
+*/
