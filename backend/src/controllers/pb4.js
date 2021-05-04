@@ -141,45 +141,90 @@ exports.verifyUserOTP = async (req, res, next) => {
 //Task 04 - Saves the password
 //Success Response
 //Code: 204 No Content
-exports.verifyPassword = async (req, res, next) => {
-    try {
-        var user_id = 120
-        // extracts out the new password
-        var { UserPassword } = req.params
-        var userRequestedPassword = UserPassword
-        let password = await emailValidation.extractPassword(user_id)
-        var { user_password, user_password_histories } = password
+exports.verifyAndSavePassword = async (req, res, next) => {
+    var user_id = 132
+    // extracts out the new password
+    var { UserPassword } = req.params
+    var userRequestedPassword = UserPassword
+    let password = await emailValidation.extractPassword(user_id)
+    var { user_password, user_password_histories } = password
 
-        if (user_password_histories == null) {
-            //now, lets hash the key
-            try {
-                bcrypt.hash(user_password, 10, async (err, password) => {
+    if (!user_password_histories) {
+        try {
+            //checks if there is a duplicate with only the current password field
+            let singleConditions = await bcrypt.compare(userRequestedPassword, user_password)
+
+            if (singleConditions) {
+                return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
+            } else {
+                //now, lets hash the key
+                //hash the current -> pushes the current into a repository
+                // shift the user current password to the user_password_history
+                emailValidation.storePassword(user_id, user_password + "«", function (error, results) {
+                    if (error) {
+                        return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
+                    }
+                })
+
+                //hash the requested -> pushes the current into a current
+                bcrypt.hash(userRequestedPassword, 10, async (err, password) => {
                     // shift the user current password to the user_password_history
-                    emailValidation.storePassword(user_id, password, function (error, results) {
+                    emailValidation.storeAsCurrent(user_id, password, function (error, results) {
                         if (error) {
                             return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
-                        } else {
-                            return res.status(200).send(results);
                         }
                     })
                 })
-            } catch (error) {
-                console.log(error)
+
+                return res.status(200).send("YES!!!")
             }
+        } catch (error) {
+            console.log(error)
+        }
+    } else {
+        var increment = 0
+        //2 for history, 1 for current
+        var condition = [false, false, false]
+
+        user_password_histories.split("«").map(async item => {
+            //Guard statement
+            if (item == null) return
+
+            condition[increment] = (await bcrypt.compare(userRequestedPassword, item))
+            increment++
+        })
+
+        condition[2] = await bcrypt.compare(userRequestedPassword, user_password)
+
+        if (condition.some((item) => item === true)) {
+            //if a duplicate is found, just alert the user that there is an error and the code status is 402
+            return res.status(401).send({ code: 401, error: true, description: 'A duplicate is found!', content: [] });
         } else {
-            //find if the userRequestPassword matches any password in the database
-            user_password_histories.split("«").map(user_password_history => {
-                if (user_password_history == userRequestedPassword) return res.status(401).send("Sorry! You cannot reuse your password");
+            //A
+            let everyHistoryCombined = user_password + "«"
+
+            //B,C
+            let user_password_histories_array = user_password_histories.split("«")
+            everyHistoryCombined += user_password_histories_array[0] + "«"
+
+            //hash current + old history into the user_password_history column
+            // shift the user current password to the user_password_history
+            emailValidation.storePasswordAdvanced(user_id, everyHistoryCombined, function (error, results) {
+                if (error) {
+                    return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
+                }
             })
 
-            console.log(BCrypt.Verify("my password", user_password))
-
-            //Ok! Since there are no matches, lets proceed to store the password into the database
-            //Lets shift the current in-used password to the right, while, limiting to 3 slots
+            //hash the requested -> pushes the current into a current
+            bcrypt.hash(userRequestedPassword, 10, async (err, password) => {
+                // shift the user current password to the user_password_history
+                emailValidation.storeAsCurrent(user_id, password, function (error, results) {
+                    if (error) {
+                        return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
+                    }
+                })
+            })
+            return res.status(200).send("YES!!!")
         }
-
-        return res.status(200).send("YES");
-    } catch (error) {
-        return res.status(500).send({ message: 'Error! Unable to verify OTP!' });
     }
 }; // End of processGetOneUserStatusData

@@ -68,7 +68,7 @@ exports.appRoute = router => {
     //Verifies what the user otp + their corresponding emails
     router.get('/api/u/user/validate_2fa/:email/:OTP', pb4.verifyUserOTP);
     //Verifies what the user new password with their old password
-    router.get('/api/u/user/password/:UserPassword', pb4.verifyPassword);
+    router.put('/api/u/user/password/:UserPassword', pb4.verifyAndSavePassword);
 
     //Problem 5 routes - Bryan
     //problem 5 use case 1
