@@ -142,21 +142,30 @@ exports.verifyUserOTP = async (req, res, next) => {
 //Success Response
 //Code: 204 No Content
 exports.verifyPassword = async (req, res, next) => {
-    console.log("Here was reached")
     try {
+        var user_id = 120
         // extracts out the new password
         var { UserPassword } = req.params
         var userRequestedPassword = UserPassword
-        let password = await emailValidation.extractPassword(132)
+        let password = await emailValidation.extractPassword(user_id)
         var { user_password, user_password_histories } = password
 
         if (user_password_histories == null) {
             //now, lets hash the key
-            bcrypt.hash(user_password, 10, async (err, result) => {
-                // shift the user current password to the user_password_history
-                userService
-                emailValidation.storePassword(result)
-            })
+            try {
+                bcrypt.hash(user_password, 10, async (err, password) => {
+                    // shift the user current password to the user_password_history
+                    emailValidation.storePassword(user_id, password, function (error, results) {
+                        if (error) {
+                            return res.status(401).send({ code: 401, error: true, description: 'Error!', content: [] });
+                        } else {
+                            return res.status(200).send(results);
+                        }
+                    })
+                })
+            } catch (error) {
+                console.log(error)
+            }
         } else {
             //find if the userRequestPassword matches any password in the database
             user_password_histories.split("«").map(user_password_history => {
@@ -167,8 +176,6 @@ exports.verifyPassword = async (req, res, next) => {
 
             //Ok! Since there are no matches, lets proceed to store the password into the database
             //Lets shift the current in-used password to the right, while, limiting to 3 slots
-
-
         }
 
         return res.status(200).send("YES");

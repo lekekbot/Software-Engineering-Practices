@@ -160,22 +160,24 @@ module.exports.extractPassword = async (user_id) => {
     }); //End of new Promise object creation
 } //End of createFileData
 
-module.exports.storePassword = (password) => {
-    return new Promise((resolve, reject) => {
-        pool.getConnection((err, connection) => {
-            if (err) {
-                console.log('Database connection error ', err);
-                resolve(err);
-            } else {
-                connection.query(`UPDATE user SET user_password =${password} WHERE user_id=${us}`, (err, rows) => {
+module.exports.storePassword = (user_id, password, callback) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            if (err) throw err;
+        } else {
+            try {
+                let query = `UPDATE competiton_system_4_db.user SET user_password_histories = ? WHERE user_id = ?`;
+                connection.query(query, [password, user_id], (err, results) => {
                     if (err) {
-                        reject(err);
+                        if (err) return callback(err, null);
                     } else {
-                        resolve(rows);
+                        return callback(null, results);
                     }
                     connection.release();
                 });
+            } catch (error) {
+                return callback(error, null);;
             }
-        });
-    }); //End of new Promise object creation
+        }
+    });
 } //End of updateUser
