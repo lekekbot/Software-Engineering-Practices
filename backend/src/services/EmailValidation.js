@@ -230,3 +230,27 @@ module.exports.storeAsCurrent = (user_id, newCurrentPassword, callback) => {
         }
     });
 };
+
+//extract the time from the database of the change it was made!
+module.exports.passwordChangeTimestamp = (email, callback) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            if (err) throw err;
+        } else {
+            try {
+                //retrives the timing of the change was made and then email/userid to the user
+                let query = `SELECT user_password_timestamp FROM competiton_system_4_db.user where email = ?`;
+                connection.query(query, [email], (err, results) => {
+                    if (err) {
+                        if (err) return callback(err, null);
+                    } else {
+                        return callback(null, results);
+                    }
+                    connection.release();
+                });
+            } catch (error) {
+                return callback(error, null);
+            }
+        }
+    });
+};

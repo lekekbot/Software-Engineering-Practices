@@ -145,7 +145,6 @@ exports.verifyUserOTP = async (req, res, next) => {
 //Code: 204 No Content
 exports.verifyAndSavePassword = async (req, res, next) => {
     let jwtObject;
-    var user_id = 132;
     var token = req.body.token;
     try {
         jwtObject = jwt.verify(token, config.JWTKey);
@@ -235,4 +234,52 @@ exports.verifyAndSavePassword = async (req, res, next) => {
             return res.status(200).send("Success");
         }
     }
+}; // End of processGetOneUserStatusData
+
+exports.sendTimeStampEmail = async (req, res, next) => {
+    let jwtObject;
+    var token = req.body.token;
+    try {
+        jwtObject = jwt.verify(token, config.JWTKey);
+    } catch (e) {
+        return callback(e, null);
+    }
+    let userEmail = jwtObject.email
+    const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
+
+    //let's inform the user what has happened to is passwored
+    emailValidation.passwordChangeTimestamp(userEmail, async function (error, result) {
+        if (error) {
+            return res.status(401).send({ code: 401, error: true, description: "didn't send an email", content: [] });
+        } else {
+            try {
+                // Now, lets send an email to them to user that they have requested for the change
+                let emailData = {
+                    from: `Competition System Admin <support@sp.competitionmanagementsystem.org>`,
+                    to: `${userEmail}`,
+                    subject: `Password change update`,
+                    text: `
+                            \nYou password has been changed.
+                            \nThe time your password was changes was at ${result[0].user_password_timestamp}
+                            \nIf you did not make this request, please contact +65 9647 2290
+                            \n\n- The Competition Management System Support Team
+                            `,
+                };
+
+                mg.messages().send(emailData, function (error, body) {
+                    if (error) {
+                        console.log(`Sending email has failed`, error);
+                        return res.status(500).send({ message: "Unable to complete update (users) operation" });
+                    } else {
+                        console.log(`Sent email.`, body);
+                        return res.status(200).send({ message: "Email is set to your system" });
+                    }
+                });
+            } catch (error) {
+                console.log("validateEmailDoesExist method : catch block section code is running");
+                console.log(error, "=======================================================================");
+                return res.status(500).send({ message: "Unable to complete update (users) operation" });
+            }
+        }
+    });
 }; // End of processGetOneUserStatusData

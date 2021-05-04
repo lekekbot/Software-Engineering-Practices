@@ -51,7 +51,14 @@ function App() {
                             data: 'Logged in successfully, redirecting...',
                             type: 'alert-success',
                         });
-                        //Direct the user to the dashboard page.
+
+                        //sends email to the user
+                        axios.put(`${config.baseUrl}/u/users/resetpassword/acknowledgement`, { token: token }).then(
+                            () => {
+                                //Direct the user to the dashboard page.
+                                history.push('/dashboard');
+                            }
+                        )
                         history.push('/dashboard');
                     } else {
                         setMessage({
