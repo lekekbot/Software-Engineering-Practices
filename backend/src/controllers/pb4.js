@@ -144,7 +144,15 @@ exports.verifyUserOTP = async (req, res, next) => {
 //Success Response
 //Code: 204 No Content
 exports.verifyAndSavePassword = async (req, res, next) => {
+    let jwtObject;
     var user_id = 132;
+    var token = req.body.token;
+    try {
+        jwtObject = jwt.verify(token, config.JWTKey);
+    } catch (e) {
+        return callback(e, null)
+    }
+    var user_id = jwtObject.userId
     // extracts out the new password
     var userRequestedPassword = req.params.UserPassword;
     let password = await emailValidation.extractPassword(user_id);
@@ -154,7 +162,7 @@ exports.verifyAndSavePassword = async (req, res, next) => {
         try {
             //checks if there is a duplicate with only the current password field
             if (await bcrypt.compare(userRequestedPassword, user_password)) {
-                return res.status(401).send({ code: 401, error: true, description: "Error!", content: [] });
+                return res.status(403).send({ code: 401, error: true, description: "Error!", content: [] });
             } else {
                 // now, lets hash the key
                 // hash the current -> pushes the current into a repository
@@ -175,7 +183,7 @@ exports.verifyAndSavePassword = async (req, res, next) => {
                     });
                 });
 
-                return res.status(200).send("YES!!!");
+                return res.status(200).send("Success");
             }
         } catch (error) {
             console.log(error);
@@ -195,7 +203,7 @@ exports.verifyAndSavePassword = async (req, res, next) => {
 
         if (condition.some((item) => item === true)) {
             //if a duplicate is found, just alert the user that there is an error and the code status is 402
-            return res.status(401).send({ code: 401, error: true, description: "A duplicate is found!", content: [] });
+            return res.status(403).send({ code: 403, error: true, description: "A duplicate is found!", content: [] });
         } else {
             //A
             let everyHistoryCombined = user_password + "«";
@@ -222,7 +230,7 @@ exports.verifyAndSavePassword = async (req, res, next) => {
                 });
             });
 
-            return res.status(200).send("YES!!!");
+            return res.status(200).send("Success");
         }
     }
 }; // End of processGetOneUserStatusData

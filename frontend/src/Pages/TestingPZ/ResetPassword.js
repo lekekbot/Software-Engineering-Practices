@@ -35,44 +35,83 @@ function App() {
 
     // Logic missing
     const onSubmit = (data, e) => {
-        var userNewPassword = (password.firstPassword)
+        var UserPassword = password.firstPassword
+
         if (validLength && hasNumber && upperCase && lowerCase && match && specialChar) {
+            setLoading(true);
             setMessage({
                 data: 'Verification in progress...',
                 type: 'alert-warning',
             });
+            axios.put(`${config.baseUrl}/u/user/password/:${UserPassword}`, { token: token })
+                .then(response => {
+                    setLoading(true);
+                    if (response.data.status != 'pending') {
+                        setMessage({
+                            data: 'Logged in successfully, redirecting...',
+                            type: 'alert-success',
+                        });
+                        //Direct the user to the dashboard page.
+                        history.push('/dashboard');
+                    } else {
+                        setMessage({
+                            data: 'Change is successfully.',
+                            type: 'alert-success',
+                        });
+                        //Direct the user to the user status page
+                        history.push(`/userstatus/${response.data.email}`);
+                    }
+                }).catch(error => {
+                    console.dir(error);
+                    setLoading(true);
+                    //https://stackoverflow.com/questions/3390396/how-can-i-check-for-undefined-in-javascript
+                    if (typeof (error.response) != 'undefined') {
+                        setMessage({
+                            data: '',
+                        });
+                        if (error.response.request.status === 401) {
+                            setMessage({
+                                data: 'Server failure',
+                                data: 'Your password must be unique! It cannot be the same as the last three!',
+                                type: 'alert-danger'
+                            });
+                        } else {
+                            setMessage({
+                                data: 'Your password must be unique! It cannot be the same as the last three!',
+                                type: 'alert-danger'
+                            });
+                        }
+                        setPassword({ firstPassword: "", secondPassword: "", });
+                        setLoading(false);
+                    } else {
+                        setMessage({
+                            data: 'You are unable to reset. If situation persists, please send a support ticket to seek assistance.',
+                            type: 'alert-danger'
+                        });
+                        setLoading(false);
+                    }
+                    // end if(error.response.request!='')
+
+                    // Reset the form state
+                    e.target.reset();
+                });
             //execute db call
         } else {
-            const message = 5;
-            var stringMessage = "The following of the requirements are lacking:"
-            switch (false) {
-                case (validLength):
-                    stringMessage += "- Should be greater than 6 characters"
-                case (hasNumber):
-                    stringMessage += "- Should consist of a number"
-                case (upperCase):
-                    stringMessage += "- Should consist of a upper case character"
-                case (lowerCase):
-                    stringMessage += "- should consist of a lower case character"
-                case (match):
-                    stringMessage += "- The password don't match!"
-                case (specialChar):
-                    stringMessage += "- Should be consist of special characters"
-            }
             if (!match) {
+                setLoading(true);
                 setMessage({
                     data: `Your password doesn't match!`,
                     type: 'alert-success',
                 });
             } else {
+                setLoading(true);
                 setMessage({
                     data: `Your password doesn't meet one or more of the requirement`,
                     type: 'alert-success',
                 });
             }
+            setLoading(false);
         }
-
-        setLoading(true);
     }
     //Redirects the user, instead of using href we can use history
     const redirect = () => {

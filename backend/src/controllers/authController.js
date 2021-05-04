@@ -95,7 +95,6 @@ exports.processUserLogin = (req, res, next) => {
                             });
                         }
                         const responseBody = {
-
                             //user_id: results[0].user_id,
                             //role_name: results[0].role_name,
                             displayName: results[0].first_name + ' ' + results[0].last_name,

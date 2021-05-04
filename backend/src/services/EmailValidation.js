@@ -188,7 +188,7 @@ module.exports.storePasswordAdvanced = (user_id, password, callback) => {
         if (err) {
             if (err) throw err;
         } else {
-            try {                
+            try {
                 //stores current into repository of history
                 let query = `UPDATE competiton_system_4_db.user SET user_password_histories = ? WHERE user_id = ?`;
                 connection.query(query, [password, user_id], (err, results) => {
@@ -213,8 +213,8 @@ module.exports.storeAsCurrent = (user_id, newCurrentPassword, callback) => {
         } else {
             try {
                 //stores current into repository of history
-                let query = `UPDATE competiton_system_4_db.user SET user_password = ? WHERE user_id = ?`;
-                connection.query(query, [newCurrentPassword, user_id], (err, results) => {
+                let query = `UPDATE competiton_system_4_db.user SET user_password = ? AND user_password_timestamp = ? WHERE user_id = ?`;
+                connection.query(query, [newCurrentPassword, new Date(Date.now()), user_id], (err, results) => {
                     if (err) {
                         if (err) return callback(err, null);
                     } else {
