@@ -166,8 +166,55 @@ module.exports.storePassword = (user_id, password, callback) => {
             if (err) throw err;
         } else {
             try {
+                //stores current into repository of history
                 let query = `UPDATE competiton_system_4_db.user SET user_password_histories = ? WHERE user_id = ?`;
                 connection.query(query, [password, user_id], (err, results) => {
+                    if (err) {
+                        if (err) return callback(err, null);
+                    } else {
+                        return callback(null, results);
+                    }
+                    connection.release();
+                });
+            } catch (error) {
+                return callback(error, null);;
+            }
+        }
+    });
+} //End of updateUser
+
+module.exports.storePasswordAdvanced = (user_id, password, callback) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            if (err) throw err;
+        } else {
+            try {                
+                //stores current into repository of history
+                let query = `UPDATE competiton_system_4_db.user SET user_password_histories = ? WHERE user_id = ?`;
+                connection.query(query, [password, user_id], (err, results) => {
+                    if (err) {
+                        if (err) return callback(err, null);
+                    } else {
+                        return callback(null, results);
+                    }
+                    connection.release();
+                });
+            } catch (error) {
+                return callback(error, null);;
+            }
+        }
+    });
+} //End of updateUser
+
+module.exports.storeAsCurrent = (user_id, newCurrentPassword, callback) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            if (err) throw err;
+        } else {
+            try {
+                //stores current into repository of history
+                let query = `UPDATE competiton_system_4_db.user SET user_password = ? WHERE user_id = ?`;
+                connection.query(query, [newCurrentPassword, user_id], (err, results) => {
                     if (err) {
                         if (err) return callback(err, null);
                     } else {

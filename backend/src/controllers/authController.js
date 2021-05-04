@@ -95,7 +95,7 @@ exports.processUserLogin = (req, res, next) => {
                             });
                         }
                         const responseBody = {
-                            
+
                             //user_id: results[0].user_id,
                             //role_name: results[0].role_name,
                             displayName: results[0].first_name + ' ' + results[0].last_name,
@@ -165,16 +165,16 @@ exports.processRegister = (req, res, next) => {
                         },
                         (err, emailToken) => {
                             const url = `http://localhost:3003/confirmation/${emailToken}`;
-                            try{
+                            try {
                                 transporter.sendMail({
                                     to: email,
                                     subject: 'Confirm Email',
                                     html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
                                 });
-                            }catch(err){
+                            } catch (err) {
                                 console.log(err)
                             }
-         
+
                         },
                     );
                     return res.status(200).json({
@@ -194,41 +194,32 @@ exports.processRegister = (req, res, next) => {
             }
         }
     });
+};
 
-
-}; // End of processRegister
 // /api/users/confirmation
 exports.processConfirmation = async (req, res, next) => {
-    console.log("It is entering here 1")
+    //retrieves token from url which retrives from localstorage
     let token = req.params.token
-    try {
-        console.log("It is entering here 2")
-        await user.verifyUserEmail(token, (error, results) => {
-            console.log(error)
-            if(results){
-                console.log("it is entering here 3")
-                return res.status(200).json({
-                    code: 200,
-                    error: false,
-                    description: 'Verification is complete',
-                    content: []
-                });
-            }else{
-                console.log("it is entering here 4")
-                return res.status(500).json({
-                    code: 500,
-                    error: true,
-                    description: 'Unable to complete verification, please contact an admin',
-                    content: []
-                });
-            }
-        })
-    } catch (e) {
-        res.send('error');
-    }
-    return res.redirect('http://localhost:3001/login');
 
-}; // End of processRegister
+    user.verifyUserEmail(token, async (error, results) => {
+        if (results) {
+            return res.status(200).json({
+                code: 200,
+                error: false,
+                description: 'Verification is complete',
+                content: []
+            })
+        } else {
+            return res.status(500).json({
+                code: 500,
+                error: true,
+                description: 'Unable to complete verification, please contact an admin',
+                content: []
+            });
+        }
+    })
+};
+
 exports.processGetOneUserStatusData = async (req, res, next) => {
     console.log('The processGetOneUserStatusData running');
 
