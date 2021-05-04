@@ -63,7 +63,7 @@ const [master,setmaster] = useState(false)
         <>
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
           <a className="navbar-brand" href="/">
-            RnR Business Plan Competitione
+            RnR Business Plan Competition
           </a>
           <button
             className="navbar-toggler"
