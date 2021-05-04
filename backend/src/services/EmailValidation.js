@@ -1,8 +1,9 @@
 //Reference: https://cloudinary.com/documentation/node_integration
-const cloudinary = require('cloudinary').v2;
-const config = require('../config/config');
-const pool = require('../config/database')
-const bcrypt = require('bcryptjs');
+const cloudinary = require("cloudinary").v2;
+const config = require("../config/config");
+const pool = require("../config/database");
+const bcrypt = require("bcryptjs");
+const moment = require("moment");
 
 //checks with the db whether an account under xxx@gmail.com does exist. Else flag an error using status codes
 //only two answer using CallBacks. - either yes, it does exist or no.
@@ -29,37 +30,37 @@ module.exports.validateEmailDoesExist = (email, callback) => {
                     connection.release();
                 });
             } catch (error) {
-                return callback(error, null);;
+                return callback(error, null);
             }
         }
     });
-} //End of createFileData
+};
 
 //Uses the token/localstorage from from the front end. Afterwards, it translates the email into a user_id which is a foreign key
-//tied to the db, one_time_password. 
+//tied to the db, one_time_password.
 //Success Response - ?
 module.exports.findEmail = (email) => {
     return new Promise((resolve, reject) => {
         pool.getConnection(async (err, connection) => {
             if (err) {
-                console.log('Database connection error ', err);
+                console.log("Database connection error ", err);
                 resolve(err);
             } else {
                 //The SQL has to query by email.
-                //The SQL must not retrieve administrator data 
-                connection.query(`SELECT user_id FROM competiton_system_4_db.user where email = ?`, [email],
-                    (err, result) => {
-                        if (err) {
-                            console.log(err);
-                            reject(err);
-                        } else {
-                            resolve(result[0]);
-                        }
-                    });
-            };
+                //The SQL must not retrieve administrator data
+                connection.query(`SELECT user_id FROM competiton_system_4_db.user where email = ?`, [email], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        resolve(result[0]);
+                    }
+                    connection.release();
+                });
+            }
         });
-    }); //End of new Promise object creation
-} // End of getOneUserStatusData
+    });
+};
 
 //Afterwards, the user_id is used to insert the OTP associated to the user_id
 //Success Response - ?
@@ -79,13 +80,13 @@ module.exports.insertOTP = (OTP, user_id, callback) => {
                     connection.release();
                 });
             } catch (error) {
-                return callback(error, null);;
+                return callback(error, null);
             }
         }
     });
-} //End of createFileData
+};
 
-//Afterwards, the user_id is used to find all the OTP associated to the user_id. We sort by desc using time and 
+//Afterwards, the user_id is used to find all the OTP associated to the user_id. We sort by desc using time and
 //use the first result
 //Success Response - ?
 module.exports.validateOTP = (user_id, callback) => {
@@ -104,11 +105,11 @@ module.exports.validateOTP = (user_id, callback) => {
                     connection.release();
                 });
             } catch (error) {
-                return callback(error, null);;
+                return callback(error, null);
             }
         }
     });
-} //End of createFileData
+};
 
 module.exports.correctOTP = (email, callback) => {
     pool.getConnection((err, connection) => {
@@ -116,49 +117,50 @@ module.exports.correctOTP = (email, callback) => {
             if (err) throw err;
         } else {
             try {
-                connection.query(`SELECT user.user_id, first_name, last_name, status, email, user_password, role_name, user.role_id  
-                   FROM user INNER JOIN role ON user.role_id=role.role_id AND email='${email}'`, {}, (err, rows) => {
+                let query = `SELECT user.user_id, first_name, last_name, status, email, user_password, role_name, user.role_id  
+                FROM user INNER JOIN role ON user.role_id=role.role_id AND email='?'`;
+                connection.query(query, [email], (err, rows) => {
                     if (err) {
                         if (err) return callback(null, err);
                     } else {
                         if (rows.length == 1) {
                             return callback(rows, null);
                         } else {
-                            return callback(null, 'Login has failed');
+                            return callback(null, "Login has failed");
                         }
                     }
                     connection.release();
                 });
             } catch (error) {
-                return callback(null, error);;
+                return callback(null, error);
             }
         }
-    }); // End of getConnection
-
-} // End of authenticate
+    });
+};
 
 module.exports.extractPassword = async (user_id) => {
     return new Promise((resolve, reject) => {
         pool.getConnection(async (err, connection) => {
             if (err) {
-                console.log('Database connection error ', err);
+                console.log("Database connection error ", err);
                 resolve(err);
             } else {
                 //The SQL has to query by email.
-                //The SQL must not retrieve administrator data 
-                connection.query(`SELECT user_password, user_password_histories FROM competiton_system_4_db.user WHERE user_id = ?;`, [user_id],
-                    (err, results) => {
-                        if (err) {
-                            console.log(err);
-                            reject(err);
-                        } else {
-                            resolve(results[0]);
-                        }
-                    });
-            };
+                //The SQL must not retrieve administrator data
+                let query = `SELECT user_password, user_password_histories FROM competiton_system_4_db.user WHERE user_id = ?;`;
+                connection.query(query, [user_id], (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        resolve(results[0]);
+                    }
+                    connection.release();
+                });
+            }
         });
-    }); //End of new Promise object creation
-} //End of createFileData
+    });
+};
 
 module.exports.storePassword = (user_id, password, callback) => {
     pool.getConnection((err, connection) => {
@@ -177,11 +179,11 @@ module.exports.storePassword = (user_id, password, callback) => {
                     connection.release();
                 });
             } catch (error) {
-                return callback(error, null);;
+                return callback(error, null);
             }
         }
     });
-} //End of updateUser
+};
 
 module.exports.storePasswordAdvanced = (user_id, password, callback) => {
     pool.getConnection((err, connection) => {
@@ -200,11 +202,11 @@ module.exports.storePasswordAdvanced = (user_id, password, callback) => {
                     connection.release();
                 });
             } catch (error) {
-                return callback(error, null);;
+                return callback(error, null);
             }
         }
     });
-} //End of updateUser
+};
 
 module.exports.storeAsCurrent = (user_id, newCurrentPassword, callback) => {
     pool.getConnection((err, connection) => {
@@ -213,8 +215,8 @@ module.exports.storeAsCurrent = (user_id, newCurrentPassword, callback) => {
         } else {
             try {
                 //stores current into repository of history
-                let query = `UPDATE competiton_system_4_db.user SET user_password = ? AND user_password_timestamp = ? WHERE user_id = ?`;
-                connection.query(query, [newCurrentPassword, new Date(Date.now()), user_id], (err, results) => {
+                let query = `UPDATE competiton_system_4_db.user SET user_password = ?, user_password_timestamp = ? WHERE user_id = ?`;
+                connection.query(query, [newCurrentPassword, moment().format("YYYY-MM-DD HH:mm:ss"), user_id], (err, results) => {
                     if (err) {
                         if (err) return callback(err, null);
                     } else {
@@ -223,8 +225,8 @@ module.exports.storeAsCurrent = (user_id, newCurrentPassword, callback) => {
                     connection.release();
                 });
             } catch (error) {
-                return callback(error, null);;
+                return callback(error, null);
             }
         }
     });
-} //End of updateUser
+};

@@ -150,9 +150,9 @@ exports.verifyAndSavePassword = async (req, res, next) => {
     try {
         jwtObject = jwt.verify(token, config.JWTKey);
     } catch (e) {
-        return callback(e, null)
+        return callback(e, null);
     }
-    var user_id = jwtObject.userId
+    var user_id = jwtObject.userId;
     // extracts out the new password
     var userRequestedPassword = req.params.UserPassword;
     let password = await emailValidation.extractPassword(user_id);
@@ -196,9 +196,11 @@ exports.verifyAndSavePassword = async (req, res, next) => {
         user_password_histories.split("«").map(async (item) => {
             //Guard statement
             if (item == null) return;
+            //compare and store into a boolean array
             condition[increment] = await bcrypt.compare(userRequestedPassword, item);
             increment++;
         });
+        //compare with current if there's a clash
         condition[2] = await bcrypt.compare(userRequestedPassword, user_password);
 
         if (condition.some((item) => item === true)) {
