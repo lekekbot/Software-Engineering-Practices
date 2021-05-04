@@ -80,11 +80,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-
-
-/*
-
-SELECT COUNT('pending') FROM user
-
-*/

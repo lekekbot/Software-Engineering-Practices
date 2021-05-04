@@ -6,7 +6,9 @@ const bcrypt = require('bcrypt')
 
 
 const pb5_service = require('../services/pb5Service');
-const { EMAIL_SECRET } = require('../config/config');
+const {
+    EMAIL_SECRET
+} = require('../config/config');
 
 //nodeMailer thing
 let transporter = nodeMailer.createTransport({
@@ -38,7 +40,9 @@ exports.addNewAdmin = (req, res) => {
                 })
             } else {
                 //send invite email
-                if (result) {
+                if (result.affectedRows == 0) {
+                    return res.status(204).send(result)
+                } else if (result) {
                     jwt.sign({
                             user: result.insertId
                         },
@@ -55,6 +59,8 @@ exports.addNewAdmin = (req, res) => {
                             })
                         }
                     )
+                    res.status(201).send({success: 'success'})
+
                 }
             }
         })
@@ -86,7 +92,13 @@ exports.verifyAdmin = (req, res) => {
 
 //push user to user table 
 exports.createAdmin = (req, res) => {
-    let { user_id, first_name, last_name, email, password } = req.body
+    let {
+        user_id,
+        first_name,
+        last_name,
+        email,
+        password
+    } = req.body
 
     //password hashing
     bcrypt.hash(password, 10, async (err, hash) => {
@@ -246,7 +258,7 @@ exports.deleteUser = async (req, res) => {
 }
 
 //get pending list 
-exports.getPending = async (req,res) => {
+exports.getPending = async (req, res) => {
     let results = await pb5_service.getPending()
     return res.status(200).send(results)
 }

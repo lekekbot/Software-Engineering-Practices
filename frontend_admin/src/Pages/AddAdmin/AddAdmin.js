@@ -38,6 +38,10 @@ const AddAdmin = () => {
         axios.post(`${config.baseUrl}/a/addadmin`,
         {first_name: data['first-name'], last_name: data['last-name'], email: data.email})
         .then(response => {
+            console.log(response)
+            if(response.status == 204) {
+                return alert('user has already been created!')
+            }
             return alert('user created')
         }).catch(err => {
             console.log(err)

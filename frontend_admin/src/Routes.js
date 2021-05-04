@@ -5,6 +5,7 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
+import decoder from 'jwt-decode'
 
 import Login from './Pages/Login/Login';
 import Dashboard from './Pages/Dashboard/Dashboard';
@@ -22,6 +23,12 @@ const authGuard = (Component) => () => {
     <Redirect to='/login' />
   );
 };
+//might need to get master from backend (thoughts)
+const authMasterGuard = (Component) => () => {
+  let token = localStorage.getItem('token')
+  token = decoder(token)
+  return token.role == 'admin' ? <Redirect to='/dashboard'/> : <Component/>
+};
 /* I set the border with red appearing so that I know this is the Route.js*/
 const Routes = (props) => (
  
@@ -33,7 +40,7 @@ const Routes = (props) => (
       </Route>
       <Route path="/user" render={authGuard(User)}/>
       <Route path="/team"render={authGuard(Team)}/>
-      <Route path='/AddAdmin'render={authGuard(AddAdmin)}/>
+      <Route path='/AddAdmin'render={authMasterGuard(AddAdmin)}/>
       <Route path='/remove' render={authGuard(DeleteUser)}/>
       <Route path='/admin/confirmation/:token'>
         <VerifyAdmin/>
