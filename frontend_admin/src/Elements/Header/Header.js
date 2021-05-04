@@ -24,7 +24,7 @@ const [master,setmaster] = useState(false)
     GetId()
 
   }, [location])  
-//npm i reactjs jwt decoder
+
   const GetId = () => {
     var email = localStorage.getItem('email')
     axios.get(`${config.baseUrl}/a/admin/adminid/${email}`)

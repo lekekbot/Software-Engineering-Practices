@@ -12,8 +12,13 @@ module.exports.tempUser = (firstName, lastName, email, callback) => {
             connection.release()
             return callback(err, null)
         } else {
-            connection.query(`INSERT INTO user_temp (first_name, last_name, email) VALUES (?,?,?)`,
-                [firstName, lastName, email], (err, rows) => {
+            connection.query(`
+            INSERT INTO user_temp (first_name,last_name,email) 
+            SELECT * FROM (SELECT ? AS first_name, ? AS last_name, ? AS email) as temp
+            WHERE not EXISTS (
+                SELECT email from user where email=?
+            )`,
+                [firstName, lastName, email, email], (err, rows) => {
                     if (err) {
                         connection.release()
                         return callback(err, null)
