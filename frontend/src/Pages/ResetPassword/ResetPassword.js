@@ -59,6 +59,8 @@ function App() {
                                 history.push('/dashboard');
                             }
                         )
+
+                        alert("Successfully updated your password!")
                         history.push('/dashboard');
                     } else {
                         setMessage({
