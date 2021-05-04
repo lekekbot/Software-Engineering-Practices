@@ -27,32 +27,32 @@ const authGuard = (Component) => () => {
 const authMasterGuard = (Component) => () => {
   let token = localStorage.getItem('token')
   token = decoder(token)
-  return token.role == 'admin' ? <Redirect to='/dashboard'/> : <Component/>
+  return token.role == 'admin' ? <Redirect to='/dashboard' /> : <Component />
 };
 /* I set the border with red appearing so that I know this is the Route.js*/
 const Routes = (props) => (
- 
-  <div style={{width:'100%',border:'solid 1px red'}}>
-  <Router {...props} >
-    <Switch>
-      <Route path="/login">
-        <Login />
-      </Route>
-      <Route path="/user" render={authGuard(User)}/>
-      <Route path="/team"render={authGuard(Team)}/>
-      <Route path='/AddAdmin'render={authMasterGuard(AddAdmin)}/>
-      <Route path='/remove' render={authGuard(DeleteUser)}/>
-      <Route path='/admin/confirmation/:token'>
-        <VerifyAdmin/>
-      </Route>
 
-      <Route path="/dashboard" render={authGuard(Dashboard)}/>
-    
-      <Route exact path="/">
-        <Redirect to="/dashboard" />
-      </Route>
-    </Switch>
-  </Router>
+  <div style={{ width: '100%', border: 'solid 1px red' }}>
+    <Router {...props} >
+      <Switch>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/user" render={authGuard(User)} />
+        <Route path="/team" render={authGuard(Team)} />
+        <Route path='/AddAdmin' render={authMasterGuard(AddAdmin)} />
+        <Route path='/remove' render={authGuard(DeleteUser)} />
+        <Route path='/admin/confirmation/:token'>
+          <VerifyAdmin />
+        </Route>
+
+        <Route path="/dashboard" render={authGuard(Dashboard)} />
+
+        <Route exact path="/">
+          <Redirect to="/dashboard" />
+        </Route>
+      </Switch>
+    </Router>
   </div>
 );
 

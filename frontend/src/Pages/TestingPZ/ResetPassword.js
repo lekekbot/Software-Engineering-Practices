@@ -21,7 +21,7 @@ function App() {
     const token = getTokenFromLocalStore();
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit, errors } = useForm();
-    const [password, setPassword] = useState({ firstPassword: "Abc12345!", secondPassword: "Abc12345!", });
+    const [password, setPassword] = useState({ firstPassword: "", secondPassword: "", });
     const [message, setMessage] = useState({ data: '', type: '' });
     const [validLength, hasNumber, upperCase, lowerCase, match, specialChar,] = usePasswordValidation({ firstPassword: password.firstPassword, secondPassword: password.secondPassword, });
 
@@ -36,7 +36,6 @@ function App() {
     // Logic missing
     const onSubmit = (data, e) => {
         var userNewPassword = (password.firstPassword)
-        alert(token)
         if (validLength && hasNumber && upperCase && lowerCase && match && specialChar) {
             setMessage({
                 data: 'Verification in progress...',

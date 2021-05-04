@@ -194,37 +194,41 @@ exports.processRegister = (req, res, next) => {
             }
         }
     });
-};
 
+
+}; // End of processRegister
 // /api/users/confirmation
-exports.processConfirmation = async (req, res, next) => {
-    //retrieves token from url which retrives from localstorage
-    let token = req.params.token
 
-    user.verifyUserEmail(token, async (error, results) => {
-        if (results) {
-            return res.status(200).json({
-                code: 200,
-                error: false,
-                description: 'Verification is complete',
-                content: []
-            })
-        } else {
-            return res.status(500).json({
-                code: 500,
-                error: true,
-                description: 'Unable to complete verification, please contact an admin',
-                content: []
-            });
-        }
-    })
+exports.processConfirmation = async (req, res, next) => {
+    let token = req.params.token
+    try {
+        await user.verifyUserEmail(token, async (error, results) => {
+            await sleep(3500)
+            if (results) {
+                return res.status(200).json({
+                    code: 200,
+                    error: false,
+                    description: 'Verification is complete',
+                    content: []
+                });
+            } else {
+                console.log("it is entering here 4")
+                return res.status(500).json({
+                    code: 500,
+                    error: true,
+                    description: 'Unable to complete verification, please contact an admin',
+                    content: []
+                });
+            }
+        })
+    } catch (e) {
+        res.send('error');
+    }
 };
 
 exports.processGetOneUserStatusData = async (req, res, next) => {
     console.log('The processGetOneUserStatusData running');
-
     const userEmail = req.params.userEmail;
-
     try {
         await sleep(7000);
         let oneResult = await auth.getOneUserStatusData(userEmail);

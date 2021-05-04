@@ -244,8 +244,7 @@ module.exports.verifyUserEmail = async (token, callback) => {
         let jwtObject = jwt.verify(token, config.EMAIL_SECRET);
         user_id = jwtObject.user_id;
     } catch (e) {
-        console.log(e)
-        res.send('error');
+        return callback(e, null)
     }
     pool.getConnection((err, connection) => {
         if (err) {

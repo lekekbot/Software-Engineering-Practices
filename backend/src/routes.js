@@ -16,10 +16,6 @@ const pb5 = require('./controllers/pb5')
 exports.appRoute = router => {
     // Called by the client normal user role app to logon to the system
     router.post('/api/u/users/signin', authController.processUserLogin);
-    // Called by the client normal user role app to register to the system
-    router.post('/api/users/register', authController.processRegister);
-    // Called to process verification
-    router.post('/api/users/confirmation/:token', authController.processConfirmation);
     // Called by the client normal user role app at the user status page.
     router.get('/api/u/users/status/:userEmail', authController.processGetOneUserStatusData);
     // Called by the client admin role app to update approve status for registered users.
@@ -61,6 +57,12 @@ exports.appRoute = router => {
     router.delete('/api/u/proposals/', proposalController.processDeleteOneProposal);
 
     router.get('/api/a/teams/summary', teamController.processGetAllTeams);
+
+    //PROBLEM 3 - MATTHEW CHAN
+    // Called by the client normal user role app to register to the system
+    router.post('/api/users/register', authController.processRegister);
+    // Called to process verification
+    router.post('/api/users/confirmation/:token', authController.processConfirmation);
 
     //PROBLEM 4 - CHAI PIN ZHENG
     //Sends an email to the user using mailgun in order to send them a OTP
