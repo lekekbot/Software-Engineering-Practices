@@ -3,7 +3,7 @@ const pool = require('../config/database');
 const mysql = require("../utils/mysql.js");
 const jwt = require('jsonwebtoken');
 
-module.exports.createUser = async (firstName, lastName, email, instituionId, password,callback) => {
+module.exports.createUser = async (firstName, lastName, email, instituionId, password, callback) => {
     console.log(firstName, lastName, email, password);
     return new Promise((resolve, reject) => {
         //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
@@ -237,41 +237,30 @@ module.exports.updateDesign = (recordId, title, description) => {
 
 } //End of updateDesign
 
-module.exports.verifyUserEmail = async(req, res, callback) => {
+module.exports.verifyUserEmail = async (token, callback) => {
     let user_id
     try {
-        req = req.substring(1);
-        let jwtObject = jwt.verify(req, config.EMAIL_SECRET);
+        token = token.substring(1);
+        let jwtObject = jwt.verify(token, config.EMAIL_SECRET);
         user_id = jwtObject.user_id;
-      } catch (e) {
-          console.log(e)
+    } catch (e) {
+        console.log(e)
         res.send('error');
-      }
-    return new Promise((resolve, reject) => {
-        //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
-        //to prepare the following code pattern which does not use callback technique (uses Promise technique)
-        pool.getConnection((err, connection) => {
-            if (err) {
-                console.log('Database connection error ', err);
-                resolve(err);
-            } else {
-                connection.query(`UPDATE competiton_system_4_db.user SET is_verified=true WHERE user_id=${user_id} ;`, (err, rows) => {
+    }
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.log('Database connection error ', err);
+        } else {
+            connection.query(`UPDATE competiton_system_4_db.user SET is_verified=true WHERE user_id=${user_id} ;`,
+                (err, rows) => {
                     if (err) {
-                        
-                        console.log(err)
-                        reject(err);
+                        connection.release();
+                        return callback(err, null)
                     } else {
-                        console.log("it is entering")
-                        console.log(rows)
-                        resolve(rows);
+                        connection.release();
+                        return callback(null, rows)
                     }
-                    connection.release();
                 });
-            }
-        });
-    }); //End of new Promise object creation
-        
-      
-        
-      
+        }
+    });
 } //End of updateDesign

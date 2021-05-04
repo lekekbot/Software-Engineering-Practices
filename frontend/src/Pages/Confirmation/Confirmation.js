@@ -19,7 +19,7 @@ function Confirmation(props) {
     const history = useHistory();
     //After finished working on this Login.js, I noticed that applying state for email and password, combining it with
     // inside the UI without typing additional code.
-    const [message, setMessage] = useState({ data: '', type: '' });
+    const [message, setMessage] = useState();
     // You need the loading state so that the Login button can
     // effectively show the button label or 'loading....' 
     const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ function Confirmation(props) {
     const onSubmit = (data) => {
         alert("Hello World")
         let token = window.location.href.split("/").slice(-1)
-        history.push(`/login`);
+        // history.push(`/login`);
         // console.dir(data);
         setMessage({
             data: 'Login is in progress...',
@@ -36,6 +36,7 @@ function Confirmation(props) {
         });
         axios.post(`${config.baseUrl}/users/confirmation/:${token}`)
             .then(response => {
+                console.log(response.data.status + " this is the status");
                 history.push(`/login`);
                 setLoading(false);
                 if (response.data.status != 'pending') {
