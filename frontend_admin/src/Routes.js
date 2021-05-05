@@ -6,6 +6,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import decoder from 'jwt-decode'
+
 import Login from './Pages/Login/Login';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import User from './Pages/User/User';
@@ -13,7 +14,6 @@ import Team from './Pages/Team/Team'
 import AddAdmin from './Pages/AddAdmin/AddAdmin'
 import VerifyAdmin from './Pages/verifyAdmin/verifyAdmin'
 import DeleteUser from './Pages/DeleteUser/DeleteUser'
-import ManageTeamSubmission from './Pages/ManageTeamSubmission/ManageTeamSubmission'
 console.log(User);
 
 const authGuard = (Component) => () => {

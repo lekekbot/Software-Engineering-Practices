@@ -24,7 +24,10 @@ import UploadFile from './Pages/UploadFile/UploadFile';
 import EmailVerification from './Pages/EmailVerification/EmailVerification'
 import OneTimePassword from './Pages/OneTimePassword/OneTimePassword';
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
+<<<<<<< HEAD
 import TeamSubmission from './Pages/TeamSubmission/TeamSubmission'
+=======
+>>>>>>> parent of d8cd51d (Merge branch 'main' of https://github.com/lekekbot/SEP-Project into main)
 
 const authGuard = (Component) => (props) => {
   console.log(props);
@@ -65,7 +68,10 @@ const Routes = (props) => (
       <Route path="/manageinvites/:teamId" render={authGuard(ManageInviteTeamMembers)} />
       <Route path="/manageteammembers/:teamId" render={authGuard(ManageTeamMembers)} />
       <Route path="/submitproposal/:teamId" render={authGuard(UploadFile)} />
+<<<<<<< HEAD
       <Route path="/teamsubmission" render={authGuard(TeamSubmission)} />
+=======
+>>>>>>> parent of d8cd51d (Merge branch 'main' of https://github.com/lekekbot/SEP-Project into main)
       <Route path="/managesubmissions/:teamId" render={authGuard(ManageSubmissions)}></Route>
       <Route exact path="/">
         <Redirect to="/dashboard" />

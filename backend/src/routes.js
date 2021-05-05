@@ -99,6 +99,4 @@ exports.appRoute = router => {
 
     //get pendings
     router.get('/api/a/pending', pb5.getPending)
-
-    router.get('/api/u/teaminfo', teamController.processGetTeamInfo)
 };
