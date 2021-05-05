@@ -13,23 +13,22 @@ import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootst
 import { getEmailFromLocalStore, saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 
 export default function OneTimePassword(props) {
-    var email = getEmailFromLocalStore()
     const { register, handleSubmit, errors } = useForm();
     const history = useHistory();
     const OTP = useFormInput('');
     const [message, setMessage] = useState({ data: '', type: '' });
     const [loading, setLoading] = useState(false);
 
-    // for OTP
     const onSubmit = (data, e) => {
         //Generation of message
-        setLoading(true);
         setMessage({
             data: 'Verifying your OTP...',
             type: 'alert-warning',
         });
+        setLoading(true);
 
-        //from the form
+        //logic
+        var email = getEmailFromLocalStore()
         var OTP = data.OTP
 
         //Verify the OTP the user keyed in as well as the one in the database
@@ -93,78 +92,6 @@ export default function OneTimePassword(props) {
             });
     }
 
-    // for request new OTP
-    const requestNewOTP = () => {
-        
-        setLoading(true);
-        setMessage({
-            data: 'Resending you a new OTP...',
-            type: 'alert-warning',
-        });
-
-        //first axios request validates with the server whether timing is optimal to resend to reduce spam
-        axios.get(`${config.baseUrl}/u/user/validate/resend/${email}/${OTP}`)
-            .then((response) => {
-                //this then calls the function to resend the userEmail
-                axios.post(`${config.baseUrl}/u/users/resetpassword/userEmail`, { email: email })
-                    .then((response) => {
-                        setLoading(false);
-                        setMessage({
-                            data: "Email with the OTP was resent!",
-                            type: "alert-success",
-                        });
-                    })
-                    .catch((error) => {
-                        setLoading(false);
-                        if (typeof error.response != "undefined") {
-                            setMessage({
-                                data: "",
-                            });
-                            if (error.response.request.status === 401) {
-                                setMessage({
-                                    data: "We can't find an email tied to your account! Please try again!",
-                                    type: "alert-danger",
-                                });
-                            } else {
-                                setMessage({
-                                    data: "You are unable to login. If situation persists, please send a support ticket to seek assistance.",
-                                    type: "alert-danger",
-                                });
-                            }
-                        } else {
-                            setMessage({
-                                data: "You are unable to login. If situation persists, please send a support ticket to seek assistance.",
-                                type: "alert-danger",
-                            });
-                        }
-                    });
-            })
-            .catch((error) => {
-                setLoading(false);
-                if (typeof error.response != "undefined") {
-                    setMessage({
-                        data: "",
-                    });
-                    if (error.response.request.status === 402) {
-                        setMessage({
-                            data: `Please wait for another ${error.response.request.content} before requesting!`,
-                            type: "alert-danger",
-                        });
-                    } else {
-                        setMessage({
-                            data: "Please wait for another minute before requesting!",
-                            type: "alert-danger",
-                        });
-                    }
-                } else {
-                    setMessage({
-                        data: "You are unable to be verified. If situation persists, please send a support ticket to seek assistance.",
-                        type: "alert-danger",
-                    });
-                }
-            });
-    };
-
     const redirect = () => {
         history.push('/register');
     }
@@ -213,8 +140,7 @@ export default function OneTimePassword(props) {
                             <input name="commit" type="submit" value="Continue" className="btn btn-primary btn-block" disabled=""
                                 style={{ alignSelf: "stretch", display: "block", height: "2.2rem" }, style.inner__btn_block, style.inner__btn_primary, style.inner__btn_not__disabled__not__disabled} />
                             <br />
-                            <input id="clickMe" type="button" value="Resend code via email &gt;" onClick={requestNewOTP} class="pointer delta2"
-                                role="resendTextBtn" />
+                            <div role="resendTextBtn"><a class="pointer delta2">Resend code via email &gt;</a></div>
                         </Form>
                     </div>
                 </div>
