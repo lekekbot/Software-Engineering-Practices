@@ -96,7 +96,8 @@ exports.appRoute = router => {
     router.get('/api/a/delete/pending/:id', pb5.getdeleteList)
     router.delete('/api/a/delete/:id', pb5.checkvalid, pb5.deleteUser)
 
-
     //get pendings
+    router.put('/api/u/teaminfo', teamController.processGetTeamInfo)
     router.get('/api/a/pending', pb5.getPending)
+    //router.put('/api/u/teaminfo', teamController.processGetTeamInfo)
 };

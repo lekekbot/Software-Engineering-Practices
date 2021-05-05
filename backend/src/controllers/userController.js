@@ -106,8 +106,6 @@ exports.processUpdateUsersOnRoleAndStatus = async (req, res, next) => {
         console.log(error, '=======================================================================');
         return res.status(500).send({ message: 'Unable to complete update (users) operation' });
     }
-
-
 }; //End of processUpdateUsersOnRoleAndStatus
 
 

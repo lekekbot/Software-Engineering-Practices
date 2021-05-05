@@ -24,6 +24,7 @@ import UploadFile from './Pages/UploadFile/UploadFile';
 import EmailVerification from './Pages/EmailVerification/EmailVerification'
 import OneTimePassword from './Pages/OneTimePassword/OneTimePassword';
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
+import TeamSubmission from './Pages/TeamSubmission/TeamSubmission'
 
 const authGuard = (Component) => (props) => {
   console.log(props);
@@ -65,6 +66,7 @@ const Routes = (props) => (
       <Route path="/manageteammembers/:teamId" render={authGuard(ManageTeamMembers)} />
       <Route path="/submitproposal/:teamId" render={authGuard(UploadFile)} />
       <Route path="/managesubmissions/:teamId" render={authGuard(ManageSubmissions)}></Route>
+      <Route path="/teamsubmission" render={authGuard(TeamSubmission)}></Route>
       <Route exact path="/">
         <Redirect to="/dashboard" />
       </Route>

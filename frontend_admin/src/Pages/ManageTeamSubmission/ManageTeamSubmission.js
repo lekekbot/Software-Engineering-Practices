@@ -5,11 +5,11 @@ import React, { useState, useEffect } from 'react';
 //thinking that it is the old now
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
-import styles from "./TeamSubmission.module.css";
-import Header from '../../Elements/Header';
+import styles from "./ManageTeamSubmission.module.css";
+import Header from '../../Elements/Header/Header';
 import axios from 'axios';
-import Title from "../Title/Title";
-import config from '../../config.js';
+import Title from "../../Elements/Title/Title";
+import config from '../../Config.js';
 import { Button, Container, Row, Col } from "react-bootstrap";
 //The following library is for creating notification alerts when user 
 //clicks the save button.
@@ -23,7 +23,7 @@ const User = () => {
   // effectively show the button label or 'loading....' 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    axios.put(`${config.baseUrl}/u/teaminfo`,
+    axios.get(`${config.baseUrl}/a/users`,
       {})
       .then(response => {
         console.log(response.data.data);
@@ -38,7 +38,7 @@ const User = () => {
   }, []);//End of useEffect({function code,[]})
 
   //Had issues trying to change the roleId when the user choose an option
-  //in the drop-down listbox. It reqx`uires formatting logic.
+  //in the drop-down listbox. It requires formatting logic.
   //Reference: https://github.com/react-bootstrap-table/react-bootstrap-table2/issues/1106
   const userRoles = [
     { value: 1, label: 'admin' },
@@ -47,10 +47,18 @@ const User = () => {
 
   ];
   const handleSaveChanges = () => {
+    //console.log(userData);
     const filteredUserData = userData.filter(data => data.changeStatus == true);
+    //console.log(filteredUserData);
+
+    //After inspecting the userData and filteredUserData, I have continued
+    //to build the logic which calls the REST API to save changes to the databse.
+    //Note that, I need to find out how to use the useEffect to reload the user
+    //data from the server-side after the save operation has completed.
 
     setLoading(true);
-    axios.put(`${config.baseUrl}/u/teams/proposals/teamid`, filteredUserData)
+    axios.put(`${config.baseUrl}/a/users`,
+      filteredUserData)
       .then(response => {
         setLoading(false);
         toast.success('Saved changes.', {
@@ -64,6 +72,7 @@ const User = () => {
         });
       }).catch(error => {
         setLoading(false);
+
 
         if ((error.response != null) && (error.response.status === 401)) {
           toast.error(error.response.data.message, {
@@ -106,15 +115,15 @@ const User = () => {
     sort: false,
     hidden: true
   }, {
-    dataField: 'team_id',
+    dataField: 'firstName',
     text: 'Team No.',
     sort: true
   }, {
-    dataField: 'name',
+    dataField: 'firstName',
     text: 'Team Name',
     sort: true
   }, {
-    dataField: 'first_name',
+    dataField: 'lastName',
     text: 'Team Leader',
     sort: true
   },
@@ -124,17 +133,17 @@ const User = () => {
     sort: true
   },
   {
-    dataField: 'cloudinary_url',
+    dataField: 'email',
     text: 'Download Link',
     sort: true
   },
   {
-    dataField: 'created_at',
+    dataField: 'roleId',
     text: 'Submission Date & Time',
     sort: true,
-    // formatter: (cell, row) => {
-    //   return userRoles.find(x => x.value == cell).label;
-    // },
+    formatter: (cell, row) => {
+      return userRoles.find(x => x.value == cell).label;
+    },
     editor: {
       type: Type.SELECT,
       options: userRoles
@@ -179,7 +188,7 @@ const User = () => {
           <Col style={{ border: 'solid 1px black' }}>
 
             <h3>
-              Submit proposal file(s)
+              View/download proposal file(s)
             </h3>
 
           </Col>
@@ -187,18 +196,19 @@ const User = () => {
         <Row>
           <Col style={{ border: 'solid 1px black' }}>
             <h4>
-              Proposal submission deadline:
+              Number of proposals since you last logged in:
                 </h4>
           </Col>
         </Row>
-        <Row >
+        <Row>
           <Col md={{ size: 10 }} style={{ border: 'solid 1px black' }} >
             <Button
               className="btn btn-primary float-left"
               onClick={handleSaveChanges}>
-              {'Submit Proposal'}
+              {'Set Deadline'}
             </Button>
           </Col>
+
         </Row>
         <Row>
           <Col md={{ size: 10 }} style={{ border: 'solid 1px black' }} >
@@ -208,20 +218,11 @@ const User = () => {
               data={userData}
               columns={columns}
               defaultSorted={defaultSorted}
-            // cellEdit={cellEditFactory({ mode: 'click', blurToSave: true, afterSaveCell: handleUserStatusChange })}
+              cellEdit={cellEditFactory({ mode: 'click', blurToSave: true, afterSaveCell: handleUserStatusChange })}
             />
           </Col>
         </Row>
 
-        <Row >
-          <Col md={{ size: 10 }} style={{ border: 'solid 1px black' }} >
-            <Button
-              className="btn btn-primary float-right"
-              onClick={handleSaveChanges}>
-              {loading ? 'Saving changes now ...' : 'Save'}
-            </Button>
-          </Col>
-        </Row>
       </Container>
     </div>
   );

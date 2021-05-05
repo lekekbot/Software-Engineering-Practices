@@ -14,6 +14,7 @@ import Team from './Pages/Team/Team'
 import AddAdmin from './Pages/AddAdmin/AddAdmin'
 import VerifyAdmin from './Pages/verifyAdmin/verifyAdmin'
 import DeleteUser from './Pages/DeleteUser/DeleteUser'
+import ManageTeamSubmission from './Pages/ManageTeamSubmission/ManageTeamSubmission'
 console.log(User);
 
 const authGuard = (Component) => () => {
@@ -39,13 +40,12 @@ const Routes = (props) => (
           <Login />
         </Route>
         <Route path="/user" render={authGuard(User)} />
-        <Route path="/team" render={authGuard(Team)} />
+        <Route path="/team" render={authGuard(ManageTeamSubmission)} />
         <Route path='/AddAdmin' render={authMasterGuard(AddAdmin)} />
         <Route path='/remove' render={authGuard(DeleteUser)} />
         <Route path='/admin/confirmation/:token'>
           <VerifyAdmin />
         </Route>
-
         <Route path="/dashboard" render={authGuard(Dashboard)} />
 
         <Route exact path="/">
