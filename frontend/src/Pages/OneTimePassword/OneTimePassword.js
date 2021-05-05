@@ -165,6 +165,10 @@ export default function OneTimePassword(props) {
             });
     };
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of c2d7260 (death)
 =======
 
 >>>>>>> parent of c2d7260 (death)
