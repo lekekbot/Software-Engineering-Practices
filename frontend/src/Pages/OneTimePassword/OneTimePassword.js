@@ -90,6 +90,7 @@ export default function OneTimePassword(props) {
             });
     }
 
+<<<<<<< HEAD
     // for request new OTP
     const requestNewOTP = () => {
         setLoading(true);
@@ -160,6 +161,7 @@ export default function OneTimePassword(props) {
                 }
             });
     };
+=======
     const redirect = () => {
         history.push('/register');
     }
