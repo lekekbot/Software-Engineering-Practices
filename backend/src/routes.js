@@ -51,12 +51,16 @@ exports.appRoute = router => {
     router.delete('/api/u/teams/:teamId/teammembers/:teamMemberId', checkUserFn.checkForValidUserRoleUser, teamController.processDeleteTeamMember);
 
     router.post('/api/u/teams/:teamId/proposals/', proposalController.processCreateProposal);
-    router.get('/api/u/teams/:teamId/proposals/', proposalController.processGetProposalsByTeamId);
     //The delete REST API needs an object which is passed through the body.
     //The object contains the db table's fileId and the cloudinary file id.
     router.delete('/api/u/proposals/', proposalController.processDeleteOneProposal);
 
     router.get('/api/a/teams/summary', teamController.processGetAllTeams);
+
+    //PROBLEM 3 - XIAOLIN
+    // Get information about all the proposals but specific only to the user team
+    router.get('/api/u/teams/:teamId/proposals/', proposalController.processGetProposalsByTeamId);
+
 
     //PROBLEM 3 - MATTHEW CHAN
     // Called by the client normal user role app to register to the system
@@ -101,4 +105,6 @@ exports.appRoute = router => {
 
     //get pendings
     router.get('/api/a/pending', pb5.getPending)
+
+    router.get('/api/u/teaminfo', teamController.processGetTeamInfo)
 };

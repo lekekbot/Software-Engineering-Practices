@@ -6,7 +6,6 @@ import {
   Redirect,
 } from 'react-router-dom';
 import decoder from 'jwt-decode'
-
 import Login from './Pages/Login/Login';
 import Dashboard from './Pages/Dashboard/Dashboard';
 import User from './Pages/User/User';
@@ -14,6 +13,7 @@ import Team from './Pages/Team/Team'
 import AddAdmin from './Pages/AddAdmin/AddAdmin'
 import VerifyAdmin from './Pages/verifyAdmin/verifyAdmin'
 import DeleteUser from './Pages/DeleteUser/DeleteUser'
+import ManageTeamSubmission from './Pages/ManageTeamSubmission/ManageTeamSubmission'
 console.log(User);
 
 const authGuard = (Component) => () => {
@@ -31,6 +31,24 @@ const authMasterGuard = (Component) => () => {
 };
 /* I set the border with red appearing so that I know this is the Route.js*/
 const Routes = (props) => (
+<<<<<<< Updated upstream
+=======
+ 
+  <div style={{width:'100%',border:'solid 1px red'}}>
+  <Router {...props} >
+    <Switch>
+      <Route path="/login">
+        <Login />
+      </Route>
+      <Route path="/user" render={authGuard(User)}/>
+      <Route path="/team"render={authGuard(Team)}/>
+      <Route path='/AddAdmin'render={authMasterGuard(AddAdmin)}/>
+      <Route path='/remove' render={authGuard(DeleteUser)}/>
+      <Route path="/manageteamsubmission"render={authGuard(ManageTeamSubmission)}/>
+      <Route path='/admin/confirmation/:token'>
+        <VerifyAdmin/>
+      </Route>
+>>>>>>> Stashed changes
 
   <div style={{ width: '100%', border: 'solid 1px red' }}>
     <Router {...props} >

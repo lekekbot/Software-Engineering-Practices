@@ -23,7 +23,14 @@ import ManageTeamMembers from './Pages/ManageTeamMembers/ManageTeamMembers';
 import UploadFile from './Pages/UploadFile/UploadFile';
 import EmailVerification from './Pages/EmailVerification/EmailVerification'
 import OneTimePassword from './Pages/OneTimePassword/OneTimePassword';
+<<<<<<< Updated upstream
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
+=======
+import TeamSubmission from './Pages/TeamSubmission/TeamSubmission'
+
+// FOR TESTING AND EXPERIMENTATION
+import Test from './Pages/TestingPZ/ResetPassword';
+>>>>>>> Stashed changes
 
 const authGuard = (Component) => (props) => {
   console.log(props);
@@ -64,6 +71,7 @@ const Routes = (props) => (
       <Route path="/manageinvites/:teamId" render={authGuard(ManageInviteTeamMembers)} />
       <Route path="/manageteammembers/:teamId" render={authGuard(ManageTeamMembers)} />
       <Route path="/submitproposal/:teamId" render={authGuard(UploadFile)} />
+      <Route path="/teamsubmission" render={authGuard(TeamSubmission)}/>
       <Route path="/managesubmissions/:teamId" render={authGuard(ManageSubmissions)}></Route>
       <Route exact path="/">
         <Redirect to="/dashboard" />
