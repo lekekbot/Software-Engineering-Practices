@@ -23,11 +23,20 @@ import ManageTeamMembers from './Pages/ManageTeamMembers/ManageTeamMembers';
 import UploadFile from './Pages/UploadFile/UploadFile';
 import EmailVerification from './Pages/EmailVerification/EmailVerification'
 import OneTimePassword from './Pages/OneTimePassword/OneTimePassword';
+<<<<<<< Updated upstream
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> parent of ac7f003 (COmmit)
 import TeamSubmission from './Pages/TeamSubmission/TeamSubmission'
 =======
 >>>>>>> parent of d8cd51d (Merge branch 'main' of https://github.com/lekekbot/SEP-Project into main)
+
+// FOR TESTING AND EXPERIMENTATION
+import Test from './Pages/TestingPZ/ResetPassword';
+>>>>>>> Stashed changes
 
 const authGuard = (Component) => (props) => {
   console.log(props);
@@ -69,9 +78,13 @@ const Routes = (props) => (
       <Route path="/manageteammembers/:teamId" render={authGuard(ManageTeamMembers)} />
       <Route path="/submitproposal/:teamId" render={authGuard(UploadFile)} />
 <<<<<<< HEAD
+<<<<<<< HEAD
       <Route path="/teamsubmission" render={authGuard(TeamSubmission)} />
 =======
 >>>>>>> parent of d8cd51d (Merge branch 'main' of https://github.com/lekekbot/SEP-Project into main)
+=======
+      <Route path="/teamsubmission" render={authGuard(TeamSubmission)}/>
+>>>>>>> parent of ac7f003 (COmmit)
       <Route path="/managesubmissions/:teamId" render={authGuard(ManageSubmissions)}></Route>
       <Route exact path="/">
         <Redirect to="/dashboard" />

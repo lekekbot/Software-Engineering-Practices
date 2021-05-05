@@ -47,6 +47,12 @@ const User = () => {
 
   ];
   const handleSaveChanges = () => {
+<<<<<<< Updated upstream
+    const filteredUserData = userData.filter(data => data.changeStatus == true);
+
+    setLoading(true);
+    axios.put(`${config.baseUrl}/u/teams/proposals/teamid`, filteredUserData)
+=======
     //console.log(userData);
     const filteredUserData = userData.filter(data => data.changeStatus == true);
     //console.log(filteredUserData);
@@ -59,6 +65,7 @@ const User = () => {
     setLoading(true);
     axios.put(`${config.baseUrl}/a/users`,
       filteredUserData)
+>>>>>>> Stashed changes
       .then(response => {
         setLoading(false);
         toast.success('Saved changes.', {
