@@ -38,7 +38,7 @@ const User = () => {
   }, []);//End of useEffect({function code,[]})
 
   //Had issues trying to change the roleId when the user choose an option
-  //in the drop-down listbox. It requires formatting logic.
+  //in the drop-down listbox. It reqx`uires formatting logic.
   //Reference: https://github.com/react-bootstrap-table/react-bootstrap-table2/issues/1106
   const userRoles = [
     { value: 1, label: 'admin' },
@@ -47,25 +47,10 @@ const User = () => {
 
   ];
   const handleSaveChanges = () => {
-<<<<<<< Updated upstream
     const filteredUserData = userData.filter(data => data.changeStatus == true);
 
     setLoading(true);
     axios.put(`${config.baseUrl}/u/teams/proposals/teamid`, filteredUserData)
-=======
-    //console.log(userData);
-    const filteredUserData = userData.filter(data => data.changeStatus == true);
-    //console.log(filteredUserData);
-
-    //After inspecting the userData and filteredUserData, I have continued
-    //to build the logic which calls the REST API to save changes to the databse.
-    //Note that, I need to find out how to use the useEffect to reload the user
-    //data from the server-side after the save operation has completed.
-
-    setLoading(true);
-    axios.put(`${config.baseUrl}/a/users`,
-      filteredUserData)
->>>>>>> Stashed changes
       .then(response => {
         setLoading(false);
         toast.success('Saved changes.', {
@@ -79,7 +64,6 @@ const User = () => {
         });
       }).catch(error => {
         setLoading(false);
-
 
         if ((error.response != null) && (error.response.status === 401)) {
           toast.error(error.response.data.message, {
