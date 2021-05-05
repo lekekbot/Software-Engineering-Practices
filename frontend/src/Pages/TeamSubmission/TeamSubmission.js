@@ -47,10 +47,25 @@ const User = () => {
 
   ];
   const handleSaveChanges = () => {
+<<<<<<< Updated upstream
     const filteredUserData = userData.filter(data => data.changeStatus == true);
 
     setLoading(true);
     axios.put(`${config.baseUrl}/u/teams/proposals/teamid`, filteredUserData)
+=======
+    //console.log(userData);
+    const filteredUserData = userData.filter(data => data.changeStatus == true);
+    //console.log(filteredUserData);
+
+    //After inspecting the userData and filteredUserData, I have continued
+    //to build the logic which calls the REST API to save changes to the databse.
+    //Note that, I need to find out how to use the useEffect to reload the user
+    //data from the server-side after the save operation has completed.
+
+    setLoading(true);
+    axios.put(`${config.baseUrl}/a/users`,
+      filteredUserData)
+>>>>>>> Stashed changes
       .then(response => {
         setLoading(false);
         toast.success('Saved changes.', {
