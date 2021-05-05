@@ -118,7 +118,7 @@ module.exports.correctOTP = (email, callback) => {
         } else {
             try {
                 let query = `SELECT user.user_id, first_name, last_name, status, email, user_password, role_name, user.role_id  
-                FROM user INNER JOIN role ON user.role_id=role.role_id AND email='?'`;
+                FROM user INNER JOIN role ON user.role_id=role.role_id AND email=?`;
                 connection.query(query, [email], (err, rows) => {
                     if (err) {
                         if (err) return callback(null, err);
