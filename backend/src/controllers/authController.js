@@ -154,6 +154,9 @@ exports.processRegister = (req, res, next) => {
             try {
                 //Enter email here
                 user.createUser(firstName, lastName, email, institutionId, hash, (error, results) => {
+                    if(error){
+                        return res.status(405).json({ message: 'Unable to complete registration' });
+                    }
                     //Signing of jwt token.. we will standardise an email secret ig
                     jwt.sign(
                         {

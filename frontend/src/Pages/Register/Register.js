@@ -60,6 +60,9 @@ const Register = () => {
       if (error.response.status==500){
         setMessage({data:'Something went wrong. Please try again later. Send a support ticket if problem persists.', type:'alert-danger'});
       }
+      if (error.response.status==405){
+        setMessage({data:'Your account has already been created, please login instead', type:'alert-danger'});
+      }
       // Reset the form state
       e.target.reset();
     });
