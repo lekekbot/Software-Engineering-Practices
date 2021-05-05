@@ -7,6 +7,13 @@ const nodeMailer = require('nodemailer')
 
 // I used this to simulate a delay so that I can test the client-side laoding spinner.
 const sleep = require('sleep-promise');
+let transporter = nodeMailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: config.GMAIL_USER,
+        pass: config.GMAIL_PASS,
+    }
+})
 exports.processAdminLogin = (req, res, next) => {
 
     let email = req.body.email;
@@ -138,13 +145,7 @@ exports.processRegister = (req, res, next) => {
     let password = req.body.password;
     let institutionId = req.body.institution.value;
     let data = req.body;
-    let transporter = nodeMailer.createTransport({
-        service: 'Gmail',
-        auth: {
-            user: config.GMAIL_USER,
-            pass: config.GMAIL_PASS,
-        }
-    })
+    
     bcrypt.hash(password, 10, async (err, hash) => {
         if (err) {
             console.log('Error on hashing password');
@@ -204,6 +205,19 @@ exports.processConfirmation = async (req, res, next) => {
         await user.verifyUserEmail(token, async (error, results) => {
             await sleep(3500)
             if (results) {
+                console.log("below is the reuslts")
+                console.log(results)
+                //Sends an email to the user
+                try {
+                    transporter.sendMail({
+                        //Insert admin email here
+                        to: "mchanjh.20@ichat.sp.edu.sg",
+                        subject: 'User has verified his/her email',
+                        html: `A user with a user_id of ${results} has verified his/her email, the user's email is awaiting verification `,
+                    });
+                } catch (err) {
+                    console.log(err)
+                }
                 return res.status(200).json({
                     code: 200,
                     error: false,

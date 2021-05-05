@@ -257,7 +257,7 @@ module.exports.verifyUserEmail = async (token, callback) => {
                         return callback(err, null)
                     } else {
                         connection.release();
-                        return callback(null, rows)
+                        return callback(null, user_id)
                     }
                 });
         }
