@@ -95,7 +95,7 @@ module.exports.validateOTP = (user_id, callback) => {
             if (err) throw err;
         } else {
             try {
-                let query = `SELECT password.one_time_password, password.created_at FROM competiton_system_4_db.one_time_password password, competiton_system_4_db.user user where user_id=user_id_fk2 and user_id = ? ORDER BY password.created_at DESC;`;
+                let query = `SELECT password.one_time_password, password.created_at, password.number_of_attemps FROM competiton_system_4_db.one_time_password password, competiton_system_4_db.user user where user_id=user_id_fk2 and user_id = ? ORDER BY password.created_at DESC;`;
                 connection.query(query, [user_id], (err, results) => {
                     if (err) {
                         if (err) return callback(err, null);
@@ -241,6 +241,29 @@ module.exports.passwordChangeTimestamp = (email, callback) => {
                 //retrives the timing of the change was made and then email/userid to the user
                 let query = `SELECT user_password_timestamp FROM competiton_system_4_db.user where email = ?`;
                 connection.query(query, [email], (err, results) => {
+                    if (err) {
+                        if (err) return callback(err, null);
+                    } else {
+                        return callback(null, results);
+                    }
+                    connection.release();
+                });
+            } catch (error) {
+                return callback(error, null);
+            }
+        }
+    });
+};
+
+//update the amount of attempts
+module.exports.passwordAttemptUpdater = (numberOfAttempts, OTP, user_id, callback) => {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            if (err) throw err;
+        } else {
+            try {
+                let query = `UPDATE competiton_system_4_db.one_time_password SET number_of_attemps = ? WHERE one_time_password = ? AND user_id_fk2 = ? `;
+                connection.query(query, [numberOfAttempts, OTP, user_id], (err, results) => {
                     if (err) {
                         if (err) return callback(err, null);
                     } else {

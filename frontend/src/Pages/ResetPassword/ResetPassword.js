@@ -35,6 +35,12 @@ function App() {
 
     // Logic missing
     const onSubmit = (data, e) => {
+        //Generation of message
+        setLoading(true);
+        setMessage({
+            data: 'Verifying your OTP...',
+            type: 'alert-warning',
+        });
         var UserPassword = password.firstPassword
 
         if (validLength && hasNumber && upperCase && lowerCase && match && specialChar) {
@@ -59,6 +65,7 @@ function App() {
                                 history.push('/dashboard');
                             }
                         )
+                        alert("Successfully updated your password!")
                         history.push('/dashboard');
                     } else {
                         setMessage({
@@ -158,7 +165,7 @@ function App() {
 
                             {/**Second Password */}
                             <Form.Group>
-                                <Form.Label for="password">Re-type new</Form.Label >
+                                <Form.Label for="password">Confirm password:</Form.Label >
                                 <input onChange={setSecond} type='password' className="PasswordLabel" />
                             </Form.Group>
 
