@@ -205,8 +205,6 @@ exports.processConfirmation = async (req, res, next) => {
         await user.verifyUserEmail(token, async (error, results) => {
             await sleep(3500)
             if (results) {
-                console.log("below is the reuslts")
-                console.log(results)
                 //Sends an email to the user
                 try {
                     transporter.sendMail({
@@ -225,7 +223,6 @@ exports.processConfirmation = async (req, res, next) => {
                     content: []
                 });
             } else {
-                console.log("it is entering here 4")
                 return res.status(500).json({
                     code: 500,
                     error: true,
