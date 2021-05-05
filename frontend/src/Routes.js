@@ -24,7 +24,10 @@ import UploadFile from './Pages/UploadFile/UploadFile';
 import EmailVerification from './Pages/EmailVerification/EmailVerification'
 import OneTimePassword from './Pages/OneTimePassword/OneTimePassword';
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
+<<<<<<< Updated upstream
 import TeamSubmission from './Pages/TeamSubmission/TeamSubmission'
+=======
+>>>>>>> Stashed changes
 
 const authGuard = (Component) => (props) => {
   console.log(props);
