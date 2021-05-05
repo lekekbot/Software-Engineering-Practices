@@ -13,22 +13,23 @@ import { Form, Button, FormGroup, FormControl, ControlLabel } from "react-bootst
 import { getEmailFromLocalStore, saveUserDataToLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 
 export default function OneTimePassword(props) {
+    var email = getEmailFromLocalStore()
     const { register, handleSubmit, errors } = useForm();
     const history = useHistory();
     const OTP = useFormInput('');
     const [message, setMessage] = useState({ data: '', type: '' });
     const [loading, setLoading] = useState(false);
 
+    // for OTP
     const onSubmit = (data, e) => {
         //Generation of message
+        setLoading(true);
         setMessage({
             data: 'Verifying your OTP...',
             type: 'alert-warning',
         });
-        setLoading(true);
 
-        //logic
-        var email = getEmailFromLocalStore()
+        //from the form
         var OTP = data.OTP
 
         //Verify the OTP the user keyed in as well as the one in the database
@@ -163,6 +164,10 @@ export default function OneTimePassword(props) {
                 }
             });
     };
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of c2d7260 (death)
     const redirect = () => {
         history.push('/register');
     }
@@ -211,7 +216,8 @@ export default function OneTimePassword(props) {
                             <input name="commit" type="submit" value="Continue" className="btn btn-primary btn-block" disabled=""
                                 style={{ alignSelf: "stretch", display: "block", height: "2.2rem" }, style.inner__btn_block, style.inner__btn_primary, style.inner__btn_not__disabled__not__disabled} />
                             <br />
-                            <div role="resendTextBtn"><a class="pointer delta2">Resend code via email &gt;</a></div>
+                            <input id="clickMe" type="button" value="Resend code via email &gt;" onClick={requestNewOTP} class="pointer delta2"
+                                role="resendTextBtn" />
                         </Form>
                     </div>
                 </div>
