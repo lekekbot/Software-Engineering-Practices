@@ -154,7 +154,7 @@ module.exports.getAllTeams = async () => {
                     } else {
                         resolve(rows);
                     }
-                    
+                   
                 });
             };
 
@@ -285,3 +285,33 @@ module.exports.getAllTeams = async () => {
         }); // End of new Promise object creation
 
     } // End of deleteTeamMember
+
+    module.exports.getTeamInfo = () => {
+        
+        return new Promise((resolve, reject) => {
+
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    console.log('Database connection error ', err);
+                    resolve(err);
+                } else {
+                    connection.query(`SELECT t.team_id, t.name, u.first_name, u.email, f.cloudinary_url, 
+                    f.created_at from competiton_system_4_db.user u 
+                    inner join competiton_system_4_db.team_member tm on tm.member_id = u.user_id
+                    inner join competiton_system_4_db.team t on t.team_id = tm.team_id
+                    inner join competiton_system_4_db.file f on f.team_id = t.team_id
+                    where tm.leader = 1
+                    `,[],
+                    (err, rows) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(rows);
+                        }
+                        connection.release();
+                    });
+                }
+            });
+        }); // End of new Promise object creation
+
+    } // End of getTeamInfo

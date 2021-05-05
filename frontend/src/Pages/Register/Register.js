@@ -3,7 +3,7 @@ import Select from 'react-select';
 import styles from './Register.module.css';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
-import { useForm} from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import config from '../../config.js';
 //I had to use RHFInput to build a data driven drop down list
