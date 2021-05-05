@@ -25,6 +25,7 @@
         "react-hook-form": "^6.14.0",
         "react-hook-form-input": "^1.1.10",
         "react-icons": "^4.2.0",
+        "react-loading": "^2.0.3",
         "react-otp-input": "^2.3.0",
         "react-router-dom": "^5.2.0",
         "react-scripts": "4.0.1",

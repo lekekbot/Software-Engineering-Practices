@@ -86,8 +86,6 @@ export default function OneTimePassword(props) {
                     });
 
                 }
-                // end if(error.response.request!='')
-
                 // Reset the form state
                 e.target.reset();
             });
@@ -95,7 +93,6 @@ export default function OneTimePassword(props) {
 
     // for request new OTP
     const requestNewOTP = () => {
-        
         setLoading(true);
         setMessage({
             data: 'Resending you a new OTP...',
