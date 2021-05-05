@@ -92,7 +92,6 @@ export default function OneTimePassword(props) {
             });
     }
 
-<<<<<<< HEAD
     // for request new OTP
     const requestNewOTP = () => {
         
@@ -164,8 +163,6 @@ export default function OneTimePassword(props) {
                 }
             });
     };
-=======
->>>>>>> parent of 2863d1f (Resending of OTPs!)
     const redirect = () => {
         history.push('/register');
     }
