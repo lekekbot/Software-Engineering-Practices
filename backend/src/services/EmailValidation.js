@@ -3,7 +3,7 @@ const cloudinary = require("cloudinary").v2;
 const config = require("../config/config");
 const pool = require("../config/database");
 const bcrypt = require("bcryptjs");
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 //checks with the db whether an account under xxx@gmail.com does exist. Else flag an error using status codes
 //only two answer using CallBacks. - either yes, it does exist or no.
@@ -63,15 +63,15 @@ module.exports.findEmail = (email) => {
 };
 
 //Afterwards, the user_id is used to insert the OTP associated to the user_id
-//Success Response - ?
+//Success Response - ???
 module.exports.insertOTP = (OTP, user_id, callback) => {
     pool.getConnection((err, connection) => {
         if (err) {
             if (err) throw err;
         } else {
             try {
-                let query = "INSERT INTO competiton_system_4_db.one_time_password(one_time_password, user_id_fk2) VALUES(?,?)";
-                connection.query(query, [OTP, user_id], (error, result) => {
+                let query = "INSERT INTO competiton_system_4_db.one_time_password(one_time_password, user_id_fk2, created_at) VALUES(?,?,?)";
+                connection.query(query, [OTP, user_id, moment.tz("Asia/Singapore").format("YYYY-MM-DD hh:mm:ss")], (error, result) => {
                     if (error) {
                         if (error) return callback(error, null);
                     } else {
@@ -216,7 +216,7 @@ module.exports.storeAsCurrent = (user_id, newCurrentPassword, callback) => {
             try {
                 //stores current into repository of history
                 let query = `UPDATE competiton_system_4_db.user SET user_password = ?, user_password_timestamp = ? WHERE user_id = ?`;
-                connection.query(query, [newCurrentPassword, moment().format("YYYY-MM-DD HH:mm:ss"), user_id], (err, results) => {
+                connection.query(query, [newCurrentPassword, moment().tz("Asia/Singapore").format("YYYY-MM-DD HH:mm:ss"), user_id], (err, results) => {
                     if (err) {
                         if (err) return callback(err, null);
                     } else {
@@ -277,3 +277,55 @@ module.exports.passwordAttemptUpdater = (numberOfAttempts, OTP, user_id, callbac
         }
     });
 };
+
+//update the amount of attempts
+module.exports.numberOfLoginAttemptUpdater = (number_of_login_attempts, email) => {
+    return new Promise((resolve, reject) => {
+        pool.getConnection(async (err, connection) => {
+            if (err) {
+                console.log("Database connection error ", err);
+                resolve(err);
+            } else {
+                //The SQL has to query by email.
+                //The SQL must not retrieve administrator data
+                let query = `UPDATE competiton_system_4_db.user SET number_of_login_attempts = ? WHERE email = ?`;
+                connection.query(query, [number_of_login_attempts, email], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        resolve(result[0]);
+                    }
+                    connection.release();
+                });
+            }
+        });
+    });
+};
+
+//update the amount of attempts
+module.exports.resetAndUnlockAccount = (user_id) => {
+    return new Promise((resolve, reject) => {
+        pool.getConnection(async (err, connection) => {
+            if (err) {
+                console.log("Database connection error ", err);
+                resolve(err);
+            } else {
+                //The SQL has to query by email.
+                //The SQL must not retrieve administrator data
+                let query = `UPDATE competiton_system_4_db.user SET number_of_login_attempts = ? WHERE user_id = ?`;
+                connection.query(query, [0, user_id], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        resolve(result[0]);
+                    }
+                    connection.release();
+                });
+            }
+        });
+    });
+
+};
+

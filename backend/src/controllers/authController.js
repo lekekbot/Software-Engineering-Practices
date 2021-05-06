@@ -1,5 +1,6 @@
 const user = require('../services/userService');
 const auth = require('../services/authService');
+const emailValidation = require('../services/EmailValidation')
 const bcrypt = require('bcryptjs');
 const config = require('../config/config');
 const jwt = require('jsonwebtoken');
@@ -92,6 +93,18 @@ exports.processUserLogin = (req, res, next) => {
                             content: []
                         });
                     }
+
+
+                    if (results[0].number_of_login_attempts == 5) {
+                        //call function that locks the acc
+                        return res.status(405).send({
+                            code: 405,
+                            error: true,
+                            description: 'Your account has been locked',
+                            content: []
+                        });
+                    }
+
                     if (bcrypt.compareSync(password, results[0].user_password) == true) {
                         if (results[0].status != "approved") {
                             return res.status(402).send({
@@ -101,6 +114,17 @@ exports.processUserLogin = (req, res, next) => {
                                 content: []
                             });
                         }
+
+                        if (results[0].number_of_login_attempts == 5) {
+                            //call function that locks the acc
+                            return res.status(405).send({
+                                code: 405,
+                                error: true,
+                                description: 'Your account has been locked',
+                                content: []
+                            });
+                        }
+
                         const responseBody = {
                             //user_id: results[0].user_id,
                             //role_name: results[0].role_name,
@@ -118,6 +142,9 @@ exports.processUserLogin = (req, res, next) => {
                         }; //End of data variable setup
                         return res.status(200).send(responseBody);
                     } else {
+                        let numberOfAttemps = results[0].number_of_login_attempts;
+                        numberOfAttemps++;
+                        emailValidation.numberOfLoginAttemptUpdater(numberOfAttemps, email);
                         return res.status(401).send({ error: true, code: 401, description: 'Login fail.', content: [] });
                     } //End of password comparison with the retrieved decoded password.
                 } //End of checking if there are returned SQL results
@@ -131,9 +158,6 @@ exports.processUserLogin = (req, res, next) => {
             content: []
         });
     } //end of try
-
-
-
 };
 
 // /api/users/register
@@ -145,7 +169,7 @@ exports.processRegister = (req, res, next) => {
     let password = req.body.password;
     let institutionId = req.body.institution.value;
     let data = req.body;
-    
+
     bcrypt.hash(password, 10, async (err, hash) => {
         if (err) {
             console.log('Error on hashing password');
@@ -154,7 +178,7 @@ exports.processRegister = (req, res, next) => {
             try {
                 //Enter email here
                 user.createUser(firstName, lastName, email, institutionId, hash, (error, results) => {
-                    if(error){
+                    if (error) {
                         return res.status(405).json({ message: 'Unable to complete registration' });
                     }
                     //Signing of jwt token.. we will standardise an email secret ig

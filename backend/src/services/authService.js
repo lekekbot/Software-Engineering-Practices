@@ -6,13 +6,12 @@ module.exports.authenticateUser = (email, callback) => {
             if (err) throw err;
         } else {
             try {
-                connection.query(`SELECT user.user_id, first_name, last_name, status, email, user_password, status, role_name, user.role_id  
+                connection.query(`SELECT user.user_id, first_name, last_name, status, email, user_password, number_of_login_attempts, status, role_name, user.role_id  
                    FROM user INNER JOIN role ON user.role_id=role.role_id AND email='${email}'`, {}, (err, rows) => {
                     if (err) {
                         if (err) return callback(err, null);
                     } else {
                         if (rows.length == 1) {
-                            console.log(rows);
                             return callback(null, rows);
                         } else {
                             return callback('Login has failed', null);

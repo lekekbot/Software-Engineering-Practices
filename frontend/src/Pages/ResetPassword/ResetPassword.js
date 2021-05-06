@@ -49,7 +49,7 @@ function App() {
                 data: 'Verification in progress...',
                 type: 'alert-warning',
             });
-            axios.put(`${config.baseUrl}/u/user/password/:${UserPassword}`, { token: token })
+            axios.put(`${config.baseUrl}/u/user/password/${UserPassword}`, { token: token })
                 .then(response => {
                     setLoading(true);
                     if (response.data.status != 'pending') {

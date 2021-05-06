@@ -78,12 +78,18 @@ function Login(props) {
               data: 'Your email has not been approved. Please be patient and give the admin at least 3 working days',
               type: 'alert-danger'
             });
+          } else if (error.response.request.status == 405) {
+            setMessage({
+              data: 'Your account has been locked! Please reset your password to unlock!',
+              type: 'alert-danger'
+            });
           } else {
             setMessage({
               data: 'You are unable to login. If situation persists, please send a support ticket to seek assistance.',
               type: 'alert-danger'
             });
-          }// end if ( error.response.request.status === 401)
+          }
+          // end if ( error.response.request.status === 401)
         } else {
           setMessage({
             data: 'You are unable to login. If situation persists, please send a support ticket to seek assistance.',

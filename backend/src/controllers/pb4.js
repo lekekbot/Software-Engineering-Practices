@@ -4,6 +4,7 @@ const emailValidation = require("../services/EmailValidation");
 const userService = require("../services/userService");
 const mailgun = require("mailgun-js");
 const bcrypt = require("bcryptjs");
+const moment = require("moment-timezone");
 
 const sleep = require("sleep-promise");
 
@@ -15,8 +16,8 @@ exports.sendEmail = async (req, res, next) => {
     const userEmail = req.body.email;
     const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
 
-    //before we send the email... lets run through our database if the user does exist
-    //afterall, we don't want a user to send to other random users as spam!
+    //Before we send the email... lets run through our database if the user does exist
+    //Afterall, we don't want a user to send to other random users as spam!
     emailValidation.validateEmailDoesExist(userEmail, async function (error, results) {
         if (error) {
             await sleep(3500);
@@ -27,7 +28,7 @@ exports.sendEmail = async (req, res, next) => {
                 content: [],
             });
         } else {
-            // Yes! We have validated that the email does exist and has registered with the system.
+            //Yes! We have validated that the email does exist and has registered with the system.
             //lets generate a code and store it in the user database
             let { user_id } = results[0];
             let OTP = Math.random() * (1000000 - 10000) + 10000;
@@ -35,7 +36,6 @@ exports.sendEmail = async (req, res, next) => {
 
             //afterwards lets store the code inside a database
             emailValidation.insertOTP(OTP, user_id, async function (error, result) {
-                console.log(result);
                 if (error) {
                     return res.status(401).send({ code: 401, error: true, description: "Insertion of OTP has failed", content: [] });
                 } else {
@@ -46,8 +46,8 @@ exports.sendEmail = async (req, res, next) => {
                             to: `${userEmail}`,
                             subject: `Competition System Verification Code`,
                             text: `
-                                \nYour OTP is ${OTP}. It will expire in 5 minutes. Please use this to verify your submission.
-                                \nIf your OTP does not work, please request for a new OTP.
+                                \nYour OTP is ${OTP}. It will expire in 5 minutes. Please use this to verify yourself.
+                                \nIf your OTP does not work, please requst for a new OTP.
                                 \nIf you did not make this request, you may ignore this email.
                                 \n\n-The Competition Management System Support Team`,
                         };
@@ -81,7 +81,7 @@ exports.verifyUserOTP = async (req, res, next) => {
         // findemail translates the user email to a user_id as a Point of Reference
         let { user_id } = await emailValidation.findEmail(email);
         //set time out for password so after 5 mins, the OTP won't be usable
-        let expireTimer = 5 * 60 * 1000;
+        let expireTimer = 5;
         //since a user_id is individually tied to a OTP, retrive all the OTP tied to the user, but then send only the
         //latest version
         await sleep(3500);
@@ -92,11 +92,13 @@ exports.verifyUserOTP = async (req, res, next) => {
             } else {
                 let actualOTP = results[0].one_time_password;
                 //sentTime
-                let sentTime = results[0].created_at;
+                let sentTime = moment(results[0].created_at).format("YYYY-MM-DD hh:mm:ss");
                 //currentTime
-                let currentTime = new Date(Date.now() - expireTimer);
+                let currentTime = moment().tz("Asia/Singapore").format("YYYY-MM-DD hh:mm:ss")
+                currentTime = moment(currentTime).subtract(expireTimer, "minutes").format("YYYY-MM-DD hh:mm:ss")
+                // let currentTime = new Date(Date.now() - expireTimer);
                 //get the number of time the the code was done
-                let numberOfAttemps = results[0].number_of_attemps
+                let numberOfAttemps = results[0].number_of_attemps;
 
                 //early guard statement to enable the system to lock it if it happened
                 //by the fourth time...its rendered useless
@@ -250,6 +252,7 @@ exports.verifyAndSavePassword = async (req, res, next) => {
                 });
             });
 
+            emailValidation.resetAndUnlockAccount(user_id)
             return res.status(200).send("Success");
         }
     }
@@ -273,13 +276,14 @@ exports.sendTimeStampEmail = async (req, res, next) => {
         } else {
             try {
                 // Now, lets send an email to them to user that they have requested for the change
+                var time = moment().tz(moment.tz.guess())
                 let emailData = {
                     from: `Competition System Admin <support@sp.competitionmanagementsystem.org>`,
                     to: `${userEmail}`,
                     subject: `Password change update`,
                     text: `
                             \nYou password has been changed.
-                            \nThe time your password was changes was at ${result[0].user_password_timestamp}
+                            \nThe time your password was changes was at ${time}
                             \nIf you did not make this request, please contact +65 9647 2290
                             \n\n- The Competition Management System Support Team
                             `,
@@ -303,7 +307,7 @@ exports.sendTimeStampEmail = async (req, res, next) => {
     });
 }; // End of processGetOneUserStatusData
 
-//Task 04 - Uses what the OTP sent to the user is and verifies if it matches!
+//Task 04 - Checks if the OTP falls within the range of 5 minutes, else rej
 //Success Response
 //Code: 204 No Content
 exports.timingOfOTP = async (req, res, next) => {
