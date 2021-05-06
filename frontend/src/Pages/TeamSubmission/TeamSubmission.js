@@ -13,6 +13,7 @@ import config from '../../config.js';
 import { Button, Container, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import UploadFile from '../../Pages/UploadFile/UploadFile';
+import Popup from 'reactjs-popup'
 
 
 //The following library is for creating notification alerts when user 
@@ -28,84 +29,69 @@ const User = ({match}) => { // match takes route from routes.js
   // effectively show the button label or 'loading....' 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    axios.put(`${config.baseUrl}/u/teaminfo/${userId}`,
-      {})
-      .then(response => {
-        console.log(response.data.data);
-        let records = response.data.data;
-        records.forEach((element) => {
-          element.changeStatus = false;
-        });
-        setUserData(records);
-      }).catch(error => {
-        console.log(error);
-      });
+
+
   }, []);//End of useEffect({function code,[]})
 
   
 
   //Had issues trying to change the roleId when the user choose an option
   //in the drop-down listbox. It reqx`uires formatting logic.
-  //Reference: https://github.com/react-bootstrap-table/react-bootstrap-table2/issues/1106
-  const userRoles = [
-    { value: 1, label: 'admin' },
-    { value: 2, label: 'user' },
-    { value: 3, label: 'master admin' }
+  //Reference: https://github.com/react-bootstrap-table/react-bootstrap-table2/issues/1106\
 
-  ];
   const handleSaveChanges = () => {
-    const filteredUserData = userData.filter(data => data.changeStatus == true);
+    // const filteredUserData = userData.filter(data => data.changeStatus == true);
 
-    setLoading(true);
-    axios.put(`${config.baseUrl}/u/teams/proposals/teamid`, filteredUserData)
-      .then(response => {
-        setLoading(false);
-        toast.success('Saved changes.', {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
-      }).catch(error => {
-        setLoading(false);
+    // setLoading(true);
+    // axios.put(`${config.baseUrl}/u/teams/proposals/teamid`, filteredUserData)
+    //   .then(response => {
+    //     setLoading(false);
+    //     toast.success('Saved changes.', {
+    //       position: "top-center",
+    //       autoClose: 5000,
+    //       hideProgressBar: false,
+    //       closeOnClick: true,
+    //       pauseOnHover: true,
+    //       draggable: true,
+    //       progress: undefined
+    //     });
+    //   }).catch(error => {
+    //     setLoading(false);
 
-        if ((error.response != null) && (error.response.status === 401)) {
-          toast.error(error.response.data.message, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined
-          });
+    //     if ((error.response != null) && (error.response.status === 401)) {
+    //       toast.error(error.response.data.message, {
+    //         position: "top-center",
+    //         autoClose: 5000,
+    //         hideProgressBar: false,
+    //         closeOnClick: true,
+    //         pauseOnHover: true,
+    //         draggable: true,
+    //         progress: undefined
+    //       });
 
-        } else if (error.message != null) {
-          toast.error(error.message, {
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined
-          });
+    //     } else if (error.message != null) {
+    //       toast.error(error.message, {
+    //         position: 'top-center',
+    //         autoClose: 5000,
+    //         hideProgressBar: false,
+    //         closeOnClick: true,
+    //         pauseOnHover: true,
+    //         draggable: true,
+    //         progress: undefined
+    //       });
 
-        } else {
-          toast.error('Something went wrong. Please try again.', {
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined
-          });
-        }
-      });
+    //     } else {
+    //       toast.error('Something went wrong. Please try again.', {
+    //         position: 'top-center',
+    //         autoClose: 5000,
+    //         hideProgressBar: false,
+    //         closeOnClick: true,
+    //         pauseOnHover: true,
+    //         draggable: true,
+    //         progress: undefined
+    //       });
+    //     }
+    //   });
   }
   const columns = [{
     dataField: 'id',
@@ -142,10 +128,6 @@ const User = ({match}) => { // match takes route from routes.js
     // formatter: (cell, row) => {
     //   return userRoles.find(x => x.value == cell).label;
     // },
-    editor: {
-      type: Type.SELECT,
-      options: userRoles
-    }
   },
   ];
 
@@ -181,7 +163,6 @@ const User = ({match}) => { // match takes route from routes.js
       />
       {/* ToastContainer - put it outside the Container. */}
       
-      <UploadFile></UploadFile>
       <Container className="fluid mw-100" style={{ border: 'solid 1px black' }}
         className="justify-content-center">
         <Row>
@@ -202,11 +183,15 @@ const User = ({match}) => { // match takes route from routes.js
         </Row>
         <Row >
           <Col md={{ size: 10 }} style={{ border: 'solid 1px black' }} >
-            <Button
-              className="btn btn-primary float-left"
-              onClick={handleSaveChanges}>
-              {'Submit Proposal'}
-            </Button>
+            <Popup trigger={<Button className="btn btn-primary float-left">Submit Proposal</Button>} modal>
+              { close => (
+              <div className="modal" style={{display: 'block'}}>
+                <UploadFile teamdata={match}></UploadFile>
+                <button onClick={close} className="close">Close</button>
+              </div>
+                
+              )}
+            </Popup>
           </Col>
         </Row>
         <Row>

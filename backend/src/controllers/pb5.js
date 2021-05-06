@@ -262,3 +262,16 @@ exports.getPending = async (req, res) => {
     let results = await pb5_service.getPending()
     return res.status(200).send(results)
 }
+
+/*
+    diff 2 case case fo activity diagram
+
+    set default vals for partner 
+    files associated to team must be deleted
+
+    db must capture who can approve 
+    '
+
+
+
+*/
