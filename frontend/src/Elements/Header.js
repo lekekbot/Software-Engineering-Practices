@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, Redirect, useHistory } from "react-router-dom";
+import { Form, Button, FormGroup, FormControl, ControlLabel, Dropdown } from "react-bootstrap";
 import jwt from 'jsonwebtoken'
 
 import Title from "../Pages/Title/Title";
@@ -73,6 +74,18 @@ const Header = () => {
                 </a>
             </li>
             <li className="nav-item">
+              <Dropdown>
+                <Dropdown.Toggle variant="" id="dropdown-basic">
+                  My account
+              </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => history.push("/UserProfile")}>Profile</Dropdown.Item>
+                <Dropdown.Item onClick={() => history.push("/reset_password")}>Reset my password!</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </li>
+            <li className="nav-item">
               <span
                 className="nav-link cursor-pointer"
                 onClick={() => handleClickLogout()}
@@ -81,9 +94,9 @@ const Header = () => {
                 </span>
             </li>
           </ul>
-          <span className="navbar-text">Welcome! {getUserDisplayNameFromLocalStore()}</span>
+        <span className="navbar-text">Welcome! {getUserDisplayNameFromLocalStore()}</span>
         </div>
-      </nav>
+    </nav>
     </>
 
   );

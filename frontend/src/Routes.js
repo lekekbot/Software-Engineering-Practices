@@ -25,6 +25,7 @@ import EmailVerification from './Pages/EmailVerification/EmailVerification'
 import OneTimePassword from './Pages/OneTimePassword/OneTimePassword';
 import ResetPassword from './Pages/ResetPassword/ResetPassword';
 import TeamSubmission from './Pages/TeamSubmission/TeamSubmission'
+import UserProfile from './Pages/Profile/Profile'
 
 const authGuard = (Component) => (props) => {
   console.log(props);
@@ -36,7 +37,6 @@ const authGuard = (Component) => (props) => {
 };
 
 const Routes = (props) => (
-
   <Router {...props}>
     <Switch>
       <Route path="/login">
@@ -54,12 +54,17 @@ const Routes = (props) => (
       <Route path="/one_time_password">
         <OneTimePassword />
       </Route>
+      {/**PZ EXPERIMENT AND TESTING */}
+      <Route path="/UserProfile">
+        <UserProfile />
+      </Route>
+      {/**PZ EXPERIMENT AND TESTING */}
       <Route path="/userstatus/:userEmail" render={(props) => <UserStatus {...props} />} />
       <Route path="/rules" render={Rules}></Route>
       <Route path="/dashboard" render={authGuard(Dashboard)}></Route>
       <Route path="/createteam" render={authGuard(CreateTeam)}></Route>
       <Route path="/manageteam" render={authGuard(ManageTeam)}></Route>
-      <Route path="/resetpassword" render={authGuard(ResetPassword)}></Route>
+      <Route path="/reset_password" render={authGuard(ResetPassword)}></Route>
       <Route path="/updateteam/:teamId" render={authGuard(UpdateTeam)} />
       <Route path="/jointeam/:teamId/:teamName" render={authGuard(JoinTeam)} />
       <Route path="/manageinvites/:teamId" render={authGuard(ManageInviteTeamMembers)} />
@@ -67,7 +72,7 @@ const Routes = (props) => (
       <Route path="/submitproposal/:teamId" render={authGuard(UploadFile)} />
       <Route path="/managesubmissions/:teamId" render={authGuard(ManageSubmissions)}></Route>
       <Route path="/teamsubmission/:userId" render={authGuard(TeamSubmission)}></Route>
-      
+
       <Route exact path="/">
         <Redirect to="/dashboard" />
       </Route>

@@ -14,7 +14,10 @@ const sleep = require("sleep-promise");
 //METHOD : POST -> http://localhost:8081/u/users/resetpassword/:userEmail
 exports.sendEmail = async (req, res, next) => {
     const userEmail = req.body.email;
-    const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
+    const mg = mailgun({
+        apiKey: config.mailGunApiKey,
+        domain: config.mailGunDomain
+    });
 
     //Before we send the email... lets run through our database if the user does exist
     //Afterall, we don't want a user to send to other random users as spam!
@@ -24,20 +27,24 @@ exports.sendEmail = async (req, res, next) => {
             return res.status(401).send({
                 code: 401,
                 error: true,
-                description: "Email Validation has failed.",
+                description: "Email validation has failed. The requested page needs a username and a password.",
                 content: [],
             });
         } else {
             //Yes! We have validated that the email does exist and has registered with the system.
             //lets generate a code and store it in the user database
             let { user_id } = results[0];
-            let OTP = Math.random() * (1000000 - 10000) + 10000;
-            OTP = Math.ceil(OTP);
+            let OTP = Math.floor(100000 + Math.random() * 900000);
 
             //afterwards lets store the code inside a database
             emailValidation.insertOTP(OTP, user_id, async function (error, result) {
                 if (error) {
-                    return res.status(401).send({ code: 401, error: true, description: "Insertion of OTP has failed", content: [] });
+                    return res.status(401).send({
+                        code: 401,
+                        error: true,
+                        description: "Insertion of OTP has failed",
+                        content: []
+                    });
                 } else {
                     try {
                         // Now, lets send an email to them to user that they have requested for the change
@@ -59,22 +66,26 @@ exports.sendEmail = async (req, res, next) => {
                                 console.log(`Sent email.`, body);
                             }
                         });
+
                         await sleep(3500);
                         return res.status(200).send({ message: "Email is set to your system" });
                     } catch (error) {
                         console.log("validateEmailDoesExist method : catch block section code is running");
                         console.log(error, "=======================================================================");
-                        return res.status(500).send({ message: "Unable to complete update (users) operation" });
+                        return res.status(500).send({
+                            message: "Unable to complete update (users) operation"
+                        });
                     }
                 }
             });
         }
     });
-}; // End of processGetOneUserStatusData
+};
 
 //Task 04 - Uses what the OTP sent to the user is and verifies if it matches!
 //Success Response
-//Code: 204 No Content
+//Code: 200 No Content
+//METHOD : POST -> http://localhost:8081/u/user/validate_2fa/:email/:OTP
 exports.verifyUserOTP = async (req, res, next) => {
     try {
         var { email, OTP } = req.params;
@@ -84,11 +95,16 @@ exports.verifyUserOTP = async (req, res, next) => {
         let expireTimer = 5;
         //since a user_id is individually tied to a OTP, retrive all the OTP tied to the user, but then send only the
         //latest version
-        await sleep(3500);
         //This function finds the latest OTP that was sent to the user. It thens validates.
-        emailValidation.validateOTP(user_id, function (results, error) {
+        emailValidation.validateOTP(user_id, async function (results, error) {
+            await sleep(3500);
             if (error) {
-                return res.status(401).send({ code: 401, error: true, description: "Error!", content: [] });
+                return res.status(401).send({
+                    code: 401,
+                    error: true,
+                    description: "Error!",
+                    content: []
+                });
             } else {
                 let actualOTP = results[0].one_time_password;
                 //sentTime
@@ -96,15 +112,19 @@ exports.verifyUserOTP = async (req, res, next) => {
                 //currentTime
                 let currentTime = moment().tz("Asia/Singapore").format("YYYY-MM-DD hh:mm:ss")
                 currentTime = moment(currentTime).subtract(expireTimer, "minutes").format("YYYY-MM-DD hh:mm:ss")
-                // let currentTime = new Date(Date.now() - expireTimer);
                 //get the number of time the the code was done
                 let numberOfAttemps = results[0].number_of_attemps;
 
                 //early guard statement to enable the system to lock it if it happened
-                //by the fourth time...its rendered useless
+                //by the fourth time...OTP is rendered useless
                 if (numberOfAttemps == 3) {
                     //status code that it is locked
-                    return res.status(404).send({ code: 404, error: true, description: "Too many attemps!", content: [] });
+                    return res.status(404).send({
+                        code: 404,
+                        error: true,
+                        description: "Too many attemps!",
+                        content: []
+                    });
                 }
 
                 if (actualOTP == OTP) {
@@ -113,7 +133,12 @@ exports.verifyUserOTP = async (req, res, next) => {
                         emailValidation.correctOTP(email, function (results, error) {
                             if (error) {
                                 console.log(error);
-                                return res.status(401).send({ code: 401, error: true, description: "Error!", content: [] });
+                                return res.status(401).send({
+                                    code: 401,
+                                    error: true,
+                                    description: "Error!",
+                                    content: []
+                                });
                             } else {
                                 console.log("Here was reached");
                                 const responseBody = {
@@ -122,48 +147,58 @@ exports.verifyUserOTP = async (req, res, next) => {
                                     displayName: results[0].first_name + " " + results[0].last_name,
                                     status: results[0].status,
                                     email: results[0].email,
-                                    token: jwt.sign(
-                                        {
-                                            userId: results[0].user_id,
-                                            role: results[0].role_name,
-                                            email: results[0].email,
-                                        },
-                                        config.JWTKey,
-                                        {
-                                            expiresIn: 86400, //Expires in 24 hrs
-                                        }
+                                    token: jwt.sign({
+                                        userId: results[0].user_id,
+                                        role: results[0].role_name,
+                                        email: results[0].email,
+                                    },
+                                        config.JWTKey, {
+                                        expiresIn: 86400, //Expires in 24 hrs
+                                    }
                                     ),
                                 }; //End of data variable setup
-                                console.log(responseBody);
                                 return res.status(200).send(responseBody);
                             }
                         });
+
                     } else {
                         console.log("Error time was breeched");
-                        return res.status(402).send({ code: 402, error: true, description: "Time has expired!", content: [] });
+                        return res.status(402).send({
+                            code: 402,
+                            error: true,
+                            description: "Time has expired!",
+                            content: []
+                        });
                     }
                 } else {
-                    //update db that the current attempt is wrong
+                    //if the OTP attempt is wrong, update db to increment number_of_attemps field
                     numberOfAttemps++
                     emailValidation.passwordAttemptUpdater(numberOfAttemps, actualOTP, user_id, function (error, results) {
                         if (error) {
                             console.log("ERROR WAS FOUIND")
-                            return res.status(402).send({ message: `Failure` });
+                            return res.status(402).send({
+                                message: `Failure`
+                            });
                         } else {
-                            return res.status(401).send({ message: `The OTP you key in was wrong!` });
+                            return res.status(401).send({
+                                message: `The OTP you key in was wrong!`
+                            });
                         }
                     })
                 }
             }
         });
     } catch (error) {
-        return res.status(500).send({ message: "Error! Unable to verify OTP!" });
+        return res.status(500).send({
+            message: "Error! Unable to verify OTP!"
+        });
     }
-}; // End of processGetOneUserStatusData
+};
 
-//Task 04 - Saves the password
+//Task 04 - Saves the password the user types, but also does comparing and validation
 //Success Response
-//Code: 204 No Content
+//Code: 200 No Content
+//METHOD : PUT -> http://localhost:8081/u/user/password/:UserPassword
 exports.verifyAndSavePassword = async (req, res, next) => {
     let jwtObject;
     var token = req.body.token;
@@ -182,23 +217,36 @@ exports.verifyAndSavePassword = async (req, res, next) => {
         try {
             //checks if there is a duplicate with only the current password field
             if (await bcrypt.compare(userRequestedPassword, user_password)) {
-                return res.status(403).send({ code: 401, error: true, description: "Error!", content: [] });
+                return res.status(409).send({
+                    code: 401,
+                    error: true,
+                    description: "Error!",
+                    content: []
+                });
             } else {
-                // now, lets hash the key
-                // hash the current -> pushes the current into a repository
-                // shift the user current password to the user_password_history
+                // Store the current password, push it into an archive
                 emailValidation.storePassword(user_id, user_password + "«", function (error, results) {
                     if (error) {
-                        return res.status(401).send({ code: 401, error: true, description: "Error!", content: [] });
+                        return res.status(401).send({
+                            code: 401,
+                            error: true,
+                            description: "Error!",
+                            content: []
+                        });
                     }
                 });
 
-                //hash the requested -> pushes the current into a current
+                //hash the requested, then pushes it into current column
                 bcrypt.hash(userRequestedPassword, 10, async (err, password) => {
                     // shift the user current password to the user_password_history
                     emailValidation.storeAsCurrent(user_id, password, function (error, results) {
                         if (error) {
-                            return res.status(401).send({ code: 401, error: true, description: "Error!", content: [] });
+                            return res.status(401).send({
+                                code: 401,
+                                error: true,
+                                description: "Error!",
+                                content: []
+                            });
                         }
                     });
                 });
@@ -210,69 +258,98 @@ exports.verifyAndSavePassword = async (req, res, next) => {
         }
     } else {
         var increment = 0;
-        //2 for history, 1 for current
+        //Boolean array in order : 2 for history, 1 for current
         var condition = [false, false, false];
 
         user_password_histories.split("«").map(async (item) => {
             //Guard statement
             if (item == null) return;
+
             //compare and store into a boolean array
             condition[increment] = await bcrypt.compare(userRequestedPassword, item);
             increment++;
         });
+
         //compare with current if there's a clash
         condition[2] = await bcrypt.compare(userRequestedPassword, user_password);
 
+        //if the hashed password and the requested password is the same, a boolean will be changed to true and will alert
         if (condition.some((item) => item === true)) {
-            //if a duplicate is found, just alert the user that there is an error and the code status is 402
-            return res.status(403).send({ code: 403, error: true, description: "A duplicate is found!", content: [] });
+            //if a duplicate is found, just alert the user that there is an error and the code status is 409
+            return res.status(409).send({
+                code: 409,
+                error: true,
+                description: "A duplicate is found!",
+                content: []
+            });
         } else {
-            //A
+            // A
             let everyHistoryCombined = user_password + "«";
 
-            //B,C
-            let userPasswordHistoryArray = user_password_histories.split("«");
-            everyHistoryCombined += userPasswordHistoryArray[0] + "«";
+            // B,C
+            everyHistoryCombined += user_password_histories.split("«")[0] + "«";
 
-            // hash current + old history into the user_password_history column
-            // shift the user current password to the user_password_history
+            // Store the current password, push it into an archive
             emailValidation.storePasswordAdvanced(user_id, everyHistoryCombined, function (error, results) {
                 if (error) {
-                    return res.status(401).send({ code: 401, error: true, description: "Error!", content: [] });
+                    return res.status(401).send({
+                        code: 401,
+                        error: true,
+                        description: "Error!",
+                        content: []
+                    });
                 }
             });
 
-            //hash the requested -> pushes the current into a current
+            //hash the requested, then pushes it into current column
             bcrypt.hash(userRequestedPassword, 10, async (err, password) => {
                 // shift the user current password to the user_password_history
                 emailValidation.storeAsCurrent(user_id, password, function (error, results) {
                     if (error) {
-                        return res.status(401).send({ code: 401, error: true, description: "Error!", content: [] });
+                        return res.status(401).send({
+                            code: 401,
+                            error: true,
+                            description: "Error!",
+                            content: []
+                        });
                     }
                 });
             });
 
+            //upon successful reset, unlock the acc
             emailValidation.resetAndUnlockAccount(user_id)
             return res.status(200).send("Success");
         }
     }
-}; // End of processGetOneUserStatusData
+};
 
+//Task 04 - Saves the password the user types, but also does comparing and validation
+//Success Response
+//Code: 200 No Content
+//METHOD : PUT -> http://localhost:8081/u/user/password/:UserPassword
 exports.sendTimeStampEmail = async (req, res, next) => {
     let jwtObject;
     var token = req.body.token;
+    const mg = mailgun({
+        apiKey: config.mailGunApiKey,
+        domain: config.mailGunDomain
+    });
     try {
         jwtObject = jwt.verify(token, config.JWTKey);
     } catch (e) {
         return callback(e, null);
     }
     let userEmail = jwtObject.email
-    const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
 
     //let's inform the user what has happened to is passwored
     emailValidation.passwordChangeTimestamp(userEmail, async function (error, result) {
         if (error) {
-            return res.status(401).send({ code: 401, error: true, description: "didn't send an email", content: [] });
+            return res.status(401).send({
+                code: 401,
+                error: true,
+                description: "didn't send an email",
+                content: []
+            });
         } else {
             try {
                 // Now, lets send an email to them to user that they have requested for the change
@@ -291,20 +368,26 @@ exports.sendTimeStampEmail = async (req, res, next) => {
                 mg.messages().send(emailData, function (error, body) {
                     if (error) {
                         console.log(`Sending email has failed`, error);
-                        return res.status(500).send({ message: "Unable to complete update (users) operation" });
+                        return res.status(500).send({
+                            message: "Unable to complete update (users) operation"
+                        });
                     } else {
                         console.log(`Sent email.`, body);
-                        return res.status(200).send({ message: "Email is set to your system" });
+                        return res.status(200).send({
+                            message: "Email is set to your system"
+                        });
                     }
                 });
             } catch (error) {
                 console.log("validateEmailDoesExist method : catch block section code is running");
                 console.log(error, "=======================================================================");
-                return res.status(500).send({ message: "Unable to complete update (users) operation" });
+                return res.status(500).send({
+                    message: "Unable to complete update (users) operation"
+                });
             }
         }
     });
-}; // End of processGetOneUserStatusData
+};
 
 //Task 04 - Checks if the OTP falls within the range of 5 minutes, else rej
 //Success Response
@@ -320,7 +403,12 @@ exports.timingOfOTP = async (req, res, next) => {
         //latest version
         emailValidation.validateOTP(user_id, function (results, error) {
             if (error) {
-                return res.status(401).send({ code: 401, error: true, description: "Error!", content: [] });
+                return res.status(401).send({
+                    code: 401,
+                    error: true,
+                    description: "Error!",
+                    content: []
+                });
             } else {
                 //sentTime
                 let sentTime = results[0].created_at;
@@ -329,13 +417,22 @@ exports.timingOfOTP = async (req, res, next) => {
 
                 //if the time sent is lesser than 1 min, make it possible to resend. Else just inform them to slow down!
                 if (sentTime > currentTime) {
-                    return res.status(402).send({ code: 402, error: true, description: "Slow down!", content: [Math.ceil(sentTime - currentTime)] });
+                    return res.status(402).send({
+                        code: 402,
+                        error: true,
+                        description: "Slow down!",
+                        content: [Math.ceil(sentTime - currentTime)]
+                    });
                 } else {
-                    return res.status(201).send({ message: "Ok! The 1 min interval is over! Lets allow u to send" });
+                    return res.status(201).send({
+                        message: "Ok! The 1 min interval is over! Lets allow u to send"
+                    });
                 }
             }
         });
     } catch (error) {
-        return res.status(500).send({ message: "Error! Unable to verify OTP!" });
+        return res.status(500).send({
+            message: "Error! Unable to verify OTP!"
+        });
     }
-}; // End of processGetOneUserStatusData
+};

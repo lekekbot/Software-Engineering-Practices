@@ -80,6 +80,8 @@ exports.appRoute = router => {
     router.put('/api/u/user/password/:UserPassword', pb4.verifyAndSavePassword);
     //Update the user of the timestamp their password was changed
     router.put('/api/u/users/resetpassword/acknowledgement', pb4.sendTimeStampEmail);
+    //Retrives all the data concerning the user for profile display
+    router.get('/api/u/users/all-details', pb4.sendTimeStampEmail);
 
     //Problem 5 routes - Bryan
     //problem 5 use case 1

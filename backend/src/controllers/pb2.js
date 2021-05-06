@@ -12,6 +12,8 @@ exports.getTeamInfo = async (req, res) => {
         pb2_service.getTeamInfo((err, result) => {
             if (err) {
                 console.log(err)
+                //wow this is very cool
+                //from - pz
                 return res.status(500).send('HELP')
             } else {
                 return res.status(200).send(result)

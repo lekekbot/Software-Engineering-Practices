@@ -42,7 +42,7 @@ export default function OneTimePassword(props) {
                         type: 'alert-success',
                     });
                     saveUserDataToLocalStore(response.data.token, response.data.displayName, response.data.email);
-                    history.push('/resetpassword');
+                    history.push('/reset_password');
                 } else {
                     setMessage({
                         data: 'Logged in successfully. Your registration is still pending. Redirecting...',
