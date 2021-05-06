@@ -11,6 +11,7 @@ import Progress from '../../Elements/Progress/Progress';
 import config from '../../config.js';
 import { getTokenFromLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 import { Container, Row , Col } from 'react-bootstrap';
+
 class UploadFile extends Component {
   constructor(props) {
     super(props);
@@ -26,7 +27,8 @@ class UploadFile extends Component {
     this.sendRequest = this.sendRequest.bind(this);
     this.renderActions = this.renderActions.bind(this);
     this.token =  getTokenFromLocalStore();
-    // this.teamId =this.props.match.params.teamId;
+    console.log(this.props)
+    // this.teamId = this.props.match.params.teamId;
   }
 
   onFilesAdded(files) {
@@ -150,7 +152,6 @@ class UploadFile extends Component {
   render() {
     return (
       <Container className="fluid" style={{border:'solid 1px black'}}> 
-      <Header />
       <Title title="Dashboard"></Title>
         
         <Row>

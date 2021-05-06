@@ -297,10 +297,10 @@ module.exports.getTeamInfo = (userId) => {
                 resolve(err);
             } else {
                 connection.query(`SELECT t.team_id, t.name, u.first_name, u.email, f.cloudinary_url, 
-                    f.created_at from competiton_system_4_db.user u 
-                    inner join competiton_system_4_db.team_member tm on tm.member_id = u.user_id
-                    inner join competiton_system_4_db.team t on t.team_id = tm.team_id
-                    inner join competiton_system_4_db.file f on f.team_id = t.team_id
+                    f.created_at from user u 
+                    inner join team_member tm on tm.member_id = u.user_id
+                    inner join team t on t.team_id = tm.team_id
+                    inner join file f on f.team_id = t.team_id
                     where tm.leader = 1
                     and
                     tm.member_id = ${userId}

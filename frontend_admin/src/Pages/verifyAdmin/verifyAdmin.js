@@ -25,8 +25,6 @@ export default function Gay() {
     const { register, handleSubmit, errors } = useForm();
     const history = useHistory();
 
-
-
     //componentDidMount
     useEffect(() => {
         const fetchdata = async () => {

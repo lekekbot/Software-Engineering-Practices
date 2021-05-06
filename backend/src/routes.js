@@ -9,7 +9,8 @@ const teamInviteListController = require('./controllers/teamInviteListController
 const proposalController = require('./controllers/proposalController');
 // Match URL's with controllers
 
-//problem 5 controllers
+//problem controllers
+const pb2 = require('./controllers/pb2')
 const pb4 = require('./controllers/pb4')
 const pb5 = require('./controllers/pb5')
 
@@ -63,6 +64,10 @@ exports.appRoute = router => {
     router.post('/api/users/register', authController.processRegister);
     // Called to process verification
     router.post('/api/users/confirmation/:token', authController.processConfirmation);
+    //get pendings
+    router.put('/api/u/teaminfo/:userId', teamController.processGetTeamInfo)
+    router.get('/api/a/pending', pb5.getPending)
+
 
     //PROBLEM 4 - CHAI PIN ZHENG
     //Sends an email to the user using mailgun in order to send them a OTP
@@ -98,11 +103,10 @@ exports.appRoute = router => {
     router.get('/api/a/delete/pending/:id', pb5.getdeleteList)
     router.delete('/api/a/delete/:id', pb5.checkvalid, pb5.deleteUser)
 
-    //get pendings
-    router.put('/api/u/teaminfo/:userId', teamController.processGetTeamInfo)
-    router.get('/api/a/pending', pb5.getPending)
+
 
     //xiaolin
-    //router.put('/api/u/teaminfo', teamController.processGetTeamInfo)
+    router.put('/api/a/setdeadline', pb2.setDeadline)
+    router.get('/api/a/teaminfo', pb2.getTeamInfo)
     router.post('/api/u/teamsubmission', teamController.processTeamSubmission)
 };
