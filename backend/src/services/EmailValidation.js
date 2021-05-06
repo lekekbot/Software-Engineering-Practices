@@ -326,6 +326,4 @@ module.exports.resetAndUnlockAccount = (user_id) => {
             }
         });
     });
-
 };
-
