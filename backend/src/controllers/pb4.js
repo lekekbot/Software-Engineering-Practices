@@ -276,14 +276,13 @@ exports.sendTimeStampEmail = async (req, res, next) => {
         } else {
             try {
                 // Now, lets send an email to them to user that they have requested for the change
-                var time = moment().tz(moment.tz.guess())
                 let emailData = {
                     from: `Competition System Admin <support@sp.competitionmanagementsystem.org>`,
                     to: `${userEmail}`,
                     subject: `Password change update`,
                     text: `
                             \nYou password has been changed.
-                            \nThe time your password was changes was at ${time}
+                            \nThe time your password was changes was at ${result[0].user_password_timestamp}
                             \nIf you did not make this request, please contact +65 9647 2290
                             \n\n- The Competition Management System Support Team
                             `,
