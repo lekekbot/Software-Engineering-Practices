@@ -11,19 +11,24 @@ import axios from 'axios';
 import Title from "../Title/Title";
 import config from '../../config.js';
 import { Button, Container, Row, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import UploadFile from '../../Pages/UploadFile/UploadFile';
+
+
 //The following library is for creating notification alerts when user 
 //clicks the save button.
 import { ToastContainer, toast } from 'react-toastify';
 //Reference: https://fkhadra.github.io/react-toastify/introduction/
 
-const User = () => {
+const User = ({match}) => { // match takes route from routes.js 
   const [userData, setUserData] = useState([]);
+  const userId = match.params.userId; // then just specify params here
 
   // You need the loading state so that the Save button can
   // effectively show the button label or 'loading....' 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    axios.put(`${config.baseUrl}/u/teaminfo`,
+    axios.put(`${config.baseUrl}/u/teaminfo/${userId}`,
       {})
       .then(response => {
         console.log(response.data.data);
@@ -36,6 +41,8 @@ const User = () => {
         console.log(error);
       });
   }, []);//End of useEffect({function code,[]})
+
+  
 
   //Had issues trying to change the roleId when the user choose an option
   //in the drop-down listbox. It reqx`uires formatting logic.
@@ -154,8 +161,9 @@ const User = () => {
     //The user table in the datatabase is only interested with the role id value.
   };// End of handleUserStatusChange
 
-  return (
 
+  return (
+<>
     <div>
       <Header />
 
@@ -172,7 +180,8 @@ const User = () => {
         pauseOnHover
       />
       {/* ToastContainer - put it outside the Container. */}
-
+      
+      <UploadFile></UploadFile>
       <Container className="fluid mw-100" style={{ border: 'solid 1px black' }}
         className="justify-content-center">
         <Row>
@@ -213,17 +222,10 @@ const User = () => {
           </Col>
         </Row>
 
-        <Row >
-          <Col md={{ size: 10 }} style={{ border: 'solid 1px black' }} >
-            <Button
-              className="btn btn-primary float-right"
-              onClick={handleSaveChanges}>
-              {loading ? 'Saving changes now ...' : 'Save'}
-            </Button>
-          </Col>
-        </Row>
+        
       </Container>
     </div>
+    </>
   );
 } //End of User functional component
 

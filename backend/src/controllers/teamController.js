@@ -217,8 +217,10 @@ exports.processDeleteTeamMember = async (req, res, next) => {
 
 exports.processGetTeamInfo = async (req, res, next) => {
     console.log('processGetTeamInfo running');
+    let userId = req.params.userId;
     try {
-        results = await teamDataManager.getTeamInfo();
+
+        results = await teamDataManager.getTeamInfo(userId);
 
         return res.status(200).send({
             error: false,
@@ -236,3 +238,36 @@ exports.processGetTeamInfo = async (req, res, next) => {
         });
     }
 }
+
+exports.processTeamSubmission = async (req, res, next) => {
+    console.log("processTeamSubmission running");
+    let file = req.body.file
+
+    results = await fileDataManager.uploadPDF(file, async function (error, result) {
+        let uploadResult = result;
+        if (error) {
+            let message = 'Unable to complete file submission.';
+            logger.error(`Server error due to ${error}`);
+            res.status(500).json({ message: message });
+            res.end();
+        } else {
+
+            try {
+                let result = await fileDataManager.createPDFData(uploadResult.fileURL,
+                    uploadResult.publicId,
+                    uploadResult.fileName,
+                    uploadResult.teamId,
+                    uploadResult.createdId);
+                if (result) {
+                    let message = 'File submission completed.';
+                    res.status(200).json({ message: message, fileURL: uploadResult.fileURL });
+                }
+            } catch (error) {
+                let message = 'File submission failed.';
+                res.status(500).json({
+                    message: message
+                });
+            }
+        }
+    })
+}; //End of processTeamSubmission 

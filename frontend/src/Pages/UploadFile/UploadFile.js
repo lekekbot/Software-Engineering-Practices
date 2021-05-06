@@ -26,7 +26,7 @@ class UploadFile extends Component {
     this.sendRequest = this.sendRequest.bind(this);
     this.renderActions = this.renderActions.bind(this);
     this.token =  getTokenFromLocalStore();
-    this.teamId =this.props.match.params.teamId;
+    // this.teamId =this.props.match.params.teamId;
   }
 
   onFilesAdded(files) {
@@ -50,6 +50,8 @@ class UploadFile extends Component {
       this.setState({ successfullUploaded: true, uploading: false });
     }
   }
+
+
 
   sendRequest(file) {
     console.dir(file);

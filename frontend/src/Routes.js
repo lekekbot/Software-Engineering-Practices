@@ -66,7 +66,8 @@ const Routes = (props) => (
       <Route path="/manageteammembers/:teamId" render={authGuard(ManageTeamMembers)} />
       <Route path="/submitproposal/:teamId" render={authGuard(UploadFile)} />
       <Route path="/managesubmissions/:teamId" render={authGuard(ManageSubmissions)}></Route>
-      <Route path="/teamsubmission" render={authGuard(TeamSubmission)}></Route>
+      <Route path="/teamsubmission/:userId" render={authGuard(TeamSubmission)}></Route>
+      
       <Route exact path="/">
         <Redirect to="/dashboard" />
       </Route>

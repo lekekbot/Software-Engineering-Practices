@@ -1,11 +1,12 @@
 
 import React, { useEffect, useState } from "react";
 import {Link, Redirect, useHistory} from "react-router-dom";
+import jwt from 'jsonwebtoken'
 
 import Title from "../Pages/Title/Title";
 import config from "../config";
 import axios from 'axios';
-import { getUserDisplayNameFromLocalStore } from '../Utils/Common.js';// Common.js don't use export default
+import { getUserDisplayNameFromLocalStore, getTokenFromLocalStore } from '../Utils/Common.js';// Common.js don't use export default
 const Header = () => {
 
  
@@ -36,6 +37,12 @@ https://medium.com/@andrewmyint/infinite-loop-inside-useeffect-react-hooks-6748d
         }
     }
 
+    const getUserId = () =>{
+      const token = getTokenFromLocalStore();
+      let decoded = jwt.decode(token);
+      return decoded.userId
+    }
+
     return(
        
         <>
@@ -62,8 +69,8 @@ https://medium.com/@andrewmyint/infinite-loop-inside-useeffect-react-hooks-6748d
                 </a>
               </li>
               <li className="nav-item active">
-                <a className="nav-link" href="/manageteam">
-                  Team
+                <a className="nav-link" href={"/teamsubmission/" + getUserId() } >
+                  Submit proposal
                 </a>
               </li>
               <li className="nav-item">

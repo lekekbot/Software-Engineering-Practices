@@ -23,7 +23,7 @@ const User = () => {
   // effectively show the button label or 'loading....' 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    axios.get(`${config.baseUrl}/a/users`,
+    axios.put(`${config.baseUrl}/u/teaminfo`,
       {})
       .then(response => {
         console.log(response.data.data);
@@ -35,7 +35,7 @@ const User = () => {
       }).catch(error => {
         console.log(error);
       });
-  }, []);//End of useEffect({function code,[]})
+  }, []);//End of useEffect({function code,[]});//End of useEffect({function code,[]})
 
   //Had issues trying to change the roleId when the user choose an option
   //in the drop-down listbox. It requires formatting logic.
@@ -115,15 +115,15 @@ const User = () => {
     sort: false,
     hidden: true
   }, {
-    dataField: 'firstName',
+    dataField: 'team_id',
     text: 'Team No.',
     sort: true
   }, {
-    dataField: 'firstName',
+    dataField: 'name',
     text: 'Team Name',
     sort: true
   }, {
-    dataField: 'lastName',
+    dataField: 'first_name',
     text: 'Team Leader',
     sort: true
   },
@@ -133,17 +133,17 @@ const User = () => {
     sort: true
   },
   {
-    dataField: 'email',
+    dataField: 'cloudinary_url',
     text: 'Download Link',
     sort: true
   },
   {
-    dataField: 'roleId',
+    dataField: 'created_at',
     text: 'Submission Date & Time',
     sort: true,
-    formatter: (cell, row) => {
-      return userRoles.find(x => x.value == cell).label;
-    },
+    // formatter: (cell, row) => {
+    //   return userRoles.find(x => x.value == cell).label;
+    // },
     editor: {
       type: Type.SELECT,
       options: userRoles
@@ -196,7 +196,7 @@ const User = () => {
         <Row>
           <Col style={{ border: 'solid 1px black' }}>
             <h4>
-              Number of proposals since you last logged in:
+              Number of proposals submitted since last logged in:
                 </h4>
           </Col>
         </Row>

@@ -17,7 +17,6 @@ function createTeamData(teamName, userId, connection) {
             } else {
                 resolve(rows);
             }
-
         });
 
 
@@ -288,7 +287,7 @@ module.exports.deleteTeamMember = (teamMemberId) => {
 
 } // End of deleteTeamMember
 
-module.exports.getTeamInfo = () => {
+module.exports.getTeamInfo = (userId) => {
 
     return new Promise((resolve, reject) => {
 
@@ -303,6 +302,8 @@ module.exports.getTeamInfo = () => {
                     inner join competiton_system_4_db.team t on t.team_id = tm.team_id
                     inner join competiton_system_4_db.file f on f.team_id = t.team_id
                     where tm.leader = 1
+                    and
+                    tm.member_id = ${userId}
                     `, [],
                     (err, rows) => {
                         if (err) {

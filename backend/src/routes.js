@@ -99,7 +99,10 @@ exports.appRoute = router => {
     router.delete('/api/a/delete/:id', pb5.checkvalid, pb5.deleteUser)
 
     //get pendings
-    router.put('/api/u/teaminfo', teamController.processGetTeamInfo)
+    router.put('/api/u/teaminfo/:userId', teamController.processGetTeamInfo)
     router.get('/api/a/pending', pb5.getPending)
+
+    //xiaolin
     //router.put('/api/u/teaminfo', teamController.processGetTeamInfo)
+    router.post('/api/u/teamsubmission', teamController.processTeamSubmission)
 };
