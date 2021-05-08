@@ -159,7 +159,7 @@ exports.processUserLogin = (req, res, next) => {
         });
     } //end of try
 };
-
+//Matthew's part
 // /api/users/register
 exports.processRegister = (req, res, next) => {
     console.log('The processRegister running');

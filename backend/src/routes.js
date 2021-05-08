@@ -107,8 +107,9 @@ exports.appRoute = router => {
 
 
 
-    //xiaolin
+    //xiaolin lol wth
     router.put('/api/a/setdeadline', pb2.setDeadline)
     router.get('/api/a/teaminfo', pb2.getTeamInfo)
+    router.get('/api/a/pendingproposal', pb2.getPending)
     router.post('/api/u/teamsubmission', teamController.processTeamSubmission)
 };

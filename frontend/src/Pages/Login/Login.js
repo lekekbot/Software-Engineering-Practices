@@ -84,6 +84,7 @@ function Login(props) {
               type: 'alert-danger'
             });
           } else {
+            alert(error.response.request.status);
             setMessage({
               data: 'You are unable to login. If situation persists, please send a support ticket to seek assistance.',
               type: 'alert-danger'

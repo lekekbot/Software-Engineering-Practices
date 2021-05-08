@@ -39,3 +39,9 @@ exports.setDeadline = async (req, res) => {
         console.log(err)
     }
 }
+//get pending list 
+exports.getPending = async (req, res) => {
+    let results = await pb2_service.getPendingProposals()
+    //sending back a number
+    return res.status(200).send(Object.values(results[0]))
+}

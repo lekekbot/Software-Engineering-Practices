@@ -26,3 +26,27 @@ module.exports.getTeamInfo = (cb) => {
         }
     })
 }
+//get pending
+module.exports.getPendingProposals =() => {
+    let getPending = `SELECT SUM(pending_proposals) FROM team `
+
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                connection.query(getPending, [], (err, results) => {
+                    if (err) {
+                        console.log(err)
+                        reject(err)
+                    } else {
+                        console.log(results + " results");
+                        resolve(results)
+                    }
+                    connection.release()
+                })
+            }
+        })
+    })
+}

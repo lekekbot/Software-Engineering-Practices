@@ -11,6 +11,7 @@ const Dashboard = () => {
   //Keep getting the error : "If you meant to render a collection of children, use an array instead"
   const [information, setInformation] = useState(null);
   const [pendingState, setPendingState] = useState(0)
+  const [pendingProposalState, setPendingProposalState] = useState(0)
   useEffect(() => {
     axios.get(`${config.baseUrl}/a/teams/summary`, 
     {})
@@ -52,7 +53,13 @@ const Dashboard = () => {
         setPendingState(count)
     })
     .catch(err => console.log(err))
-  }, []);//End of useEffect({function code,[]})
+
+    axios.get(`${config.baseUrl}/a/pendingproposal`)
+    .then(response => {
+        setPendingProposalState(response.data[0])
+    })
+    .catch(err => console.log(err))
+  }, []);
   
   return (
     <div>
@@ -70,6 +77,7 @@ const Dashboard = () => {
       <h6>Number of teams with submissions : {information && information.numOfTeamsWithSubmissions}</h6> <p />
       <h6>Number of teams with only 1 team member : {information && information.numofTeamsWithOneMember} </h6>  <p />     
       <h6>Number of Pending members: {pendingState}</h6>
+      <h6>Number of Pending proposals: {pendingProposalState}</h6>
             </div>
           </div>
           </div>
