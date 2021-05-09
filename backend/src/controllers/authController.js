@@ -204,7 +204,9 @@ exports.processRegister = (req, res, next) => {
 
                         },
                     );
+                    console.log("it is entering here")
                     return res.status(200).json({
+                        
                         code: 200,
                         error: false,
                         description: 'Completed registration',
