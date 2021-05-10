@@ -270,8 +270,5 @@ exports.getPending = async (req, res) => {
     files associated to team must be deleted
 
     db must capture who can approve 
-    '
-
-
 
 */
