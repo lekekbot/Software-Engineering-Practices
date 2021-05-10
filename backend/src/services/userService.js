@@ -250,7 +250,7 @@ module.exports.verifyUserEmail = async (token, callback) => {
         if (err) {
             console.log('Database connection error ', err);
         } else {
-            connection.query(`UPDATE competiton_system_4_db.user SET is_verified=true WHERE user_id=${user_id} ;`,
+            connection.query(`UPDATE competiton_system_4_db.user SET is_verified="true" WHERE user_id=${user_id} ;`,
                 (err, rows) => {
                     if (err) {
                         connection.release();

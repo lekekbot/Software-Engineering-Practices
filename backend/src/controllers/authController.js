@@ -163,13 +163,8 @@ exports.processUserLogin = (req, res, next) => {
 // /api/users/register
 exports.processRegister = (req, res, next) => {
     console.log('The processRegister running');
-    let firstName = req.body.firstName;
-    let lastName = req.body.lastName;
-    let email = req.body.email;
-    let password = req.body.password;
     let institutionId = req.body.institution.value;
-    let data = req.body;
-
+    let { firstName: firstName, lastName: lastName, email: email, password: password } = req.body;
     bcrypt.hash(password, 10, async (err, hash) => {
         if (err) {
             console.log('Error on hashing password');
@@ -204,7 +199,9 @@ exports.processRegister = (req, res, next) => {
 
                         },
                     );
+                    console.log("it is entering here")
                     return res.status(200).json({
+                        
                         code: 200,
                         error: false,
                         description: 'Completed registration',

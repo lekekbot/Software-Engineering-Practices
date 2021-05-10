@@ -40,7 +40,7 @@ const Header = () => {
   const getUserId = () => {
     const token = getTokenFromLocalStore();
     let decoded = jwt.decode(token);
-    return decoded.userId
+    return decoded?.userId
   }
 
   return (
