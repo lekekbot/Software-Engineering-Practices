@@ -24,10 +24,12 @@ exports.getTeamInfo = async (req, res) => {
     }
 }
 
+//SETS THE DEADLINE(ADMIN SIDE)
 exports.setDeadline = async (req, res) => {
     //smt smt smt 
+    var time = "PLEASE PARSE YOUR REQ.PARAM/REQ.BODY TO DATE TIME"
     try {
-        pb2_service.setDeadline((err, result) => {
+        pb2_service.setDeadline(time, (err, result) => {
             if (err) {
                 console.log(err)
                 return res.status(500).send('HELP')

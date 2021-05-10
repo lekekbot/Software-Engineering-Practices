@@ -106,11 +106,10 @@ exports.appRoute = router => {
     router.delete('/api/a/delete/:id', pb5.checkvalid, pb5.deleteUser)
 
 
-
     //xiaolin lol wth
     router.put('/api/a/setdeadline', pb2.setDeadline)
     router.get('/api/a/teaminfo', pb2.getTeamInfo)
     router.get('/api/a/pendingproposal', pb2.getPending)
     router.post('/api/u/teamsubmission', teamController.processTeamSubmission)
-    router.post('/api/u/deadline', teamController.deadLine)
+    router.post('/api/u/deadline', pb2.deadLine)
 };
