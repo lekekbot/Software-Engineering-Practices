@@ -28,7 +28,7 @@ class UploadFile extends Component {
     this.renderActions = this.renderActions.bind(this);
     this.token =  getTokenFromLocalStore();
     console.log(this.props)
-    // this.teamId = this.props.match.params.teamId;
+    this.teamId = this.props.teamdata.params.userId
   }
 
   onFilesAdded(files) {
@@ -124,7 +124,7 @@ class UploadFile extends Component {
     if (this.state.successfullUploaded) {
       return (
         <span className="float-right" > 
-        <a variant="btn btn-default" href={`/manageteam/${this.teamId}`} >Cancel</a>
+        <a variant="btn btn-default" href={`/teamsubmission/${this.teamId}`} >Cancel</a>
         <button
           onClick={() =>
             this.setState({ files: [], successfullUploaded: false })
@@ -137,7 +137,7 @@ class UploadFile extends Component {
     } else {
       return (
         <span className="float-right" > 
-        <a variant="btn btn-default" href={`/manageteam/${this.teamId}`} >Cancel</a>
+        <a variant="btn btn-default" href={`/teamsubmission/${this.teamId}`} >Cancel</a>
         <button className={`${styles.ActionButton}`}
           disabled={this.state.files.length < 0 || this.state.uploading}
           onClick={this.uploadFiles}

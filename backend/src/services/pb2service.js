@@ -26,6 +26,7 @@ module.exports.getTeamInfo = (cb) => {
         }
     })
 }
+
 //get pending
 module.exports.getPendingProposals =() => {
     let getPending = `SELECT SUM(pending_proposals) FROM team `
