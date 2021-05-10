@@ -60,7 +60,7 @@ module.exports.setDeadLine = (timestamp) => {
                 console.log('Database connection error ', err);
                 resolve(err);
             } else {
-                let query = `INSERT INTO competiton_system_4_db.deadline(deadline_timestamp) VALUES(?)`
+                let query = `UPDATE competiton_system_4_db.deadline SET deadline_timestamp = ?`
                 connection.query(query, [timestamp], (err, results) => {
                     if (err) {
                         console.log(err)

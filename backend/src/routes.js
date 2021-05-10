@@ -111,5 +111,5 @@ exports.appRoute = router => {
     router.get('/api/a/teaminfo', pb2.getTeamInfo)
     router.get('/api/a/pendingproposal', pb2.getPending)
     router.post('/api/u/teamsubmission', teamController.processTeamSubmission)
-    router.post('/api/u/deadline', pb2.deadLine)
+    router.post('/api/u/deadline', pb2.setDeadline)
 };
