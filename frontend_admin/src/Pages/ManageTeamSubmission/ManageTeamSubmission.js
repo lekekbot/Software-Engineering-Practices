@@ -1,53 +1,45 @@
- import React, { useState, useEffect } from 'react';
-//https://code.tutsplus.com/tutorials/working-with-tables-in-react-part-one--cms-29682
-//react-bootstrap-table-next is actually, 
-//react-bootstrap-table2 - is the new version 2, do not get confused
-//thinking that it is the old now
-import BootstrapTable from 'react-bootstrap-table-next';
-import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
-import styles from "./ManageTeamSubmission.module.css";
-import Header from '../../Elements/Header/Header';
-import axios from 'axios';
-import Title from "../../Elements/Title/Title";
-import config from '../../Config.js';
-import { Button, Container, Row, Col } from "react-bootstrap";
+import React, { useState, useEffect } from 'react';
 
-import Calendar from 'react-calendar'
-import DateTimePicker from 'react-datetime-picker'
-import 'react-calendar/dist/Calendar.css';
-import Popup from 'reactjs-popup';
+//styling
 import 'reactjs-popup/dist/index.css';
+import 'react-calendar/dist/Calendar.css';
+import styles from "./ManageTeamSubmission.module.css";
 
-//The following library is for creating notification alerts when user 
-//clicks the save button.
+//imports
+import axios from 'axios';
+import Popup from 'reactjs-popup';
+import config from '../../Config.js';
+import Calendar from 'react-calendar';
+const moment = require('moment-timezone');
+import Title from "../../Elements/Title/Title";
+import Header from '../../Elements/Header/Header';
+import DateTimePicker from 'react-datetime-picker';
+import BootstrapTable from 'react-bootstrap-table-next';
+import { Button, Container, Row, Col } from "react-bootstrap";
+import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
+
 import { ToastContainer, toast } from 'react-toastify';
-//Reference: https://fkhadra.github.io/react-toastify/introduction/
 
-const User = () => {
+export default function User(props) {
   const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [dateval, setdateval] = useState(new Date())
 
-  // You need the loading state so that the Save button can
-  // effectively show the button label or 'loading....' 
-  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    axios.get(`${config.baseUrl}/a/teaminfo`,
-      {})
-      .then(response => {
-        console.log(response.data.data);
-        let records = response.data.data;
-        if(records.length != 0) {
-          records.forEach((element) => {
-            element.changeStatus = false;
-          });
-        }
-        setUserData(records);
-      }).catch(error => {
-        console.log(error);
-      });
-  }, []);//End of useEffect({function code,[]});//End of useEffect({function code,[]})
+    axios.get(`${config.baseUrl}/a/teaminfo`, {}).then(response => {
+      console.log(response.data.data);
+      let records = response.data.data;
+      if (records.length != 0) {
+        records.forEach((element) => {
+          element.changeStatus = false;
+        });
+      }
+      setUserData(records);
+    }).catch(error => {
+      console.log(error);
+    });
+  }, []);
 
-  //column data for table
   const columns = [{
     dataField: 'id',
     text: 'User id',
@@ -80,20 +72,26 @@ const User = () => {
     dataField: 'created_at',
     text: 'Submission Date & Time',
     sort: true,
-    // formatter: (cell, row) => {
-    //   return userRoles.find(x => x.value == cell).label;
-    // },
   },
   ];
 
   const defaultSorted = [{
     dataField: 'email',
     order: 'desc'
-  }]; 
+  }];
 
   const handleCalendarChange = (e) => {
     setdateval(e)
-    console.log(e)
+  }
+
+  const timingSubmit = () => {
+    //BTW, the timing will be reflected here!!!
+    //XiaoLin, now, call a axios get/put/post request of your preference to get the newest timing.
+
+    //I have already converted the time of the local system -> to SG time system(database system)
+    setdateval(moment(dateval).tz("Asia/Singapore").format("YYYY-MM-DD HH:mm:ss"))
+    alert(dateval)
+
   }
 
   const handleUserStatusChange = (oldValue, newValue, row, column) => {
@@ -104,10 +102,8 @@ const User = () => {
   };// End of handleUserStatusChange
 
   return (
-
     <div>
       <Header />
-
       <Title title="View/download proposal file"></Title>
       <ToastContainer
         position="top-center"
@@ -120,45 +116,46 @@ const User = () => {
         draggable
         pauseOnHover
       />
-      {/* ToastContainer - put it outside the Container. */}
-
       <Container className="fluid mw-100" style={{ border: 'solid 1px black' }}
         className="justify-content-center">
         <Row>
           <Col style={{ border: 'solid 1px black' }}>
-
-            <h3>
-              View/download proposal file(s)
-            </h3>
-
+            <h3>View/download proposal file(s)</h3>
           </Col>
         </Row>
         <Row>
           <Col style={{ border: 'solid 1px black' }}>
-            <h4>
-              Number of proposals submitted since last logged in:
-                </h4>
+            <h4>Number of proposals submitted since last logged in:</h4>
           </Col>
         </Row>
         <Row>
           <Col md={{ size: 10 }} style={{ border: 'solid 1px black' }} >
-            <Popup trigger={<button className="btn btn-primary float-left">Set Deadline</button>} modal>
+            <Popup trigger={
+              <button className="btn btn-primary float-left">Set Deadline</button>} modal>
               {close => (
                 <div>
                   <DateTimePicker
-                  minDate={new Date()}
-                  onChange={e => handleCalendarChange(e)}
-                  value={dateval}
-                  /> 
+                    minDate={new Date()}
+                    amPmAriaLabel="Select AM/PM"
+                    calendarAriaLabel="Toggle calendar"
+                    clearAriaLabel="Clear value"
+                    dayAriaLabel="Day"
+                    hourAriaLabel="Hour"
+                    maxDetail="second"
+                    minuteAriaLabel="Minute"
+                    monthAriaLabel="Month"
+                    nativeInputAriaLabel="Date and time"
+                    onChange={e => handleCalendarChange(e)}
+                    secondAriaLabel="Second"
+                    value={dateval}
+                    yearAriaLabel="Year"
+                  />
                   <button onClick={() => close()}>cancel</button>
-                  <button onClick={() => {close()}}>Save</button>
-
+                  <button onClick={() => { close() }} onClick={() => { timingSubmit() }}>Save</button>
                 </div>
               )}
-                 
             </Popup>
           </Col>
-
         </Row>
         <Row>
           <Col md={{ size: 10 }} style={{ border: 'solid 1px black' }} >
@@ -177,5 +174,3 @@ const User = () => {
     </div>
   );
 } //End of User functional component
-
-export default User;
