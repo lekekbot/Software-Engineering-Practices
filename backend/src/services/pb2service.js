@@ -16,11 +16,11 @@ module.exports.getTeamInfo = (cb) => {
             inner join team t on t.team_id = tm.team_id
             inner join file f on f.team_id = t.team_id
             where tm.leader = 1`, [], (err, res) => {
-                if(err) {
-                    return cb(err,null)
+                if (err) {
+                    return cb(err, null)
                 }
                 else {
-                    return cb(null,res)
+                    return cb(null, res)
                 }
             })
         }
@@ -28,7 +28,7 @@ module.exports.getTeamInfo = (cb) => {
 }
 
 //get pending
-module.exports.getPendingProposals =() => {
+module.exports.getPendingProposals = () => {
     let getPending = `SELECT SUM(pending_proposals) FROM team `
 
     return new Promise((resolve, reject) => {
@@ -38,6 +38,30 @@ module.exports.getPendingProposals =() => {
                 resolve(err);
             } else {
                 connection.query(getPending, [], (err, results) => {
+                    if (err) {
+                        console.log(err)
+                        reject(err)
+                    } else {
+                        console.log(results + " results");
+                        resolve(results)
+                    }
+                    connection.release()
+                })
+            }
+        })
+    })
+}
+
+//get pending
+module.exports.setDeadLine = (timestamp) => {
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                let query = `INSERT INTO competiton_system_4_db.deadline(deadline_timestamp) VALUES(?)`
+                connection.query(query, [timestamp], (err, results) => {
                     if (err) {
                         console.log(err)
                         reject(err)

@@ -1,3 +1,4 @@
+import moment from 'moment-timezone';
 import React, { useState, useEffect } from 'react';
 
 //styling
@@ -10,7 +11,6 @@ import axios from 'axios';
 import Popup from 'reactjs-popup';
 import config from '../../Config.js';
 import Calendar from 'react-calendar';
-const moment = require('moment-timezone');
 import Title from "../../Elements/Title/Title";
 import Header from '../../Elements/Header/Header';
 import DateTimePicker from 'react-datetime-picker';

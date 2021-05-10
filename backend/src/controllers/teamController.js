@@ -9,9 +9,6 @@ exports.processAddOneTeam = async (req, res, next) => {
     // Collect user id which was created inside the req by the middleware function
     let createdById = req.userId;
 
-
-
-
     let leaderId = req.userId; //By default the new team's leader is the person who creates it.
     try {
         results = await teamDataManager.createTeam(teamName, leaderId, createdById);
