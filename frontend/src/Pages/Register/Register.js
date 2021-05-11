@@ -71,7 +71,7 @@ const Register = () => {
 
   return (
     <div
-      className={`${styles.container} container-fluid d-flex align-items-top justify-content-center `}
+      className={`${styles.container} container-fluid d-flex align-items-top justify-content-center col-xl-6`}
     >
       <div className="{styles.registrationFormContainer}" style={{width:'100%'}}>
         <div className="row ">
@@ -294,19 +294,7 @@ const Register = () => {
       </div>
       
       
-      <div className="col" style={{border:"solid 1px #ff0000"}}>
-      <table>
-        <thead>
-        <tr><th>First name</th><th>Last name</th><th>Email</th></tr>
-        
-        </thead>
-        <tbody>
-        <tr><td>Mary</td><td>Nat</td><td>marynat@abc.com@abc.com</td></tr>
-        <tr><td>Samuel</td><td>Simpsons</td><td>samuelsimpsons@abc.com</td></tr>
-        <tr><td>Rita</td><td>Kennedy</td><td>ritakennedy@abc.com</td></tr>
-        </tbody>
-      </table>
-    </div>
+      
     </div>{/* div className=row*/}  
     </div>
     </div>
