@@ -352,6 +352,10 @@ exports.sendTimeStampEmail = async (req, res, next) => {
             });
         } else {
             try {
+                const time = moment(result[0].user_password_timestamp)
+                const localtz = moment.tz.guess()
+                const date = time.clone().tz(localtz)
+                const formatDate = moment(date)
                 // Now, lets send an email to them to user that they have requested for the change
                 let emailData = {
                     from: `Competition System Admin <support@sp.competitionmanagementsystem.org>`,
@@ -359,7 +363,7 @@ exports.sendTimeStampEmail = async (req, res, next) => {
                     subject: `Password change update`,
                     text: `
                             \nYou password has been changed.
-                            \nThe time your password was changes was at ${result[0].user_password_timestamp}
+                            \nThe time your password was changes was at ${formatDate}
                             \nIf you did not make this request, please contact +65 9647 2290
                             \n\n- The Competition Management System Support Team
                             `,
