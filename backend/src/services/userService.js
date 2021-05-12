@@ -1,9 +1,18 @@
 const config = require('../config/config');
+const nodeMailer = require('nodemailer')
 const pool = require('../config/database');
 const mysql = require("../utils/mysql.js");
 const jwt = require('jsonwebtoken');
 
-module.exports.createUser = async (firstName, lastName, email, instituionId, password, callback) => {
+let transporter = nodeMailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: config.GMAIL_USER,
+        pass: config.GMAIL_PASS,
+    }
+})
+
+module.exports.createUser = async (firstName, lastName, email, instituionId, password,callback) => {
     console.log(firstName, lastName, email, password);
     return new Promise((resolve, reject) => {
         //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
@@ -119,7 +128,9 @@ module.exports.getAllUserDataForAdmin = () => {
                             email, 
                             user.role_id 
                             roleId, 
-                            user.status  
+                            user.status,
+                            created_at,
+                            updated_at  
                         FROM 
                             user INNER JOIN role 
                         ON 

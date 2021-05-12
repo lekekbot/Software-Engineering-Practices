@@ -62,9 +62,11 @@ exports.processUpdateOneUser = async (req, res, next) => {
     //Collect data from the request body 
     let recordId = req.body.recordId;
     let newRoleId = req.body.roleId;
+    console.log(req.body)
     try {
         results = await userManager.updateUser(recordId, newRoleId);
         console.log(results);
+        //send emaiil
         return res.status(200).json({ message: 'Completed update' });
     } catch (error) {
         console.log('processUpdateOneUser method : catch block section code is running');
@@ -88,7 +90,7 @@ exports.processUpdateUsersOnRoleAndStatus = async (req, res, next) => {
             if (data[index].status == 'approved') {
                 let emailData = {
                     from: `competition system admin <admin@samples.mailgun.org>`,
-                    to: 'chaipinzheng@gmail.com',
+                    to: data[index].email,
                     subject: 'Your user registration has been approved',
                     text: `Thank you ${data[index].firstName} ${data[index].lastName} for registering as participant for the competition. Please submit your business plans before the deadline.`
                 };

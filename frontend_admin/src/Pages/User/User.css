@@ -1,7 +1,7 @@
-div {
+.user {
     border: solid 0px black;
-    padding: 2px;
 }
+
 .pageHeader {
     max-height: 150px;
 }

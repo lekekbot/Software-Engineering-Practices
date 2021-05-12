@@ -1,9 +1,19 @@
 const userManager = require('../services/userService');
 const config = require('../config/config');
-const mailgun = require("mailgun-js");
-// 
+const nodeMailer = require('nodemailer')
 
-exports.processGetAllUserDataForAdmin = async(req, res, next) => {
+// const mailgun = require("mailgun-js");
+// 
+let transporter = nodeMailer.createTransport({
+    service: 'Gmail',
+    
+    auth: {
+        user: config.GMAIL_USER,
+        pass: config.GMAIL_PASS,
+    }
+})
+
+exports.processGetAllUserDataForAdmin = async (req, res, next) => {
 
     try {
         let results = await userManager.getAllUserDataForAdmin();
@@ -28,13 +38,13 @@ exports.processGetAllUserDataForAdmin = async(req, res, next) => {
         /*Must change this json response data in the future to something else so 
         that client side dont get the error details*/
         return res.status(500).send({
-            message: error 
+            message: error
         });
     }
 
 }; //End of processGetAllUserDataForAdmin
 
-exports.processGetOneUserData = async(req, res, next) => {
+exports.processGetOneUserData = async (req, res, next) => {
     let recordId = req.params.recordId;
 
     try {
@@ -56,7 +66,7 @@ exports.processGetOneUserData = async(req, res, next) => {
 }; //End of processGetOneUserData
 
 
-exports.processUpdateOneUser = async(req, res, next) => {
+exports.processUpdateOneUser = async (req, res, next) => {
     console.log('processUpdateOneUser running');
     //Collect data from the request body 
     let recordId = req.body.recordId;
@@ -73,7 +83,7 @@ exports.processUpdateOneUser = async(req, res, next) => {
 
 
 }; //End of processUpdateOneUser
-exports.processUpdateUsersOnRoleAndStatus = async(req, res, next) => {
+exports.processUpdateUsersOnRoleAndStatus = async (req, res, next) => {
     console.log('processUpdateUsersOnRoleAndStatus running');
     // Collect data from the request body 
     let data = req.body;
@@ -82,25 +92,31 @@ exports.processUpdateUsersOnRoleAndStatus = async(req, res, next) => {
         results = await userManager.updateUsersOnRoleAndStatus(data);
         console.log(results);
         //I copied the code from official MailGun API tutorial website
-        const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
-        for(index=0;index<data.length;index++){
-        if(data[index].status=='approved'){
-        let emailData = {
-            from: `competition system admin <admin@samples.mailgun.org>`,
-            to: 'billhstan4@gmail.com',
-            subject: 'Your user registration has been approved',
-            text: `Thank you ${data[index].firstName} ${data[index].lastName} for registering as participant for the competition. Please submit your business plans before the deadline.`
-        };
-        mg.messages().send(emailData, function (error, body) {
-            if(error){
-                console.log(`Sending email has failed`,error);
-            }else{   
-            console.log(`Sent email.`,body);
+        // const mg = mailgun({ apiKey: config.mailGunApiKey, domain: config.mailGunDomain });
+        for (index = 0; index < data.length; index++) {
+            transporter.sendMail({
+                to: data[index].email,
+                subject: 'Your user registration has been approved',
+                html: `Thank you ${data[index].firstName} ${data[index].lastName} for registering as participant for the competition. Please submit your business plans before the deadline.`
+            }).catch(err => console.log(err))
+            //trashgun 
+            // if(data[index].status=='approved'){
+            // let emailData = {
+            //     from: `competition system admin <admin@samples.mailgun.org>`,
+            //     to: 'billhstan4@gmail.com',
+            //     subject: 'Your user registration has been approved',
+            //     text: `Thank you ${data[index].firstName} ${data[index].lastName} for registering as participant for the competition. Please submit your business plans before the deadline.`
+            // };
+            // mg.messages().send(emailData, function (error, body) {
+            //     if(error){
+            //         console.log(`Sending email has failed`,error);
+            //     }else{   
+            //     console.log(`Sent email.`,body);
 
-            }
-        });
-        }
-    }// End of for loop to send emails
+            //     }
+            // });
+            // }
+        }// End of for loop to send emails
         return res.status(200).send({ message: 'Completed update' });
     } catch (error) {
         console.log('processUpdateUsersOnRoleAndStatus method : catch block section code is running');
@@ -111,26 +127,26 @@ exports.processUpdateUsersOnRoleAndStatus = async(req, res, next) => {
 
 }; //End of processUpdateUsersOnRoleAndStatus
 
-exports.sendVerificationEmail = async(req, res, next,user_id) => {
+exports.sendVerificationEmail = async (req, res, next, user_id) => {
     let data = req.body;
-    let register = async (parent, args, { transporter, models,data,user_id, EMAIL_SECRET }) => {
+    let register = async (parent, args, { transporter, models, data, user_id, EMAIL_SECRET }) => {
         // async email
         jwt.sign(
-          {
-            user: _.pick(user_id, 'id'),
-          },
-          EMAIL_SECRET,
-          {
-            expiresIn: '1d',
-          },
-          (err, emailToken) => {
-            const url = `http://localhost:3003/confirmation/${emailToken}`;
-            transporter.sendMail({
-              to: data[index].email,
-              subject: 'Confirm Email',
-              html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
-            });
-          },
+            {
+                user: _.pick(user_id, 'id'),
+            },
+            EMAIL_SECRET,
+            {
+                expiresIn: '1d',
+            },
+            (err, emailToken) => {
+                const url = `http://localhost:3003/confirmation/${emailToken}`;
+                transporter.sendMail({
+                    to: data[index].email,
+                    subject: 'Confirm Email',
+                    html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
+                });
+            },
         );
     }
     register()
