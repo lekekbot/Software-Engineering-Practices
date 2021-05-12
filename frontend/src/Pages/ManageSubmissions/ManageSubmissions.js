@@ -1,20 +1,21 @@
+import moment from 'moment-timezone';
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Container, Row, Col, Spinner, DropDown } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+
+//styling
+
+//imports
 import axios from 'axios';
+import Title from '../Title/Title';
 import config from '../../config.js';
-import { getTokenFromLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
+import Header from '../../Elements/Header';
+import { ToastContainer, toast } from 'react-toastify';
+import { confirmAlert } from 'react-confirm-alert';
+import { Link, useHistory } from 'react-router-dom';
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
-import Title from '../Title/Title';
-import Header from '../../Elements/Header';
-import { confirmAlert } from 'react-confirm-alert';
 import ManageSubmissionsRowMenu from '../../Elements/ManageSubmissionsRowMenu';
-//The following library is for creating notification alerts when user 
-//clicks the save button.
-import { ToastContainer, toast } from 'react-toastify';
-//Reference: https://fkhadra.github.io/react-toastify/introduction/
+import { Button, Container, Row, Col, Spinner, DropDown } from 'react-bootstrap';
+import { getTokenFromLocalStore } from '../../Utils/Common.js';// Common.js don't use export default
 
 const ManageSubmissions = ({ match }) => {
   const teamId = match.params.teamId;
@@ -26,33 +27,26 @@ const ManageSubmissions = ({ match }) => {
   // effectively show the button label or 'loading....' 
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
     setLoading(true);
-    axios.get(`${config.baseUrl}/u/teams/${teamId}/proposals`,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      .then(response => {
-        console.log(response.data.content);
-        let records = response.data.content;
-        // I need to apply the following map method to rebuild the
-        // array of team data so that the Browser don't give warnings such as
-        // Warning: Failed prop type: The prop `column.text` is marked as required in `HeaderCell`, but its value is `undefined`.
-        const formattedRecords = records.map(data => {
-          console.log('Checking data variable in the map callback ', data);
-          data.dummyId1 = data.fileId;
-          return data;
-        });
-        console.dir(formattedRecords);
-        setSubmissionData(formattedRecords);
-        setLoading(false);
-      }).catch(error => {
-        console.log(error);
-        setLoading(false);
+    axios.get(`${config.baseUrl}/u/teams/${teamId}/proposals`, { headers: { 'Authorization': `Bearer ${token}` } }).then(response => {
+      console.log(response.data.content);
+      let records = response.data.content;
+      // I need to apply the following map method to rebuild the
+      // array of team data so that the Browser don't give warnings such as
+      // Warning: Failed prop type: The prop `column.text` is marked as required in `HeaderCell`, but its value is `undefined`.
+      const formattedRecords = records.map(data => {
+        console.log('Checking data variable in the map callback ', data);
+        data.dummyId1 = data.fileId;
+        return data;
       });
+      console.dir(formattedRecords);
+      setSubmissionData(formattedRecords);
+      setLoading(false);
+    }).catch(error => {
+      console.log(error);
+      setLoading(false);
+    });
   }, [removeSubmissionActionCounter]);//End of useEffect({function code,[removeSubmissonActionCounter]})
 
   const handleRemoveSubmissionAction = (event, fileId, cloudinaryFileId) => {
@@ -71,15 +65,23 @@ const ManageSubmissions = ({ match }) => {
           onClick: () => {
             setLoading(true);
             //https://stackoverflow.com/questions/51069552/axios-delete-request-with-body-and-headers
-            axios.delete(`${config.baseUrl}/u/proposals`,
-              {
-                headers: { 'Authorization': `Bearer ${token}` },
-                data: payload
-              })
-              .then(response => {
-                setLoading(false);
-                toast.success(response.data.message, {
-                  position: 'top-center',
+            axios.delete(`${config.baseUrl}/u/proposals`, { headers: { 'Authorization': `Bearer ${token}` }, data: payload }).then(response => {
+              setLoading(false);
+              toast.success(response.data.message, {
+                position: 'top-center',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined
+              });
+              setRemoveSubmissionActionCounter(removeSubmissionActionCounter + 1);
+            }).catch(error => {
+              setLoading(false);
+              if (error.response != null) {
+                toast.error(error.response.data.description, {
+                  position: "top-center",
                   autoClose: 5000,
                   hideProgressBar: false,
                   closeOnClick: true,
@@ -87,23 +89,10 @@ const ManageSubmissions = ({ match }) => {
                   draggable: true,
                   progress: undefined
                 });
-                setRemoveSubmissionActionCounter(removeSubmissionActionCounter + 1);
-              }).catch(error => {
-                setLoading(false);
-                if (error.response != null) {
-                  toast.error(error.response.data.description, {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined
-                  });
-                }
+              }
 
-                event.preventDefault();
-              });
+              event.preventDefault();
+            });
 
           }// End of onClick section (YES)
         },
@@ -114,7 +103,6 @@ const ManageSubmissions = ({ match }) => {
       ]
     });
   }// End of handleRemoveSubmissionAction
-
 
   const columns = [{
     dataField: 'fileId',
@@ -153,10 +141,8 @@ const ManageSubmissions = ({ match }) => {
         parentThis: this
       };
       return <ManageSubmissionsRowMenu {...editorProps} {...params} handleRemoveSubmissionAction={handleRemoveSubmissionAction.bind(this)} />
-
     }
   }];
-
 
   const defaultSorted = [{
     dataField: 'fileId',
@@ -175,11 +161,10 @@ const ManageSubmissions = ({ match }) => {
       return '';
     }
   }// End of conditional rendering Bootstrap Spinner logic
-  return (
 
+  return (
     <div>
       <Header />
-
       <Title title="Manage your team submissions"></Title>
       <ToastContainer
         position="top-center"
@@ -223,6 +208,7 @@ const ManageSubmissions = ({ match }) => {
             </div>
           </Col>
         </Row>
+
         <Row>
           <Col md={{ size: 9, offset: -1 }} lg={{ size: 9, offset: -1 }} style={{ border: 'solid 1px black' }} >
             <BootstrapTable

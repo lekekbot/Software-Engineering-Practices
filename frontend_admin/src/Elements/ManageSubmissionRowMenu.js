@@ -1,6 +1,5 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
-
 class ManageSubmissionsRowMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -16,10 +15,10 @@ class ManageSubmissionsRowMenu extends React.Component {
   canCelClickEvent = (e) => {
     e.stopPropagation();
   }
-
   render() {
     console.log()
     return (
+
       <Dropdown key={`dropdown_${this.props.row.fileId}`}>
         <Dropdown.Toggle
           variant="primary btn-sm"
@@ -27,13 +26,16 @@ class ManageSubmissionsRowMenu extends React.Component {
           Manage submission
         </Dropdown.Toggle>
         <Dropdown.Menu style={{ backgroundColor: '#73a47' }} key={this.props.row.fileId}>
+
           <Dropdown.Item key={`option_1_${this.props.row.fileId}`} download={this.props.row.fileName} href={this.props.row.url} >Download</Dropdown.Item>
           <Dropdown.Item key={`option_2_${this.props.row.fileId}`} href="#"
             onClick={(event) => this.props.handleRemoveSubmissionAction(event, this.props.row.fileId, this.props.row.cloudinaryFileId)} >Remove</Dropdown.Item>
+
         </Dropdown.Menu>
       </Dropdown>
+
     );
+
   }
 }
 export default ManageSubmissionsRowMenu;
-

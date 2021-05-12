@@ -8,25 +8,8 @@ import config from "../config";
 import axios from 'axios';
 import { getUserDisplayNameFromLocalStore, getTokenFromLocalStore } from '../Utils/Common.js';// Common.js don't use export default
 const Header = () => {
-
-
   const history = useHistory();
-  /* infinite loop 
-  https://medium.com/@andrewmyint/infinite-loop-inside-useeffect-react-hooks-6748de62871
-      useEffect(() => {
-          axios.get(`${config.baseUrl}/dashboard`, 
-          {
-              headers: {
-                'Authorization': `Bearer ${token}` 
-              }
-            })
-          .then(response => {
-              console.log(response.data);
-              setDashboard(response.data.data);
-          }).catch(error => {
-            history.push("/login");
-        }, ['Dashboard message']);
-      });*/
+
   const handleClickLogout = () => {
     /* eslint-disable */
     const toLogout = confirm("Are you sure to logout ?");
@@ -44,7 +27,6 @@ const Header = () => {
   }
 
   return (
-
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <a className="navbar-brand" href="/">
@@ -69,8 +51,8 @@ const Header = () => {
               </a>
             </li>
             <li className="nav-item active">
-              <a className="nav-link" href={"/teamsubmission/" + getUserId()} >
-                Submit proposal
+              <a className="nav-link" href={"/manageteam/"} >
+                Manage Proposal
                 </a>
             </li>
             <li className="nav-item">
@@ -81,7 +63,7 @@ const Header = () => {
 
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => history.push("/UserProfile")}>Profile</Dropdown.Item>
-                <Dropdown.Item onClick={() => history.push("/reset_password")}>Reset my password!</Dropdown.Item>
+                  <Dropdown.Item onClick={() => history.push("/reset_password")}>Reset my password!</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </li>
@@ -94,9 +76,9 @@ const Header = () => {
                 </span>
             </li>
           </ul>
-        <span className="navbar-text">Welcome! {getUserDisplayNameFromLocalStore()}</span>
+          <span className="navbar-text">Welcome! {getUserDisplayNameFromLocalStore()}</span>
         </div>
-    </nav>
+      </nav>
     </>
 
   );

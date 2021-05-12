@@ -113,7 +113,10 @@ exports.processDeleteOneProposal = async (req, res, next) => {
     let fileId = req.body.fileId;
     //The files stored inside cloudinary has a public id pattern which begins with
     //Proposals/
+    console.log("DELTA")
+    console.log(fileId)
     let cloudinaryFileId = `${req.body.cloudinaryFileId}`;
+    console.log(cloudinaryFileId)
     console.log('The proposalController - processDeleteOneProposal is called.');
     console.log('Checking the cloudinaryFileId :', cloudinaryFileId);
     try {
@@ -141,8 +144,8 @@ exports.processDeleteOneProposal = async (req, res, next) => {
         }
         return res.status(500).send(responseData);
     }
-
 }; // End of processDeleteOneProposal
+
 // Helper function to check and decode security token which is inside the req.body.token
 function obtainUserIdIfUserIsUserRole(token) {
     return new Promise((resolve, reject) => {
@@ -164,4 +167,40 @@ function obtainUserIdIfUserIsUserRole(token) {
     });//End of new Promise ...
 } // End of obtainUserIdIfUserIsUserRole
 
+exports.processDeleteOneProposalPZ = async (req, res, next) => {
+    let fileId = req.body.fileId;
+    //The files stored inside cloudinary has a public id pattern which begins with
+    //Proposals/
+    console.log("DELTA")
+    console.log(fileId)
+    let cloudinaryFileId = `${req.body.cloudinaryFileId}`;
+    console.log(cloudinaryFileId)
+    console.log('The proposalController - processDeleteOneProposal is called.');
+    console.log('Checking the cloudinaryFileId :', cloudinaryFileId);
+    try {
+        let deleteFileInCloudinaryResult = await proposalManager.deleteProposalFileInCloudinary(cloudinaryFileId);
+        console.log('Inspect results variable after calling deleteProposalFileInCloudinary method', deleteFileInCloudinaryResult);
+        if (deleteFileInCloudinaryResult.operationStatus == 'success') {
+            const deleteResult = await proposalManager.deleteFileDataPZ(cloudinaryFileId);
+            if (deleteResult.affectedRows == 1) {
+                const responseData = {
+                    error:false,
+                    code:200,
+                    description: 'The file has been permanently deleted.',
+                    content: []
+                }
+                return res.status(200).send(responseData);
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        const responseData = {
+            error:true,
+            code:500,
+            description: 'Unable to delete the file.',
+            content: []
+        }
+        return res.status(500).send(responseData);
+    }
 
+}; // End of processDeleteOneProposal

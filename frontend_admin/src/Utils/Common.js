@@ -8,7 +8,12 @@ export const getUserDisplayNameFromLocalStore = () => {
   export const getTokenFromLocalStore = () => {
     return localStorage.getItem('token') || null;
   }
-   
+
+   // Return the userid which is read from the local storage
+   export const getUserIdFromLocalStore = () => {
+    return localStorage.getItem('userid') || null;
+  }
+ 
   // Remove the token and user from the local storage
   export const removeUserDataFromLocalStore = () => {
     localStorage.removeItem('token');
@@ -16,7 +21,8 @@ export const getUserDisplayNameFromLocalStore = () => {
   }
    
   // Set the token and user from the local storage
-  export const saveUserDataToLocalStore = (token, displayName) => {
+  export const saveUserDataToLocalStore = (token, displayName, userid) => {
     localStorage.setItem('token', token);
     localStorage.setItem('displayName', displayName);
+    localStorage.setItem('userid', userid);
   }

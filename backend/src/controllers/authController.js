@@ -40,6 +40,7 @@ exports.processAdminLogin = (req, res, next) => {
                     }
                     if (bcrypt.compareSync(password, results[0].user_password) == true) {
                         let data = {
+                            userid: results[0].user_id,
                             displayName: results[0].first_name + ' ' + results[0].last_name,
                             email: results[0].email,
                             token: jwt.sign({ userId: results[0].user_id, role: results[0].role_name, email: results[0].email }, config.JWTKey, {

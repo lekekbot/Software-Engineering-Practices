@@ -48,6 +48,7 @@ exports.processGetOneUserData = async (req, res, next) => {
         }
     } catch (error) {
         let message = 'Server is unable to process your request.';
+        console.log(error);
         return res.status(500).json({
             message: error
         });

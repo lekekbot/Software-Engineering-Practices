@@ -1,4 +1,4 @@
-// Import controlers
+// Import controllers
 const authController = require('./controllers/authController');
 const userController = require('./controllers/testUserController');
 const teamController = require('./controllers/teamController');
@@ -22,7 +22,7 @@ exports.appRoute = router => {
     // Called by the client admin role app to update approve status for registered users.
     router.put('/api/users/', userController.processUpdateOneUser);
 
-    router.get('/api/users/:recordId', userController.processGetOneUserData);
+    
 
 
     router.post('/api/u/teams', checkUserFn.checkForValidUserRoleUser, teamController.processAddOneTeam);
@@ -106,10 +106,15 @@ exports.appRoute = router => {
     router.delete('/api/a/delete/:id', pb5.checkvalid, pb5.deleteUser)
 
 
-    //xiaolin lol wth
+
+    //PROBLEM 2 - LIU XIAOLIN
     router.put('/api/a/setdeadline', pb2.setDeadline)
+    router.get('/api/a/getdeadline', pb2.getDeadline)
     router.get('/api/a/teaminfo', pb2.getTeamInfo)
     router.get('/api/a/pendingproposal', pb2.getPending)
     router.post('/api/u/teamsubmission', teamController.processTeamSubmission)
-    router.post('/api/u/deadline', pb2.setDeadline)
+    router.put('/api/updateLastLogin', pb2.updateLastLogout)
+    router.get('/api/users/:recordId', userController.processGetOneUserData);
+    router.delete('/api/u/proposalsPZ/', proposalController.processDeleteOneProposalPZ);
+    //router.post('/api/u/deadline', teamController.deadLine);
 };

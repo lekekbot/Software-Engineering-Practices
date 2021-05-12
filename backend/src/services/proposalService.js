@@ -110,6 +110,7 @@ module.exports.createFileData = (fileUrl, publicId, teamId, userId, originalFile
         });
     }); //End of new Promise object creation
 } //End of createFileData
+
 module.exports.deleteFileData = (fileId) => {
     console.log('The proposalService - deleteFileData method is called.');
     return new Promise((resolve, reject) => {
@@ -120,7 +121,7 @@ module.exports.deleteFileData = (fileId) => {
                 console.log('Database connection error ', err);
                 resolve(err);
             } else {
-                let query = `DELETE FROM file WHERE file_id =?;`;
+                let query = `DELETE FROM file WHERE file_id = ? ;`;
                 connection.query(query, [fileId], (err, rows) => {
                     if (err) {
                         console.log('Error on query on deleting record inside file table', err);
@@ -133,7 +134,6 @@ module.exports.deleteFileData = (fileId) => {
             }
         });
     }); //End of new Promise object creation
-
 } //End of deleteFileData
 
 module.exports.getProposalsByTeamId = (teamId) => {
@@ -182,3 +182,68 @@ module.exports.getProposalsByTeamId = (teamId) => {
 //     }); //End of new Promise object creation
 
 // } //End of getTotalNumberOfSubmissions
+
+
+module.exports.deleteProposalFileInCloudinaryPZ = (cloudinaryFileId) => {
+    return new Promise((resolve, reject) => {
+        console.log('The proposalService - deleteProposalFileInCloudinary is running');
+        // There are two ways to delete resource: I used the uploader API
+        // by calling the destroy method and pass in the cloudinary file id
+        cloudinary.uploader.destroy(cloudinaryFileId, { invalidate: true, resource_type: 'raw' })
+            .then((result) => {
+                //I have inspected the result variable's data structure,
+                //after calling the destroy method.
+                //It is either {result:'not found'} or {result:'ok'}
+                console.log(result);
+                if (result.result == 'not found') {
+                    reject({
+                        operationStatus: 'fail',
+                        description: 'Unable to find the file to delete',
+                        content: []
+                    });
+                }
+                if (result.result == 'ok') {
+                    resolve({
+                        operationStatus: 'success',
+                        description: 'The file has been removed permanently.',
+                        content: []
+                    });
+                }
+            }).catch((error) => {
+                //Inspect the error variable after calling the destroy
+                console.log('The uploader.destroy call has error : ', error);
+                const result = {
+                    operationStatus: 'fail',
+                    description: error,
+                    content: []
+                }
+                reject(result);
+                return;
+            });
+    });//End of return new Promise
+} //End of deleteProposalFileInCloudinary
+
+module.exports.deleteFileDataPZ = (fileId) => {
+    console.log('The proposalService - deleteFileData method is called.');
+    return new Promise((resolve, reject) => {
+        //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
+        //to prepare the following code pattern which does not use callback technique (uses Promise technique)
+        pool.getConnection((err, connection) => {
+            if (err) {
+                console.log('Database connection error ', err);
+                resolve(err);
+            } else {
+                let query = `DELETE FROM file WHERE cloudinary_file_id = ? ;`;
+                connection.query(query, [fileId], (err, rows) => {
+                    if (err) {
+                        console.log('Error on query on deleting record inside file table', err);
+                        reject(err);
+                    } else {
+                        resolve(rows);
+                    }
+                    connection.release();
+                });
+            }
+        });
+    }); //End of new Promise object creation
+} //End of deleteFileData

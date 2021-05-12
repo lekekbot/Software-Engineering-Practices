@@ -1,4 +1,5 @@
 config = require('../config/config');
+// const { resolve } = require('node:path');
 const pool = require('../config/database')
 module.exports.authenticateUser = (email, callback) => {
     pool.getConnection((err, connection) => {
@@ -78,3 +79,4 @@ module.exports.authenticateAdmin = (email, callback) => {
         }
     }); // End of getConnection
 } // End of authenticateAdmin
+

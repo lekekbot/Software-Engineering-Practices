@@ -150,18 +150,18 @@ module.exports.getOneUserData = function (recordId) {
     console.log('getOneUserData method is called.');
     console.log('Prepare query to fetch one user record');
     userDataQuery = `SELECT 
-                        user_id, 
-                        fullname, 
+                        user_id,
                         email, 
                         user.role_id, 
-                        role_name FROM 
+                        role_name,
+                        last_logout FROM 
                         user 
                     INNER JOIN 
                         role 
                     ON 
                         user.role_id = role.role_id 
                     WHERE 
-                        user_id=` + recordId;
+                        user_id=?`;
 
     return new Promise((resolve, reject) => {
         //I referred to https://www.codota.com/code/javascript/functions/mysql/Pool/getConnection
@@ -171,8 +171,9 @@ module.exports.getOneUserData = function (recordId) {
                 console.log('Database connection error ', err);
                 resolve(err);
             } else {
-                connection.query(userDataQuery, (err, results) => {
+                connection.query(userDataQuery,[recordId], (err, results) => {
                     if (err) {
+                        console.log(err)
                         reject(err);
                     } else {
                         resolve(results);
@@ -263,3 +264,4 @@ module.exports.verifyUserEmail = async (token, callback) => {
         }
     });
 } //End of updateDesign
+

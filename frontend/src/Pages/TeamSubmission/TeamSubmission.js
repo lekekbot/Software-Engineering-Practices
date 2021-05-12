@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
 import styles from "./TeamSubmission.module.css";
-import Header from '../../Elements/Header';
+import Header from '../../Elements/Header'; 
 import axios from 'axios';
 import Title from "../Title/Title";
 import config from '../../config.js';
@@ -183,7 +183,7 @@ const User = ({match}) => { // match takes route from routes.js
         </Row>
         <Row >
           <Col md={{ size: 10 }} style={{ border: 'solid 1px black' }} >
-            <Popup trigger={<Button className="btn btn-primary float-left">Submit Proposal</Button>} modal>
+            <Popup trigger={<Button className="btn btn-info btn-lg float-right">Submit Proposal</Button>} modal>
               { close => (
               <div className="modal" style={{display: 'block'}}>
                 <UploadFile teamdata={match}></UploadFile>

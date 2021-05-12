@@ -11,30 +11,31 @@ class ManageTeamRowMenu extends React.Component {
     this.editorProps = this.props.editorProps;
     console.log(this.props.row.id);
   }
-    render() {
-      console.log()
-      return (
-        
-        <Dropdown>
-        <Dropdown.Toggle 
-        variant="primary btn-sm" 
-        id="dropdown-basic">
-            You can ...
+  render() {
+    console.log()
+    return (
+
+      <Dropdown>
+        <Dropdown.Toggle
+          variant="primary btn-sm"
+          id="dropdown-basic">
+          You can ...
         </Dropdown.Toggle>
 
-        <Dropdown.Menu style={{backgroundColor:'#73a47'}}>
-            {(this.props.row.memberType=='Team leader') && (<Dropdown.Item href={`/manageinvites/${this.props.row.id}`}>Invite team members</Dropdown.Item>)}
-            {(this.props.row.memberType=='Team leader') && (<Dropdown.Item  href={`/manageteammembers/${this.props.row.id}`}>Manage team members</Dropdown.Item> )}          
-            <Dropdown.Item  href={`/submitproposal/${this.props.row.id}`}>Submit proposal</Dropdown.Item>
-            <Dropdown.Item  href={`/managesubmissions/${this.props.row.id}`}>Manage submissions</Dropdown.Item>
+        <Dropdown.Menu style={{ backgroundColor: '#73a47' }}>
+          {(this.props.row.memberType == 'Team leader') && (<Dropdown.Item href={`/manageinvites/${this.props.row.id}`}>Invite team members</Dropdown.Item>)}
+          {(this.props.row.memberType == 'Team leader') && (<Dropdown.Item href={`/manageteammembers/${this.props.row.id}`}>Manage team members</Dropdown.Item>)}
+
+          {/**if can submit(timeframe within), render button, else, dont render anything */}
+          {this.props.canSubmit ? <Dropdown.Item href={`/submitproposal/${this.props.row.id}`}>Submit proposal</Dropdown.Item> : <div></div>}
+          <Dropdown.Item href={`/managesubmissions/${this.props.row.id}`}>Manage submissions</Dropdown.Item>
 
         </Dropdown.Menu>
-        </Dropdown>
-        
-      );
-        
-    }
+      </Dropdown>
+
+    );
+
   }
-  export default ManageTeamRowMenu;
-  
- 
+}
+export default ManageTeamRowMenu;
+

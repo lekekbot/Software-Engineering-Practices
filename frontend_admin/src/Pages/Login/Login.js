@@ -84,9 +84,9 @@ function Login() {
         data:  'Logged in successfully, redirecting...',
         type:  'alert-success',
       });
-
+console.log(response)
     
-      saveUserDataToLocalStore(response.data.token, response.data.displayName);
+      saveUserDataToLocalStore(response.data.token, response.data.displayName, response.data.userid);
       history.push({
         pathname: '/dashboard',
         state: {email: data.email}
