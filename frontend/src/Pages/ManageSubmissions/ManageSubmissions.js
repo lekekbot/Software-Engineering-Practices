@@ -196,7 +196,7 @@ const ManageSubmissions = ({ match }) => {
         </Row>
         <Row >
           <Col md={{ size: 9, offset: -1 }} lg={{ size: 9, offset: -1 }} style={{ border: 'solid 1px black' }} >
-            <Button variant="btn btn-link float-right">
+            <Button variant="btn btn-link btn-lg btn-light float-right">
               <Link to={`/manageteam/${teamId}`}>Cancel</Link>
             </Button>
           </Col>
@@ -222,13 +222,13 @@ const ManageSubmissions = ({ match }) => {
           </Col>
         </Row>
 
-        <Row >
+        {/* <Row >
           <Col md={{ size: 9, offset: -1 }} lg={{ size: 9, offset: -1 }} style={{ border: 'solid 1px black' }} >
             <Button variant="btn btn-link float-right">
               <Link to={`/manageteam/${teamId}`}>Cancel</Link>
             </Button>
           </Col>
-        </Row>
+        </Row> */}
       </Container>
     </div>
   );
