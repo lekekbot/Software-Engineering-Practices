@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+ import React, { useState, useEffect } from 'react';
 //https://code.tutsplus.com/tutorials/working-with-tables-in-react-part-one--cms-29682
 //react-bootstrap-table-next is actually, 
 //react-bootstrap-table2 - is the new version 2, do not get confused

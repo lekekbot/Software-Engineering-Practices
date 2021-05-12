@@ -182,7 +182,7 @@ const ManageSubmissions = ({ match }) => {
       <Container className="fluid" style={{ border: 'solid 1px black' }}>
         <Row>
           <Col md={{ size: 9, offset: -1 }}>
-            <p class="font-weight-light">This UI has client-side code example which triggers useEffect when there are data changes (e.g. deleted a file)</p>
+            <p className="font-weight-light">This UI has client-side code example which triggers useEffect when there are data changes (e.g. deleted a file)</p>
           </Col>
         </Row>
         <Row>

@@ -20,6 +20,10 @@ const AddAdmin = () => {
     const [data, setData] = useState([])
     const [resendState, setresendState] = useState({btnmessage: 'Resend Invitation', resend: false})
 
+
+    const firstName = useFormInput('Hi')
+    const lastName = useFormInput('Bye')
+    const email = useFormInput('bryangoh843@gmail.com')
     //componenetDidMount
     useEffect(()=> {
         //get table data for pending fucks
@@ -146,6 +150,7 @@ const AddAdmin = () => {
                         <Form.Group controlId='form-first-name'>
                             <Form.Label>First Name</Form.Label>
                             <Form.Control type="text" name="first-name" placeholder="First Name"
+                            {...firstName}
                             ref={register({
                                 required: {
                                     value: false,
@@ -158,6 +163,7 @@ const AddAdmin = () => {
                         <Form.Group controlId='form-last-name'>
                             <Form.Label>Last Name</Form.Label>
                             <Form.Control type="text" name="last-name" placeholder="Last Name"
+                            {...lastName}
                             ref={register({
                                 required: {
                                     required: false,
@@ -169,6 +175,7 @@ const AddAdmin = () => {
                         <Form.Group controlId='form-email'>
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="email" name="email" placeholder="Email"
+                            {...email}
                             ref={register({
                                 required: {
                                     value: true,
@@ -197,4 +204,21 @@ const AddAdmin = () => {
     )
 }
 
+
+const useFormInput = initialValue => {
+    //Note advisable to change the value name to something else
+    //because it is used as a value attribute in the JSX which defines the textboxes.  
+    const [value, setValue] = useState(initialValue);
+    
+    const handleChange = e => {
+      setValue(e.target.value);
+      // More information about setValue and hooks is at https://reactjs.org/docs/hooks-state.html
+    }
+    return {
+      value,// This is tied to the JSX 
+      onChange: handleChange, // This is tied to the JSX 
+     
+    }
+  }
+   
 export default AddAdmin

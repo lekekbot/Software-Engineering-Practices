@@ -2,7 +2,7 @@ import moment from 'moment-timezone';
 import React, { useState, useEffect } from 'react';
 
 //styling
-import 'react-calendar/dist/Calendar.css';
+import './ManageTeamSubmission.css'
 
 //imports
 import { Link, useHistory } from 'react-router-dom';
@@ -10,14 +10,15 @@ import ManageSubmissionsRowMenu from '../../Elements/ManageSubmissionRowMenu';
 import axios from 'axios';
 import Popup from 'reactjs-popup';
 import config from '../../Config';
-import Calendar from 'react-calendar';
 import Title from "../../Elements/Title/Title";
 import Header from '../../Elements/Header/Header';
 import DateTimePicker from 'react-datetime-picker';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Button, Container, Row, Col, Spinner, DropDown } from 'react-bootstrap';
-import cellEditFactory, { Type } from 'react-bootstrap-table2-editor';
 import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'
+
+import cellEditFactory from 'react-bootstrap-table2-editor';
 import { getUserIdFromLocalStore, getTokenFromLocalStore } from '../../Utils/Common.js'
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -248,7 +249,7 @@ export default function User({ props }) {
         className="justify-content-center">
         <Row>
           <Col md={{ size: 9, offset: -1 }}>
-            <p class="font-weight-light">This UI has client-side code example which triggers useEffect when there are data changes (e.g. deleted a file)</p>
+            <p className="font-weight-light">This UI has client-side code example which triggers useEffect when there are data changes (e.g. deleted a file)</p>
           </Col>
         </Row>
 
