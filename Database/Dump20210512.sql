@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `competiton_system_4_db` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `competiton_system_4_db`;
 -- MySQL dump 10.13  Distrib 8.0.22, for Win64 (x86_64)
 --
 -- Host: localhost    Database: competiton_system_4_db
@@ -540,4 +542,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-12 23:43:53
+-- Dump completed on 2021-05-12 23:49:46
